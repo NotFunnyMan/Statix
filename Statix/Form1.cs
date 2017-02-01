@@ -8,13 +8,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//Пакет R
+using RDotNet;
+
+//Библиотека для работы с Word
+using Gios.Word;
+
+//Внешнее оформление
+using MetroFramework.Components;
+using MetroFramework.Forms;
+
 namespace Statix
 {
-    public partial class Form1 : Form
+    public partial class Form1 : MetroForm
     {
         public Form1()
         {
             InitializeComponent();
+            MetroStyleManager.Default.Style = MetroFramework.MetroColorStyle.Teal;
+            MetroStyleManager.Default.Theme = MetroFramework.MetroThemeStyle.Light;
+            REngine.SetEnvironmentVariables();
         }
     }
 }
