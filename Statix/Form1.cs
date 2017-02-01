@@ -25,8 +25,6 @@ namespace Statix
         public Form1()
         {
             InitializeComponent();
-            MetroStyleManager.Default.Style = MetroFramework.MetroColorStyle.Teal;
-            MetroStyleManager.Default.Theme = MetroFramework.MetroThemeStyle.Light;
             REngine.SetEnvironmentVariables();
         }
     }
