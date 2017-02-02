@@ -24,19 +24,11 @@ namespace Statix
         //Все пациенты
         private List<List<string>> patientsList;
 
-        //Количество записей в строке (Количство переменных)
+        //Количство переменных
         private int records;
 
         //Список ошибок
-        //private List<List<string>> errorsList;
-
-        //Временные переменные
-        //Список ошибок для добавления пациентов
-        //List<string> tmpList;
-        //Количество пропущенных значений
-        //int tmpMissVals;
-        //Количество строк не удовлетворяющих длине
-        //int tmpCntStrOthrLen;
+        private Errors errors; 
 
         #endregion
 
@@ -52,11 +44,7 @@ namespace Statix
             scaleType = new List<string>();
             variableName = new List<string>();
             records = 0;
-            //errorsList = new List<List<string>>();
-            //tmpList = new List<string>();
-            //tmpMissVals = 0;
-            //tmpCntStrOthrLen = 0;
-            //sample = new Sample();
+            errors = new Errors();
         }
 
         /// <summary>
@@ -66,7 +54,7 @@ namespace Statix
         /// <param name="_encoding">Кодировка файла</param>
         public Data(string _fileName, Encoding _encoding)
         {
-            //Чтение 
+            //Открытие файла
             var File = new StreamReader(_fileName, _encoding);
             string line = "";
 
@@ -75,130 +63,60 @@ namespace Statix
             scaleType = new List<string>();
             variableName = new List<string>();
             records = 0;
-            //errorsList = new List<List<string>>();
-            //sample = new Sample();
+            errors = new Errors();
 
+            //Читаем уникальные значения
             line = File.ReadLine();
             AddUniqueValues(line);
+            //Читаем типы шкал
             line = File.ReadLine();
             AddScaleType(line);
+            //Читаем названия переменных
             line = File.ReadLine();
             AddVariableName(line);
 
-            //В строке первый элемент
+            //Читаем пациентов
             while ((line = File.ReadLine()) != null)
-            {
                 AddPatients(line);
-            }
+
             File.Close();
-
-            //Список ошибок для добавления пациентов
-            //tmpList = new List<string>();
-            //Количество пропущенных значений
-            //tmpMissVals = 0;
-            //Количество строк не удовлетворяющих длине
-            //tmpCntStrOthrLen = 0;
-
-            //Формирование сообщения об ошибке
-            //List<string> list = new List<string>();
-            //list.Add("Пациенты:");
-            //if (tmpMissVals != 0)
-            //{
-            //    list.Add("Было найдено: " + tmpMissVals.ToString() + " пустых значений или значений, которые не удовлетворяют типу шкалы.");
-            //    list.Add("Например, в шкале с типом 'Бин' стоит 2 (возможные значения 0 или 1)");
-            //    list.Add("Некорректные значения заменены символом: NA.");
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    if (tmpCntStrOthrLen != 0)
-            //{
-            //    list.Add("Было найдено: " + tmpCntStrOthrLen.ToString() + " строк разной длины.");
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    list.Add("Ошибок не обнаружено.");
-            //errorsList.Add(list);
 
         }
 
         #endregion
 
         #region Методы
-
-        /// <summary>
-        ///Добавить пациента
-        /// </summary>
-        /// <param name="_param">Строка с данными</param>
-        public void AddPatients(string _param)
-        {
-            //Разбиваем входную строку на отдельные элементы
-            var param = _param.Split(';');
-
-            //Временные переменные
-            string tp;
-            int numbOfvar = param.Length;
-            //if (numbOfvar != records)
-            //    tmpCntStrOthrLen++;
-
-            //Проверка входных данных на корректность
-            for (int i = 1; i < numbOfvar - 1; i++)
-            {
-                tp = TakeScaleTypeAtIndex(i - 1);
-                if (tp == "Бин")
-                    param[i] = ProcessingBinaryValue(param[i]);
-                if (tp == "Кол")
-                    param[i] = ProcessingQuantitativeValue(param[i]);
-                if (tp == "Ном")
-                    param[i] = ProcessingNominalValue(param[i]);
-                if (tp == "Пор")
-                    param[i] = ProcessingOrdinallValue(param[i]);
-                //if (param[i] == "NA")
-                //    tmpMissVals++;
-            }
-
-            //Удалим первый элемент последовательности и сдвинем все
-            for (int i = 0; i < numbOfvar - 1; i++)
-                param[i] = param[i + 1];
-            Array.Resize(ref param, numbOfvar - 1);
-
-            List<string> tmp = new List<string>();
-            tmp.AddRange(param);
-            patientsList.Add(tmp);
-        }
-
+        
         /// <summary>
         ///  Добавить уникальные значения
         /// </summary>
         /// <param name="_param">Строка с данными</param>
         public void AddUniqueValues(string _param)
         {
-            var param = _param.Split(';');
-            int countEmpty = 0;
+            //Количество пропущенных значений
+            int tmpMissVals = 0;
 
-            for (int i = 1; i < param.Length; i++)
+            //Разбиваем входную строку на отдельные элементы
+            var param = _param.Split(';');
+
+            //Записываем количество переменных
+            records = param.Length - 1;
+
+            int numbOfVar = param.Length;
+
+            //Начинаем со второго значения, так как первое - название шкалы
+            for (int i = 1; i < numbOfVar; i++)
                 if (param[i] != "")
                     uniqueValues.Add(param[i]);
                 else
                 {
                     uniqueValues.Add("NA");
-                    countEmpty++;
+                    tmpMissVals++;
                 }
-
-            //Формирование сообщения об ошибке
-            //List<string> list = new List<string>();
-            //list.Add("Уникальные значения:");
-            //if (countEmpty != 0)
-            //{
-            //    list.Add("Было найдено: " + countEmpty.ToString() + " пустых значений.");
-            //    list.Add("Пустые значения заменены символом: NA");
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    list.Add("Ошибок не обнаружено.");
-            //errorsList.Add(list);
-
-            //Записываем количество записей в строке
-            records = param.Length - 1;
+            
+            //Добавляем ошибки в список ошибок
+            if (tmpMissVals != 0)
+                errors.AddError("Уникальные значения. Количество пропущенных значений: " + tmpMissVals.ToString() + ".");
         }
 
         /// <summary>
@@ -207,36 +125,28 @@ namespace Statix
         /// <param name="_param">Строка с данными</param>
         public void AddScaleType(string _param)
         {
-            var param = _param.Split(';');
-            int countEmpty = 0;
+            //Количество пропущенных значений
+            int tmpMissVals = 0;
 
+            //Разбиваем входную строку на отдельные элементы
+            var param = _param.Split(';');
+            int numbOfVar = param.Length;
+            if (numbOfVar != records)
+                tmpMissVals = records - numbOfVar + 1;
+
+            //Начинаем со второго значения, так как первое - название шкалы
             for (int i = 1; i < param.Length; i++)
                 if (param[i] != "")
                     scaleType.Add(param[i]);
                 else
                 {
                     scaleType.Add("NA");
-                    countEmpty++;
+                    tmpMissVals++;
                 }
-
-            //Формирование сообщения об ошибке
-            //List<string> list = new List<string>();
-            //list.Add("Тип шкалы:");
-            //if (countEmpty != 0)
-            //{
-            //    list.Add("Было найдено: " + countEmpty.ToString() + " пустых значений.");
-            //    list.Add("Пустые значения заменены символом: NA");
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    if (param.Length != records)
-            //{
-            //    list.Add("Количество значений в строке 'Тип шкалы' не совпадает с количеством значений в первой строке: " + records.ToString());
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    list.Add("Ошибок не обнаружено.");
-            //errorsList.Add(list);
+            
+            //Добавляем ошибки в список ошибок
+            if (tmpMissVals != 0)
+                errors.AddError("Тип шкалы. Количество пропущенных значений: " + tmpMissVals.ToString() + ".");
         }
 
         /// <summary>
@@ -245,36 +155,78 @@ namespace Statix
         /// <param name="_param">Строка с данными</param>
         public void AddVariableName(string _param)
         {
-            var param = _param.Split(';');
-            int countEmpty = 0;
+            //Количество пропущенных значений
+            int tmpMissVals = 0;
 
+            //Разбиваем входную строку на отдельные элементы
+            var param = _param.Split(';');
+            int numbOfVar = param.Length;
+            if (numbOfVar != records)
+                tmpMissVals = records - numbOfVar + 1;
+
+            //Начинаем со второго значения, так как первое - название шкалы
             for (int i = 1; i < param.Length; i++)
                 if (param[i] != "")
                     variableName.Add(param[i]);
                 else
                 {
                     variableName.Add("NA");
-                    countEmpty++;
+                    tmpMissVals++;
                 }
 
-            //Формирование сообщения об ошибке
-            //List<string> list = new List<string>();
-            //list.Add("Имя переменной:");
-            //if (countEmpty != 0)
-            //{
-            //    list.Add("Было найдено: " + countEmpty.ToString() + " пустых значений.");
-            //    list.Add("Пустые значения заменены символом: NA");
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    if (param.Length != records)
-            //{
-            //    list.Add("Количество значений в строке 'Имя переменной' не совпадает с количеством значений в первой строке: " + records.ToString());
-            //    list.Add("Проверьте входные данные.");
-            //}
-            //else
-            //    list.Add("Ошибок не обнаружено.");
-            //errorsList.Add(list);
+            //Добавляем ошибки в список ошибок
+            if (tmpMissVals != 0)
+                errors.AddError("Название переменной. Количество пропущенных значений: " + tmpMissVals.ToString() + ".");
+        }
+        
+        /// <summary>
+        ///Добавить пациента
+        /// </summary>
+        /// <param name="_param">Строка с данными</param>
+        public void AddPatients(string _param)
+        {
+            //Количество пропущенных значений
+            int tmpMissVals = 0;
+
+            //Разбиваем входную строку на отдельные элементы
+            var param = _param.Split(';');
+
+            //Временные переменные
+            string typeScale;
+            int numbOfVar = param.Length;
+            if (numbOfVar != records)
+                tmpMissVals = records - numbOfVar + 1;
+
+            //Проверка входных данных на корректность в соответствии с типом шкалы
+            //Начинаем со второго значения, так как первое - порядковый номер
+            for (int i = 1; i < numbOfVar - 1; i++)
+            {
+                typeScale = TakeScaleTypeAtIndex(i - 1);
+                if (typeScale == "Бин")
+                    param[i] = ProcessingBinaryValue(param[i]);
+                if (typeScale == "Кол")
+                    param[i] = ProcessingQuantitativeValue(param[i]);
+                if (typeScale == "Ном")
+                    param[i] = ProcessingNominalValue(param[i]);
+                if (typeScale == "Пор")
+                    param[i] = ProcessingOrdinallValue(param[i]);
+                if (param[i] == "NA")
+                    tmpMissVals++;
+            }
+
+            //Удалим первый элемент последовательности и сдвинем все
+            for (int i = 0; i < numbOfVar - 1; i++)
+                param[i] = param[i + 1];
+            Array.Resize(ref param, numbOfVar - 1);
+
+            //Добавляем пациента в список пациентов
+            List<string> tmp = new List<string>();
+            tmp.AddRange(param);
+            patientsList.Add(tmp);
+
+            //Добавляем ошибки в список ошибок
+            if (tmpMissVals != 0)
+                errors.AddError("Пациент номер: " + patientsList.Count.ToString() + ". Количество пропущенных значений: " + tmpMissVals.ToString() + ".");
         }
 
         /// <summary>
@@ -322,7 +274,7 @@ namespace Statix
         /// </summary>
         /// <param name="_str">Строка для проверки</param>
         /// <returns></returns>
-        public bool ThisNumber(string _str)
+        private bool ThisNumber(string _str)
         {
             //Если какой-либо символ строки не цифра, то введено не число
             for (int i = 0; i < _str.Length; i++)
@@ -342,7 +294,7 @@ namespace Statix
         /// </summary>
         /// <param name="_str">Строка для проверки</param>
         /// <returns></returns>
-        public string ProcessingBinaryValue(string _str)
+        private string ProcessingBinaryValue(string _str)
         {
             //Проверка строки на пустоту
             if (_str != "")
@@ -358,7 +310,7 @@ namespace Statix
         /// </summary>
         /// <param name="_str">Строка для проверки</param>
         /// <returns></returns>
-        public string ProcessingQuantitativeValue(string _str)
+        private string ProcessingQuantitativeValue(string _str)
         {
             //Проверка строки на пустоту
             if (_str != "")
@@ -378,6 +330,8 @@ namespace Statix
         {
             if (_str == "")
                 return "NA";
+            else
+                if (char.IsDigit(_str[0])) return "NA";
             return _str.ToLower();
         }
 
@@ -390,8 +344,15 @@ namespace Statix
         {
             return _str;
         }
-
         
+        /// <summary>
+        /// Получение списка ошибок
+        /// </summary>
+        /// <returns></returns>
+        public Errors ErrorsList()
+        {
+            return errors;
+        }
 
         #endregion
 

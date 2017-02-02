@@ -23,6 +23,7 @@ namespace Statix
     public partial class Form1 : MetroForm
     {
         #region Поля
+
         //Данные
         private Data data;
 
@@ -48,11 +49,7 @@ namespace Statix
             //Вывод считанной информации для проверки
             OutRedingInformation();
 
-            //flag = true;
-            //var errorsList = data.GetErrorsList();
-            //for (int i = 0; i < errorsList.Count; i++)
-            //    for (int j = 0; j < errorsList[i].Count; j++)
-            //        textBox1.Text += errorsList[i][j] + Environment.NewLine;
+            Errors errors = data.ErrorsList();
 
             //signList.Clear();
             //ordinList.Clear();
