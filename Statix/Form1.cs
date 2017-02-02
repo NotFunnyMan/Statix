@@ -15,7 +15,7 @@ using RDotNet;
 using Gios.Word;
 
 //Внешнее оформление
-using MetroFramework.Components;
+using MetroFramework;
 using MetroFramework.Forms;
 
 namespace Statix
@@ -24,9 +24,9 @@ namespace Statix
     {
         #region Поля
 
-        //Данные
+        //Считанные данные
         private Data data;
-
+        
         #endregion
 
         public Form1()
@@ -49,7 +49,21 @@ namespace Statix
             //Вывод считанной информации для проверки
             OutRedingInformation();
 
+            //Получение ошибок, найденных при считывании
             Errors errors = data.ErrorsList();
+
+            //Вывод сообщения о найденных ошибках
+            if (errors.CountErrors != 0)
+            {
+                string title = "Во время считывания данных из файла были найдены ошибки!";
+                string message = "Желаете посмотреть список ошибок?\n" + "\"Yes\" - Да, \"No\" - Нет.\n";
+                if (MetroMessageBox.Show(this, message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
+                {
+                    //Вывод списка ошибок в новом окне
+                    FormForErrors Form2 = new FormForErrors(data.ErrorsList().ErrorsList);
+                    Form2.Show();
+                }
+            }
 
             //signList.Clear();
             //ordinList.Clear();
@@ -89,7 +103,7 @@ namespace Statix
                     metroGrid1.Rows[j + 3].Cells[i].Value = person[i];
             }
         }
-
+        
 
     }
 }

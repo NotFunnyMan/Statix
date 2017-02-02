@@ -40,6 +40,7 @@ namespace Statix
         public void AddError(string _error)
         {
             errorsList.Add(_error);
+            countErrors++;
         }
 
         /// <summary>
@@ -62,6 +63,14 @@ namespace Statix
         public int CountErrors
         {
             get { return countErrors; }
+        }
+
+        /// <summary>
+        /// Список ошибок
+        /// </summary>
+        public List<string> ErrorsList
+        {
+            get { return errorsList; }
         }
 
         #endregion
