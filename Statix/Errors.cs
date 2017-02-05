@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Statix
 {
+    /*Класс "Ошибки"
+     *Хранит информацию обо всех найденных ошибках при считывании из файла 
+    */
     class Errors
     {
         #region Поля

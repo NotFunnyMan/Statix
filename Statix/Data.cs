@@ -7,6 +7,9 @@ using System.IO;
 
 namespace Statix
 {
+    /*Класс "Данные"
+     * Хранит информацию о считанных данных из файла
+     */
     class Data
     {
 
@@ -137,7 +140,7 @@ namespace Statix
             //Начинаем со второго значения, так как первое - название шкалы
             for (int i = 1; i < param.Length; i++)
                 if (param[i] != "")
-                    scaleType.Add(param[i]);
+                    scaleType.Add(param[i].ToLower());
                 else
                 {
                     scaleType.Add("NA");
@@ -202,13 +205,13 @@ namespace Statix
             for (int i = 1; i < numbOfVar - 1; i++)
             {
                 typeScale = TakeScaleTypeAtIndex(i - 1);
-                if (typeScale == "Бин")
+                if (typeScale == "бин")
                     param[i] = ProcessingBinaryValue(param[i]);
-                if (typeScale == "Кол")
+                if (typeScale == "кол")
                     param[i] = ProcessingQuantitativeValue(param[i]);
-                if (typeScale == "Ном")
+                if (typeScale == "ном")
                     param[i] = ProcessingNominalValue(param[i]);
-                if (typeScale == "Пор")
+                if (typeScale == "пор")
                     param[i] = ProcessingOrdinallValue(param[i]);
                 if (param[i] == "NA")
                     tmpMissVals++;
@@ -356,7 +359,7 @@ namespace Statix
 
         #endregion
 
-        #region Поля
+        #region Свойства
 
         /// <summary>
         /// Количество переменных
