@@ -25,26 +25,55 @@ namespace Statix
     {
         #region Поля
 
-        //считанные данные
+        /// <summary>
+        /// Пространство языка R
+        /// </summary>
+        private REngine engine;
+
+        /// <summary>
+        /// Считанные данные
+        /// </summary>
         private Data data;
 
-        //Получаем список индексов с Бин и Ном шкалами
+        /// <summary>
+        /// Получаем список индексов с Бин и Ном шкалами
+        /// </summary>
         private List<int> binList = new List<int>();
 
-        //Получаем список индексов с Ном шкалами
+        /// <summary>
+        /// Получаем список индексов с Ном шкалами
+        /// </summary>
         private List<int> nomList = new List<int>();
 
-        //Получаем список индексов с Кол шкалой
+        /// <summary>
+        /// Получаем список индексов с Кол шкалой
+        /// </summary>
         private List<int> colList = new List<int>();
 
-        //Получаем список индексов с Пор шкалой
+        /// <summary>
+        /// Получаем список индексов с Пор шкалой
+        /// </summary>
         private List<int> porList = new List<int>();
 
-        //Список индексов группирующих факторов
+        /// <summary>
+        /// Список индексов группирующих факторов
+        /// </summary>
         private List<int> groupFactList = new List<int>();
 
-        //Список выбранных признаков
+        /// <summary>
+        /// Список выбранных признаков
+        /// </summary>
         private List<int> signsList = new List<int>();
+
+        /// <summary>
+        /// Список с результатами проверок для теста Манна-Уитни
+        /// </summary>
+        List<Sample> resManna = new List<Sample>();
+
+        /// <summary>
+        /// Список с результатами проверок для теста Краскела-Уоллиса
+        /// </summary>
+        List<Sample> resKruskel = new List<Sample>();
 
         #endregion
 
@@ -140,12 +169,9 @@ namespace Statix
                 }
             }
         }
-
-        /************************************************
-        *        "Сравнение независимых групп"          *
-         ************************************************/
+        
         /// <summary>
-        /// Выбрана вкладка "Сравнение независимых групп"
+        /// Обработчик выбранной вкладки
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -379,9 +405,86 @@ namespace Statix
                 control.Checked = false;
         }
 
-        /************************************************
-        *         "Сравнение Зависимых групп"           *
-        ************************************************/
+        //Выоплнить "Сравнение независимых групп"
+        private void metroButton16_Click(object sender, EventArgs e)
+        {
+            Sample testRes;
+            GenericVector tmp;
+            engine = REngine.GetInstance();
+            List<Sample> samples = new List<Sample>();
+            samples = Sample.GetSample(data, groupFactList, signsList);
+            for (int i = 0; i < samples.Count; i++)
+            {
+                testRes = new Sample();
+                testRes = samples[i];
+                if (samples[i].SubSampleList.Count == 2)
+                {
+                    //Вызвать тест Манна-Уитни
+                    NumericVector group1 = engine.CreateNumericVector(samples[i].SubSampleList[0].SampleList);
+                    engine.SetSymbol("Rgroup1", group1);
+                    NumericVector group2 = engine.CreateNumericVector(samples[i].SubSampleList[1].SampleList);
+                    engine.SetSymbol("Rgroup2", group2);
+                    tmp = engine.Evaluate("wilcox.test(Rgroup1, Rgroup2)").AsList();
+                    double p = tmp["p.value"].AsNumeric().First();
+                    testRes.PValue = p;
+
+                    //Посчитаем медиану и стандартное отклонение
+                    testRes = FillingResults(samples[i].SubSampleList, testRes);
+                    resManna.Add(testRes);
+                }
+                else
+                {
+                    //Вызвать тест Краскела-Уоллиса
+                    //Создадим список выборок для отправки в тест Краскела-Уоллиса
+                    GenericVector gV = new GenericVector(engine, samples[i].SubSampleList.Count);
+                    NumericVector nV;
+                    for (int j = 0; j < samples[i].SubSampleList.Count; j++)
+                    {
+                        nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList.Count);
+                        for (int k = 0; k < samples[i].SubSampleList[j].SampleList.Count; k++)
+                            nV[k] = samples[i].SubSampleList[j].SampleList[k];
+                        gV[j] = nV;
+                    }
+
+                    engine.SetSymbol("sample", gV);
+                    tmp = engine.Evaluate("kruskal.test(sample)").AsList();
+                    double p = tmp["p.value"].AsNumeric().First();
+                    testRes.PValue = p;
+
+                    //Посчитаем медиану и стандартное отклонение
+                    testRes = FillingResults(samples[i].SubSampleList, testRes);
+                    resKruskel.Add(testRes);
+                }
+                metroButton15.Visible = true;
+            }
+        }
+
+        //Заполнение результата дополнительными данными
+        private Sample FillingResults(List<Sample.SubSample> _s, Sample _t)
+        {
+            NumericVector X;
+            for (int i = 0; i < _s.Count; i++)
+            {
+                X = engine.CreateNumericVector(_s[i].SampleList);
+                engine.SetSymbol("X", X);
+
+                var median = engine.Evaluate("median(X)").AsNumeric();
+                var sD = engine.Evaluate("sd(X)").AsNumeric();
+                var quantile = engine.Evaluate("quantile(X)").AsNumeric();
+                var tmp = _t.SubSampleList[i];
+                tmp.LowerQuintile = quantile[0];
+                tmp.TopQuintile = quantile[4];
+                tmp.Median = median[0];
+                tmp.StandartDeviation = sD[0];
+                tmp.Amount = _s[i].SampleList.Count;
+                _t.SubSampleList[i] = tmp;
+            }
+            return _t;
+        }
+
+
+
+
 
 
     }

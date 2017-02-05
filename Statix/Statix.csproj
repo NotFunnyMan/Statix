@@ -75,7 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorrelationAnalysis.cs" />
     <Compile Include="Data.cs" />
+    <Compile Include="DependentSamples.cs" />
     <Compile Include="Errors.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -89,6 +91,8 @@
     <Compile Include="FormForErrors.Designer.cs">
       <DependentUpon>FormForErrors.cs</DependentUpon>
     </Compile>
+    <Compile Include="IndependentSamples.cs" />
+    <Compile Include="Sample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

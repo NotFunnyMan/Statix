@@ -233,7 +233,7 @@ namespace Statix
         }
 
         /// <summary>
-        /// Взятие пациента по индексу
+        /// Взятие пациента по индексу (строка пациента)
         /// </summary>
         /// <param name="_index">Индекс</param>
         /// <returns></returns>
@@ -375,6 +375,14 @@ namespace Statix
         public int PatientsCount
         {
             get { return this.patientsList.Count; }
+        }
+
+        /// <summary>
+        /// Список пациентов
+        /// </summary>
+        public List<List<string>> Patients
+        {
+            get { return patientsList; }
         }
 
         #endregion

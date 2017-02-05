@@ -274,6 +274,7 @@
             this.metroButton16.Text = "Выполнить сравнение";
             this.metroButton16.UseSelectable = true;
             this.metroButton16.Visible = false;
+            this.metroButton16.Click += new System.EventHandler(this.metroButton16_Click);
             // 
             // groupBox1
             // 
