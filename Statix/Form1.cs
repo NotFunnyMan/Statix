@@ -66,25 +66,60 @@ namespace Statix
         private List<int> signsList = new List<int>();
 
         /// <summary>
-        /// Список с результатами проверок для теста Манна-Уитни
+        /// Сравнение независимых групп. Тест Манна-Уитни
         /// </summary>
-        List<Sample> resManna = new List<Sample>();
+        List<Sample> resIndMannaWhitney = new List<Sample>();
 
         /// <summary>
-        /// Список с результатами проверок для теста Краскела-Уоллиса
+        /// Сравнение независимых групп. Тест Краскела-Уоллиса
         /// </summary>
-        List<Sample> resKruskel = new List<Sample>();
+        List<Sample> resIndKruskalWallis = new List<Sample>();
 
         /// <summary>
-        /// Список с результатами проверок для теста Вилкоксона
+        /// Сравнение зависимых групп. Тест Вилкоксона
         /// </summary>
-        List<Sample> resWilc = new List<Sample>();
+        List<Sample> resDepWilcoxon = new List<Sample>();
 
         /// <summary>
-        /// Список с результатами проверок для теста Фридмана
+        /// Сравнение зависимых групп. Тест Фридмана
         /// </summary>
-        List<Sample> resFrid = new List<Sample>();
+        List<Sample> resDepFridman = new List<Sample>();
 
+        /// <summary>
+        /// Структура для хранения результата корреляционного анализа
+        /// </summary>
+        private struct correlationResult
+        {
+            /// <summary>
+            /// Коэффициент корреляции 
+            /// </summary>
+            public double r;
+
+             /// <summary>
+             /// p-value
+             /// </summary>
+            public double p;
+
+            /// <summary>
+            /// Индекс что сравниваем
+            /// </summary>
+            public int thatCompare;
+
+            /// <summary>
+            /// Индекс с чем сравниваем
+            /// </summary>
+            public int toCompare;
+        }
+
+        /// <summary>
+        /// Корреляционный анализ. Метод Пирсона
+        /// </summary>
+        List<correlationResult> resCorPearson = new List<correlationResult>();
+
+        /// <summary>
+        /// Корреляционный анализ. Метод Спирмена
+        /// </summary>
+        List<correlationResult> resCorSpearman = new List<correlationResult>();
 
         #endregion
 
@@ -180,7 +215,7 @@ namespace Statix
                 }
             }
         }
-        
+
         /// <summary>
         /// Обработчик выбранной вкладки
         /// </summary>
@@ -203,6 +238,7 @@ namespace Statix
 
                 //Скроем кнопки с других вкладок
                 metroButton15.Visible = false;
+                metroButton21.Visible = false;
 
                 //Вывод списка группирующих переменных
                 //Вывод бинарных переменных
@@ -315,6 +351,7 @@ namespace Statix
 
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
+                metroButton21.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -330,7 +367,7 @@ namespace Statix
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox8.Controls.Add(rB[i]);
                 }
-                
+
                 //Изменение положения кнопок
                 Point point = new Point(metroButton11.Location.X, metroButton11.Location.Y);
                 point.Y = groupBox8.Size.Height + 25;
@@ -363,14 +400,72 @@ namespace Statix
             }
             #endregion
 
+            #region Корреляционный анализ
 
+            if (e.TabPageIndex == 3)
+            {
+                groupBox11.Controls.Clear();
+                groupBox12.Controls.Clear();
+                MetroCheckBox[] rB;
+
+                //Скроем кнопки с других вкладок
+                metroButton9.Visible = false;
+                metroButton15.Visible = false;
+
+                //Вывод признаков
+                //Вывод списка количественных переменных
+                rB = new MetroCheckBox[colList.Count];
+                for (int i = 0; i < colList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(colList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = colList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForSigns;
+                    groupBox11.Controls.Add(rB[i]);
+                }
+
+                //Изменение положения кнопок
+                Point point = new Point(metroButton17.Location.X, metroButton17.Location.Y);
+                point.Y = groupBox11.Size.Height + 25;
+                metroButton17.Location = point;
+                point = new Point(metroButton18.Location.X, metroButton18.Location.Y);
+                point.Y = groupBox11.Size.Height + 25;
+                metroButton18.Location = point;
+
+                //Вывод списка порядковых переменных
+                rB = new MetroCheckBox[porList.Count];
+                for (int i = 0; i < porList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(porList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = porList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForSigns;
+                    groupBox12.Controls.Add(rB[i]);
+                }
+
+                //Изменение положения кнопок
+                point = new Point(metroButton19.Location.X, metroButton19.Location.Y);
+                point.Y = groupBox12.Size.Height + 25;
+                metroButton19.Location = point;
+                point = new Point(metroButton20.Location.X, metroButton20.Location.Y);
+                point.Y = groupBox12.Size.Height + 25;
+                metroButton20.Location = point;
+            }
+
+            #endregion
         }
 
         /// <summary>
-        /// Выбран группирующий фактор
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+            /// Выбран группирующий фактор
+            /// </summary>
+            /// <param name="sender"></param>
+            /// <param name="e"></param>
         private void CheckedChangedForGroupFac(object sender, EventArgs e)
         {
             MetroCheckBox mCB = (MetroCheckBox)sender;
@@ -416,6 +511,7 @@ namespace Statix
                 {
                     case 1: metroButton9.Visible = true; break;
                     case 2: metroButton15.Visible = true; break;
+                    case 3: metroButton21.Visible = true; break;
                 }
             }
             else
@@ -427,6 +523,7 @@ namespace Statix
                     {
                         case 1: metroButton9.Visible = false; break;
                         case 2: metroButton15.Visible = false; break;
+                        case 3: metroButton21.Visible = false; break;
                     }
             }
         }
@@ -456,6 +553,12 @@ namespace Statix
                 case 9: Check(groupBox8); break;
                 //Порядковые переменные
                 case 11: Check(groupBox9); break;
+
+                //"Корреляционный анализ"
+                //Количественные переменные
+                case 13: Check(groupBox11); break;
+                //Порядковые переменные
+                case 15: Check(groupBox12); break;
             }
         }
 
@@ -485,6 +588,12 @@ namespace Statix
                 case 10: Uncheck(groupBox8); break;
                 //Порядковые переменные
                 case 12: Uncheck(groupBox9); break;
+
+                //"Корреляционный анализ"
+                //Количественные переменные
+                case 14: Uncheck(groupBox11); break;
+                //Порядковые переменные
+                case 16: Uncheck(groupBox12); break;
             }
 
             //Если сняли все галочки на группирующих переменных, то
@@ -574,7 +683,7 @@ namespace Statix
 
                     //Посчитаем медиану и стандартное отклонение
                     testRes = FillingResults(samples[i].SubSampleList, testRes);
-                    resManna.Add(testRes);
+                    resIndMannaWhitney.Add(testRes);
                 }
                 else
                 {
@@ -597,7 +706,7 @@ namespace Statix
 
                     //Посчитаем медиану и стандартное отклонение
                     testRes = FillingResults(samples[i].SubSampleList, testRes);
-                    resKruskel.Add(testRes);
+                    resIndKruskalWallis.Add(testRes);
                 }
             }
             //Отобразим кнопку для вывода в Word
@@ -613,11 +722,11 @@ namespace Statix
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 независимым выборкам ");
 
-            report = OutResultInTableIndependent(report, "Критерий Манна-Уитни, ", resManna);
-            report = OutResultInTableIndependent(report, "Критерий Краскела-Уоллиса, ", resKruskel);
+            report = OutResultInTableIndependent(report, "Критерий Манна-Уитни, ", resIndMannaWhitney);
+            report = OutResultInTableIndependent(report, "Критерий Краскела-Уоллиса, ", resIndKruskalWallis);
 
             report.SaveToFile("..\\..\\ResultIndep.doc");
-            System.Diagnostics.Process.Start("..\\..\\Result.doc");
+            System.Diagnostics.Process.Start("..\\..\\ResultIndep.doc");
         }
 
         /// <summary>
@@ -745,7 +854,7 @@ namespace Statix
 
                 //Посчитаем медиану и стандартное отклонение
                 sample = FillingResults(sample.SubSampleList, sample);
-                resWilc.Add(sample);
+                resDepWilcoxon.Add(sample);
             }
             else
             {
@@ -768,7 +877,7 @@ namespace Statix
 
                 //Посчитаем медиану и стандартное отклонение
                 sample = FillingResults(sample.SubSampleList, sample);
-                resFrid.Add(sample);
+                resDepFridman.Add(sample);
             }
             //Отобразим кнопку для вывода в Word
             metroButton16.Visible = true;
@@ -783,11 +892,11 @@ namespace Statix
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 зависимым выборкам ");
 
-            report = OutResultInTableDependent(report, "Критерий Вилкоксона", resWilc);
-            report = OutResultInTableDependent(report, "Критерий Фридмана", resFrid);
+            report = OutResultInTableDependent(report, "Критерий Вилкоксона", resDepWilcoxon);
+            report = OutResultInTableDependent(report, "Критерий Фридмана", resDepFridman);
 
             report.SaveToFile("..\\..\\ResultDep.doc");
-            System.Diagnostics.Process.Start("..\\..\\Result.doc");
+            System.Diagnostics.Process.Start("..\\..\\ResultDep.doc");
         }
 
         /// <summary>
@@ -845,6 +954,229 @@ namespace Statix
         }
 
         #endregion
+
+        #region Корреляционный анализ
+
+        //Выполнить "Корреляционный анализ"
+        private void metroButton21_Click(object sender, EventArgs e)
+        {
+            engine = REngine.GetInstance();
+            Sample sample = new Sample();
+            correlationResult cor = new correlationResult();
+            sample = Sample.GetSample(data, signsList);
+            int colSample = sample.SubSampleList.Count;
+
+            for (int i = 0; i < colSample; i++)
+            {
+                string ThatCompare = data.TakeVariableNameAtIndex(signsList[i]);
+                //Создаем первый вектор, который будем сравнивать (что сравниваем)
+                int sampleSize = sample.SubSampleList[0].SampleList.Count;
+                NumericVector x = new NumericVector(engine, sampleSize);
+                for (int j = 0; j < sampleSize; j++)
+                    x[j] = sample.SubSampleList[i].SampleList[j];
+                engine.SetSymbol("x", x);
+
+                for (int j = 0; j < i; j++)
+                {
+                    string ToCompare = data.TakeVariableNameAtIndex(signsList[j]);
+                    //Создаем второй вектор (с чем сравниваем)
+                    NumericVector y = new NumericVector(engine, sampleSize);
+                    for (int k = 0; k < sampleSize; k++)
+                        y[k] = sample.SubSampleList[j].SampleList[k];
+                    engine.SetSymbol("y", y);
+
+                    GenericVector tmpRes;
+
+                    //Пирсон
+                    tmpRes = engine.Evaluate("cor.test(x, y, method=\"pearson\")").AsList();
+                    cor.p = tmpRes["p.value"].AsNumeric().First();
+                    cor.r = tmpRes["statistic"].AsNumeric().First();
+                    cor.thatCompare = signsList[i];
+                    string tC = data.TakeVariableNameAtIndex(cor.thatCompare);
+                    cor.toCompare = signsList[j];
+                    string toC = data.TakeVariableNameAtIndex(cor.toCompare);
+                    resCorPearson.Add(cor);
+                    cor = new correlationResult();
+
+                    //Спирмен
+                    tmpRes = engine.Evaluate("cor.test(x, y, method=\"spearman\")").AsList();
+                    cor.p = tmpRes["p.value"].AsNumeric().First();
+                    cor.r = tmpRes["statistic"].AsNumeric().First();
+                    cor.thatCompare = signsList[i];
+                    cor.toCompare = signsList[j];
+                    resCorSpearman.Add(cor);
+                    cor = new correlationResult();
+                }
+            }
+            //Отобразим кнопку для вывода в Word
+            metroButton22.Visible = true;
+        }
+
+        //Вывод результатов корреляционного анализа в Word
+        private void metroButton22_Click(object sender, EventArgs e)
+        {
+            WordDocument report = new WordDocument(WordDocumentFormat.A4);
+
+            report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
+            report.SetTextAlign(WordTextAlign.Center);
+            report.WriteLine("Корреляционный анализ");
+
+            report = OutResultInTableCorrelation(report, "Метод Пирсона", resCorPearson);
+            report = OutResultInTableCorrelation(report, "Метод Спирмена", resCorSpearman);
+
+            report.SaveToFile("..\\..\\ResultCor.doc");
+            System.Diagnostics.Process.Start("..\\..\\ResultCor.doc");
+        }
+
+        /// <summary>
+        /// Вывод информации в таблицы
+        /// </summary>
+        /// <param name="_wordDocument">Документ</param>
+        /// <param name="_methodName">Название метода</param>
+        /// <param name="_resList">Список с результатами проверки</param>
+        /// <returns></returns>
+        private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<correlationResult> _result)
+        {
+            return _wordDocument;
+        }
+
+        /// <summary>
+        /// Отчет по-корреляционному анализу
+        /// </summary>
+        /// <param name="_wordDocument">Документ</param>
+        /// <param name="_result">Список с результатами проверки</param>
+        /// <returns></returns>
+        private WordDocument ReportByCorrelationAnalysis(WordDocument _wordDocument, List<correlationResult> _result)
+        {
+            _wordDocument.WriteLine();
+            _wordDocument.SetTextAlign(WordTextAlign.Justified);
+            List<correlationResult> significiant = SignificiantAssociation(_result);
+            List<correlationResult> insignificant = InsignificiantAssociation(_result);
+
+            //Вывод информации о значимых связях
+            //Наиболее значимая связь
+            if (significiant.Count != 0)
+            {
+                _wordDocument.Write("С помощью корреляционного анализа было выявлено, что в исследуемых признаках наиболее значимая" +
+                  " связь – связь между признаками " + (char)171 + data.TakeVariableNameAtIndex(significiant[0].thatCompare) + (char)187 +
+                  " и " + (char)171 + data.TakeVariableNameAtIndex(significiant[0].toCompare) + (char)187 + " (r = " +
+                  Math.Round(significiant[0].r, 3).ToString() + "). ");
+                _wordDocument.Write("Корреляция имеет положительный знак, то есть при увеличение одного признака второй тоже увеличивается.");
+            }
+            else
+            {
+                _wordDocument.WriteLine("Значимых связей не обнаружено. ");
+            }
+            //Остальные значимые связи
+            if (significiant.Count > 1)
+            {
+                _wordDocument.Write(" Так же, положительная корреляция была замечена у следующих признаков: ");
+                for (int i = 1; i < significiant.Count; i++)
+                {
+                    _wordDocument.Write((char)171 + data.TakeVariableNameAtIndex(significiant[i].thatCompare) + (char)187 +
+                        " и " + (char)171 + data.TakeVariableNameAtIndex(significiant[i].toCompare) + (char)187 +
+                        " (r = " + Math.Round(significiant[i].r, 3).ToString() + ")");
+                    if (i + 1 == significiant.Count)
+                        _wordDocument.WriteLine(".");
+                    else
+                        _wordDocument.Write(", ");
+                }
+            }
+
+            //Вывод информации о незначимых связях
+            //Наименее значимая связь
+            if (insignificant.Count != 0)
+            {
+                _wordDocument.Write("С помощью корреляционного анализа было выявлено, что в исследуемых признаках наименее значимая" +
+                " связь – связь между признаками " + (char)171 + data.TakeVariableNameAtIndex(insignificant[0].thatCompare) + (char)187 +
+                " и " + (char)171 + data.TakeVariableNameAtIndex(insignificant[0].toCompare) + (char)187 + " (r = " +
+                Math.Round(insignificant[0].r, 3).ToString() + ").");
+                _wordDocument.Write("Корреляция имеет отрицательный знак, то есть при увеличение одного признака второй уменьшается.");
+            }
+            else
+            {
+                _wordDocument.WriteLine("Незначимых связей не обнаружено. ");
+            }
+            //Остальные незначимые связи
+            if (insignificant.Count > 1)
+            {
+                _wordDocument.Write(" Так же, отрицательная корреляция была замечена у следующих признаков: ");
+                for (int i = 1; i < insignificant.Count; i++)
+                {
+                    _wordDocument.Write((char)171 + data.TakeVariableNameAtIndex(insignificant[i].thatCompare) + (char)187 +
+                        " и " + (char)171 + data.TakeVariableNameAtIndex(insignificant[i].toCompare) + (char)187 +
+                        " (r = " + Math.Round(insignificant[i].r, 3).ToString() + ")");
+                    if (i + 1 == insignificant.Count)
+                        _wordDocument.WriteLine(".");
+                    else
+                        _wordDocument.Write(", ");
+                }
+            }
+
+            return _wordDocument;
+        }
+
+        /// <summary>
+        /// Значимые свзяи
+        /// </summary>
+        /// <param name="_result"></param>
+        /// <returns></returns>
+        private List<correlationResult> SignificiantAssociation(List<correlationResult> _result)
+        {
+            //Составим список из связей, где гипотеза не отвергается и положительный коэффициент
+            List<correlationResult> H = new List<correlationResult>();
+            foreach (correlationResult h in _result)
+            {
+                if (h.p <= 0.05 && h.r >= 0)
+                    H.Add(h);
+            }
+            //Найдем максимальный элемент в списке H
+            int index = 0;
+            double max = H[0].r;
+            for (int i = 1; i < H.Count; i++)
+            {
+                if (H[i].r > max)
+                    index = i;
+            }
+            //Поставим максимальный элемент на первое место
+            correlationResult buf = H[0];
+            H[0] = H[index];
+            H[index] = buf;
+            return H;
+        }
+
+        /// <summary>
+        /// Незначимые связи
+        /// </summary>
+        /// <param name="_result"></param>
+        /// <returns></returns>
+        private List<correlationResult> InsignificiantAssociation(List<correlationResult> _result)
+        {
+            //Составим список из связей, где гипотеза не отвергается и отрицатедльный коэффициент
+            List<correlationResult> H = new List<correlationResult>();
+            foreach (correlationResult h in _result)
+            {
+                if (h.p <= 0.05 && h.r < 0)
+                    H.Add(h);
+            }
+            //Найдем минимальный элемент в списке H
+            int index = 0;
+            double min = H[0].r;
+            for (int i = 1; i < H.Count; i++)
+            {
+                if (H[i].r < min)
+                    index = i;
+            }
+            //Поставим минимальный элемент на первое место
+            correlationResult buf = H[0];
+            H[0] = H[index];
+            H[index] = buf;
+            return H;
+        }
+
+        #endregion
+
+
 
     }
 }
