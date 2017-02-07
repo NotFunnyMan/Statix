@@ -692,9 +692,7 @@ namespace Statix
                     NumericVector nV;
                     for (int j = 0; j < samples[i].SubSampleList.Count; j++)
                     {
-                        nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList.Count);
-                        for (int k = 0; k < samples[i].SubSampleList[j].SampleList.Count; k++)
-                            nV[k] = samples[i].SubSampleList[j].SampleList[k];
+                        nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList);
                         gV[j] = nV;
                     }
 
@@ -863,9 +861,7 @@ namespace Statix
                 NumericVector nV;
                 for (int j = 0; j < sample.SubSampleList.Count; j++)
                 {
-                    nV = new NumericVector(engine, sample.SubSampleList[j].SampleList.Count);
-                    for (int k = 0; k < sample.SubSampleList[j].SampleList.Count; k++)
-                        nV[k] = sample.SubSampleList[j].SampleList[k];
+                    nV = new NumericVector(engine, sample.SubSampleList[j].SampleList);
                     gV[j] = nV;
                 }
 
@@ -970,18 +966,14 @@ namespace Statix
                 string ThatCompare = data.TakeVariableNameAtIndex(signsList[i]);
                 //Создаем первый вектор, который будем сравнивать (что сравниваем)
                 int sampleSize = sample.SubSampleList[0].SampleList.Count;
-                NumericVector x = new NumericVector(engine, sampleSize);
-                for (int j = 0; j < sampleSize; j++)
-                    x[j] = sample.SubSampleList[i].SampleList[j];
+                NumericVector x = new NumericVector(engine, sample.SubSampleList[i].SampleList);
                 engine.SetSymbol("x", x);
 
                 for (int j = 0; j < i; j++)
                 {
                     string ToCompare = data.TakeVariableNameAtIndex(signsList[j]);
                     //Создаем второй вектор (с чем сравниваем)
-                    NumericVector y = new NumericVector(engine, sampleSize);
-                    for (int k = 0; k < sampleSize; k++)
-                        y[k] = sample.SubSampleList[j].SampleList[k];
+                    NumericVector y = new NumericVector(engine, sample.SubSampleList[j].SampleList);
                     engine.SetSymbol("y", y);
 
                     GenericVector tmpRes;
