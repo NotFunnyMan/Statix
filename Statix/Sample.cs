@@ -46,11 +46,6 @@ namespace Statix
             private double averageValue;
 
             /// <summary>
-            ///Количество элементов в подвыборке
-            /// </summary>
-            private int amount;
-
-            /// <summary>
             ///Медиана выборки
             /// </summary>
             private double median;
@@ -99,15 +94,6 @@ namespace Statix
             {
                 set { averageValue = value; }
                 get { return this.averageValue; }
-            }
-
-            /// <summary>
-            /// Количество элементов в подвыборке
-            /// </summary>
-            public int Amount
-            {
-                set { amount = value; }
-                get { return this.amount; }
             }
 
             /// <summary>
@@ -192,37 +178,11 @@ namespace Statix
             //Выборка без пропущенных значений
             List<Sample> resList = new List<Sample>();
 
-            //Пробежимся по всем данным и составим список индексов с пропущенными значениями (NA)
+            //Составим список индексов с пропущенными значениями (NA)
             //Признаки
-            List<string> patient = new List<string>();
-            int index = 0;
-            for (int i = 0; i < _signIndex.Count; i++)
-            {
-                index = _signIndex[i];
-                for (int j = 0; j < _data.PatientsCount; j++)
-                {
-                    patient = _data.TakePatientAtIndex(j);
-                    if (patient[index] == "NA")
-                    {
-                        if (naList.IndexOf(j) == -1)
-                            naList.Add(j);
-                    }
-                }
-            }
+            naList = MissingList(_data, _groupIndex);
             //Группирующие элементы
-            for (int i = 0; i < _groupIndex.Count; i++)
-            {
-                index = _groupIndex[i];
-                for (int j = 0; j < _data.PatientsCount; j++)
-                {
-                    patient = _data.TakePatientAtIndex(j);
-                    if (patient[index] == "NA")
-                    {
-                        if (naList.IndexOf(j) == -1)
-                            naList.Add(j);
-                    }
-                }
-            }
+            naList = MissingList(_data, _signIndex, naList);
 
             /*
              * Теперь сформируем выходные данные
@@ -230,6 +190,7 @@ namespace Statix
              * И для каждого уникального значения сформируем свою подвыборку
              */
             //Список данных одной выборки
+            List<string> patient = new List<string>();
             List<SubSample> oneSample;
             Sample S;
             SubSample sS;
@@ -304,6 +265,63 @@ namespace Statix
         }
 
         /// <summary>
+        /// Составление списка индексов с пропущенными значениями
+        /// </summary>
+        /// <param name="_data">Данные</param>
+        /// <param name="_listIndex">Список индексов</param>
+        /// <returns></returns>
+        private static List<int> MissingList(Data _data, List<int> _listIndex)
+        {
+            List<int> naList = new List<int>();
+            List<string> patient = new List<string>();
+            int index = 0;
+            //Пробежимся по всем данным и составим список индексов с пропущенными значениями (NA)
+            for (int i = 0; i < _listIndex.Count; i++)
+            {
+                index = _listIndex[i];
+                for (int j = 0; j < _data.PatientsCount; j++)
+                {
+                    patient = _data.TakePatientAtIndex(j);
+                    //Если значение переменной "NA", то добавляем индекс в список
+                    if (patient[index] == "NA")
+                    {
+                        if (naList.IndexOf(j) == -1)
+                            naList.Add(j);
+                    }
+                }
+            }
+            return naList;
+        }
+
+        /// <summary>
+        /// Составление списка индексов с пропущенными значениями. Добавление индексов в имеющийся список
+        /// </summary>
+        /// <param name="_data">Данные</param>
+        /// <param name="_listIndex">Список индексов</param>
+        /// <returns></returns>
+        private static List<int> MissingList(Data _data, List<int> _listIndex, List<int> _naList)
+        {
+            List<string> patient = new List<string>();
+            int index = 0;
+            //Пробежимся по всем данным и составим список индексов с пропущенными значениями (NA)
+            for (int i = 0; i < _listIndex.Count; i++)
+            {
+                index = _listIndex[i];
+                for (int j = 0; j < _data.PatientsCount; j++)
+                {
+                    patient = _data.TakePatientAtIndex(j);
+                    //Если значение переменной "NA", то добавляем индекс в список
+                    if (patient[index] == "NA")
+                    {
+                        if (_naList.IndexOf(j) == -1)
+                            _naList.Add(j);
+                    }
+                }
+            }
+            return _naList;
+        }
+
+        /// <summary>
         /// Получение выборки для i-ой переменной
         /// </summary>
         /// <param name="_listIndex">Индексы выбранных элементов</param>
@@ -313,24 +331,11 @@ namespace Statix
             //Список индексов NA
             List<int> naList = new List<int>();
 
-            //Пробежимся по всем данным и составим список индексов с пропущенными значениями (NA)
+            //Cоставим список индексов с пропущенными значениями (NA)
             //Признаки
+            naList = MissingList(_data, _listIndex);
+            
             List<string> patient = new List<string>();
-            int index = 0;
-            for (int i = 0; i < _listIndex.Count; i++)
-            {
-                index = _listIndex[i];
-                for (int j = 0; j < _data.PatientsCount; j++)
-                {
-                    patient = _data.TakePatientAtIndex(j);
-                    if (patient[index] == "NA")
-                    {
-                        if (naList.IndexOf(j) == -1)
-                            naList.Add(j);
-                    }
-                }
-            }
-
             Sample sample = new Sample();
             sample.SubSampleList = new List<SubSample>();
             SubSample sS;

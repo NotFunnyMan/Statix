@@ -650,7 +650,6 @@ namespace Statix
                 tmp.TopQuintile = quantile[4];
                 tmp.Median = median[0];
                 tmp.StandartDeviation = sD[0];
-                tmp.Amount = _s[i].SampleList.Count;
                 _t.SubSampleList[i] = tmp;
             }
             return _t;
@@ -757,7 +756,7 @@ namespace Statix
                 rt1.Rows[0][0].Write("N");
                 rt1.Rows[0][1].Write("Показатель");
                 for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
-                    rt1.Rows[0][2 + k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].Amount.ToString());
+                    rt1.Rows[0][2 + k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].SampleList.Count.ToString());
                 rt1.Rows[0][grpRes[i][0].SubSampleList.Count + 2].Write("p-значение");
 
                 //Отрисуем рамки у ячеек
@@ -922,7 +921,7 @@ namespace Statix
                 _wordDocument.WriteLine();
                 _wordDocument.WriteLine(_methodName);
                 for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
-                    rt1.Rows[0][k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].Amount.ToString());
+                    rt1.Rows[0][k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].SampleList.Count.ToString());
                 rt1.Rows[0][grpRes[i][0].SubSampleList.Count].Write("p-значение");
 
                 //Отрисуем рамки у ячеек
