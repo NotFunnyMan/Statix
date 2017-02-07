@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Statix
 {
-    /*Класс "Независимые выборки"
-     * Хранит информацию о выборках для соответствующей обработки
+    /*Класс "Выборка"
+     * Хранит информацию о выборке
      */
     class Sample
     {
@@ -303,7 +303,59 @@ namespace Statix
             return res;
         }
 
+        /// <summary>
+        /// Получение выборки для i-ой переменной
+        /// </summary>
+        /// <param name="_listIndex">Индексы выбранных элементов</param>
+        /// <returns></returns>
+        public static Sample GetSample(Data _data, List<int> _listIndex)
+        {
+            //Список индексов NA
+            List<int> naList = new List<int>();
 
+            //Пробежимся по всем данным и составим список индексов с пропущенными значениями (NA)
+            //Признаки
+            List<string> patient = new List<string>();
+            int index = 0;
+            for (int i = 0; i < _listIndex.Count; i++)
+            {
+                index = _listIndex[i];
+                for (int j = 0; j < _data.PatientsCount; j++)
+                {
+                    patient = _data.TakePatientAtIndex(j);
+                    if (patient[index] == "NA")
+                    {
+                        if (naList.IndexOf(j) == -1)
+                            naList.Add(j);
+                    }
+                }
+            }
+
+            Sample sample = new Sample();
+            sample.SubSampleList = new List<SubSample>();
+            SubSample sS;
+            string tmp;
+            for (int i = 0; i < _listIndex.Count; i++)
+            {
+                sS = new SubSample();
+                sS.SampleList = new List<double>();
+                for (int k = 0; k < _data.Patients.Count; k++)
+                {
+                    if (naList.IndexOf(k) == -1)
+                    {
+                        patient = _data.TakePatientAtIndex(k);
+                        tmp = patient[_listIndex[i]];
+                        tmp = tmp.Replace('.', ',');
+                        sS.SampleList.Add(Convert.ToDouble(tmp));
+                    }
+                }
+                sS.AverageValue = Math.Round(sS.SampleList.Average(), 1);
+                sS.UniqueVal = _data.TakeVariableNameAtIndex(_listIndex[i]);
+                sample.SubSampleList.Add(sS);
+                sS = new SubSample();
+            }
+            return sample;
+        }
 
         #endregion
 
