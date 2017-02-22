@@ -770,7 +770,6 @@ namespace Statix
                     rt1.Rows[j + 1][1].WriteLine(s.NameSign);
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
                     {
-                        rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].UniqueVal);
                         rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(s.SubSampleList[k].StandartDeviation, 3).ToString());
                         rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].Median.ToString());
                         rt1.Rows[j + 1][2 + k].Write("(" + s.SubSampleList[k].LowerQuintile.ToString() + "; " + s.SubSampleList[k].TopQuintile.ToString() + ")");
@@ -1028,6 +1027,225 @@ namespace Statix
         /// <returns></returns>
         private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<correlationResult> _result)
         {
+            //максимальное размер таблицы
+            int MaxSize = 5;
+            //Размер общей таблицы
+            int sizeAll = signsList.Count;
+            //Сколько блоков в столбце
+            int NumBlock = sizeAll / MaxSize;
+            //остаток от блоков. Если ли еще блок, меньший по размеру чем maxColumn
+            if (sizeAll % MaxSize > 0) NumBlock++;
+
+            //Список таблиц
+            List<WordTable> tables = new List<WordTable>();
+
+            //Заполним список таблицами с начальными данными: заголовками и размерами
+            int widthTable, heightTable;
+            for (int i = 0; i < NumBlock; i++)
+            {
+                //Ширина таблицы
+                if (i + 1 == NumBlock)
+                    if (sizeAll % MaxSize != 0)
+                        widthTable = sizeAll % MaxSize;
+                    else
+                        widthTable = MaxSize;
+                else
+                    widthTable = MaxSize;
+
+                for (int j = 0; j <= i; j++)
+                {
+                    //Высота таблицы
+                    if (j + 1 == NumBlock)
+                        if (sizeAll % MaxSize != 0)
+                            heightTable = sizeAll % MaxSize;
+                        else
+                            heightTable = MaxSize;
+                    else
+                        heightTable = MaxSize;
+
+                    WordTable wt = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, widthTable + 1, heightTable + 1, 2);
+                    //Заполняем первую строку таблицы
+                    string strRow = "";
+                    for (int k = 0; k < widthTable; k++)
+                    {
+                        strRow = data.TakeVariableNameAtIndex(signsList[i * MaxSize + k]);
+                        wt.Rows[k + 1][0].Write(strRow);
+                    }
+                    //Заполняем первый столбец таблицы
+                    string strCol = "";
+                    for (int k = 0; k < heightTable; k++)
+                    {
+                        strCol = data.TakeVariableNameAtIndex(signsList[j * MaxSize + k]);
+                        wt.Rows[0][k + 1].Write(strCol);
+                    }
+                    //Отрисуем рамки у ячеек
+                    for (int k = 0; k < widthTable + 1; k++)
+                        for (int l = 0; l < heightTable + 1; l++)
+                            wt.Rows[k][l].SetBorders(Color.Black, 1, true, true, true, true);
+
+                    _wordDocument.SetTextAlign(WordTextAlign.Left);
+                    _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                    _wordDocument.SetTextAlign(WordTextAlign.Left);
+                    _wordDocument.WriteLine(Environment.NewLine + "Таблица " + (tables.Count + 1).ToString() + " - Корреляционный анализ. " + _methodName);
+
+                    tables.Add(wt);
+                    wt.SaveToDocument(9600, 0);
+
+                    //Добавим примечание
+                    _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                    _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                    _wordDocument.WriteLine("Примечание: r - коэффициент корреляции; p - уровень статистической значимости; жирным шрифтом " +
+                                            "выделена статистически значимая связь.");
+                }
+            }
+
+            //Заполнение первой таблицы
+            WordTable w = tables[0];
+            int tmp = 0;
+            for (int i = 0; i < w.Rows.Length - 1; i++)
+            {
+                for (int j = 0; j <= i; j++)
+                {
+                    if (i == j)
+                        w.Rows[i + 1][j + 1].Write("r = 1");
+                    else
+                    {
+                        //Настройка вывода ячейки
+                        double p = _result[tmp].p;
+                        double r = Math.Round(_result[tmp].r, 3);
+
+                        if (p <= 0.05)
+                        {
+                            w.Rows[i + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                            w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            if (p > 0.001)
+                                w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                            else
+                                w.Rows[i + 1][j + 1].Write("p < 0.001");
+                        }
+                        else
+                        {
+                            w.Rows[i + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                            w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                        }
+                        tmp++;
+                    }
+                }
+            }
+            tables.RemoveAt(0);
+            tables.Insert(0, w);
+
+            //Заполним ячейки таблиц данными
+            int str = 0;
+            int count = 1;
+            int diag = 2, diagPP = 3, dropBlock = 1;
+            bool dropCount = false, strPP = false;
+            for (int i = tmp; i < _result.Count;)
+            {
+                //Берем таблицу
+                WordTable wt = tables[count];
+
+                //Диагональная ли таблица?
+                if (count == diag)
+                {
+                    //Да
+                    for (int j = 0; j <= str; j++)
+                    {
+                        if (j == str)
+                        {
+                            wt.Rows[str + 1][j + 1].Write("r = 1");
+                        }
+                        else
+                        {
+                            //Настройка вывода ячейки
+                            double p = _result[i].p;
+                            double r = Math.Round(_result[i].r, 3);
+
+                            if (p <= 0.05)
+                            {
+                                wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                                wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                                if (p > 0.001)
+                                    wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                                else
+                                    wt.Rows[str + 1][j + 1].Write("p < 0.001");
+                            }
+                            else
+                            {
+                                wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                                wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                                wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                            }
+                            i++;
+                        }
+                    }
+
+                    //Если вывели последний элемент в диагонали
+                    if (str == wt.Rows.Length - 2)
+                    {
+                        dropCount = false;
+                        //Считаем индекс диагонального блока
+                        diag += diagPP;
+                        diagPP++;
+                        dropBlock++;
+                    }
+                    else
+                    {
+                        dropCount = true;
+                    }
+                    strPP = true;
+                }
+                else
+                {
+                    //Нет
+                    for (int j = 0; j < MaxSize; j++)
+                    {
+                        //Настройка вывода ячейки
+                        double p = _result[i].p;
+                        double r = Math.Round(_result[i].r, 3);
+
+                        if (p <= 0.05)
+                        {
+                            wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                            wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            if (p > 0.001)
+                                wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                            else
+                                wt.Rows[str + 1][j + 1].Write("p < 0.001");
+                        }
+                        else
+                        {
+                            wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                            wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
+                        }
+                        i++;
+                    }
+
+                    //Остаемся на этой же строке
+                    strPP = false;
+                    dropCount = false;
+                }
+
+                //Изменяем таблицу в списке
+                tables.RemoveAt(count);
+                tables.Insert(count, wt);
+
+                if (dropCount == true)
+                    count -= dropBlock;
+                else
+                    count++;
+
+                if (strPP == true)
+                    if (str == MaxSize - 1)
+                        str = 0;
+                    else
+                        str++;
+            }
+
+            //Добавим отчет к таблицам
+            _wordDocument = ReportByCorrelationAnalysis(_wordDocument, _result);
             return _wordDocument;
         }
 
@@ -1121,18 +1339,21 @@ namespace Statix
                 if (h.p <= 0.05 && h.r >= 0)
                     H.Add(h);
             }
-            //Найдем максимальный элемент в списке H
-            int index = 0;
-            double max = H[0].r;
-            for (int i = 1; i < H.Count; i++)
+            if (H.Count != 0)
             {
-                if (H[i].r > max)
-                    index = i;
+                //Найдем максимальный элемент в списке H
+                int index = 0;
+                double max = H[0].r;
+                for (int i = 1; i < H.Count; i++)
+                {
+                    if (H[i].r > max)
+                        index = i;
+                }
+                //Поставим максимальный элемент на первое место
+                correlationResult buf = H[0];
+                H[0] = H[index];
+                H[index] = buf;
             }
-            //Поставим максимальный элемент на первое место
-            correlationResult buf = H[0];
-            H[0] = H[index];
-            H[index] = buf;
             return H;
         }
 
@@ -1150,24 +1371,25 @@ namespace Statix
                 if (h.p <= 0.05 && h.r < 0)
                     H.Add(h);
             }
-            //Найдем минимальный элемент в списке H
-            int index = 0;
-            double min = H[0].r;
-            for (int i = 1; i < H.Count; i++)
+            if (H.Count != 0)
             {
-                if (H[i].r < min)
-                    index = i;
+                //Найдем минимальный элемент в списке H
+                int index = 0;
+                double min = H[0].r;
+                for (int i = 1; i < H.Count; i++)
+                {
+                    if (H[i].r < min)
+                        index = i;
+                }
+                //Поставим минимальный элемент на первое место
+                correlationResult buf = H[0];
+                H[0] = H[index];
+                H[index] = buf;
             }
-            //Поставим минимальный элемент на первое место
-            correlationResult buf = H[0];
-            H[0] = H[index];
-            H[index] = buf;
             return H;
         }
 
         #endregion
-
-
-
+        
     }
 }
