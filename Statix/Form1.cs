@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+//Таблицы сопрояженности
+//Критерии независимости
+
 //Пакет R
 using RDotNet;
 
@@ -129,7 +132,11 @@ namespace Statix
             REngine.SetEnvironmentVariables();
         }
 
-        //Загрузка формы. Начальные настройки формы
+        /// <summary>
+        /// Загрузка формы. Начальные настройки формы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -239,6 +246,7 @@ namespace Statix
                 //Скроем кнопки с других вкладок
                 metroButton15.Visible = false;
                 metroButton21.Visible = false;
+                metroButton25.Visible = false;
 
                 //Вывод списка группирующих переменных
                 //Вывод бинарных переменных
@@ -352,6 +360,7 @@ namespace Statix
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
                 metroButton21.Visible = false;
+                metroButton25.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -411,6 +420,7 @@ namespace Statix
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
                 metroButton15.Visible = false;
+                metroButton25.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -459,13 +469,52 @@ namespace Statix
             }
 
             #endregion
+
+            #region Таблицы сопряженности
+
+            if (e.TabPageIndex == 4)
+            {
+                groupBox14.Controls.Clear();
+                MetroCheckBox[] rB;
+
+                //Скроем кнопки с других вкладок
+                metroButton9.Visible = false;
+                metroButton15.Visible = false;
+                metroButton21.Visible = false;
+
+                //Вывод признаков
+                //Вывод номинальных переменных
+                rB = new MetroCheckBox[nomList.Count];
+                for (int i = 0; i < nomList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(nomList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = nomList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForSigns;
+                    groupBox14.Controls.Add(rB[i]);
+                }
+
+                //Изменение положения кнопок
+                Point point = new Point(metroButton23.Location.X, metroButton23.Location.Y);
+                point.Y = groupBox14.Size.Height + 25;
+                metroButton23.Location = point;
+                point = new Point(metroButton24.Location.X, metroButton24.Location.Y);
+                point.Y = groupBox14.Size.Height + 25;
+                metroButton24.Location = point;
+            }
+
+            #endregion
+
         }
 
         /// <summary>
-            /// Выбран группирующий фактор
-            /// </summary>
-            /// <param name="sender"></param>
-            /// <param name="e"></param>
+        /// Выбран группирующий фактор
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CheckedChangedForGroupFac(object sender, EventArgs e)
         {
             MetroCheckBox mCB = (MetroCheckBox)sender;
@@ -512,6 +561,7 @@ namespace Statix
                     case 1: metroButton9.Visible = true; break;
                     case 2: metroButton15.Visible = true; break;
                     case 3: metroButton21.Visible = true; break;
+                    case 4: metroButton25.Visible = true; break;
                 }
             }
             else
@@ -524,11 +574,16 @@ namespace Statix
                         case 1: metroButton9.Visible = false; break;
                         case 2: metroButton15.Visible = false; break;
                         case 3: metroButton21.Visible = false; break;
+                        case 4: metroButton25.Visible = false; break;
                     }
             }
         }
 
-        //Нажата кнопка "Выбрать все"
+        /// <summary>
+        /// Нажата кнопка "Выбрать все"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SelectAll_Click(object sender, EventArgs e)
         {
             //Получим Тэг кнопки
@@ -559,10 +614,18 @@ namespace Statix
                 case 13: Check(groupBox11); break;
                 //Порядковые переменные
                 case 15: Check(groupBox12); break;
+
+                //"Таблицы сопряженности"
+                //Номинальные переменные
+                case 17: Check(groupBox14); break;
             }
         }
 
-        //Нажата кнопка "Очистить"
+        /// <summary>
+        /// Нажата кнопка "Очистить"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CleanAll_Click(object sender, EventArgs e)
         {
             //Получим Тэг кнопки
@@ -594,6 +657,10 @@ namespace Statix
                 case 14: Uncheck(groupBox11); break;
                 //Порядковые переменные
                 case 16: Uncheck(groupBox12); break;
+
+                //"Таблицы сопряженности"
+                //Номинальные переменные
+                case 18: Uncheck(groupBox14); break;
             }
 
             //Если сняли все галочки на группирующих переменных, то
@@ -1390,6 +1457,21 @@ namespace Statix
         }
 
         #endregion
-        
+
+        #region Таблицы сопряженности
+
+        /// <summary>
+        /// Выполнить анализ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void metroButton25_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        #endregion
+
+
     }
 }
