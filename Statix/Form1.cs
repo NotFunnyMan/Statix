@@ -91,7 +91,7 @@ namespace Statix
         /// <summary>
         /// Структура для хранения результата корреляционного анализа
         /// </summary>
-        private struct correlationResult
+        private struct СorrelationResult
         {
             /// <summary>
             /// Коэффициент корреляции 
@@ -117,12 +117,12 @@ namespace Statix
         /// <summary>
         /// Корреляционный анализ. Метод Пирсона
         /// </summary>
-        List<correlationResult> resCorPearson = new List<correlationResult>();
+        List<СorrelationResult> resCorPearson = new List<СorrelationResult>();
 
         /// <summary>
         /// Корреляционный анализ. Метод Спирмена
         /// </summary>
-        List<correlationResult> resCorSpearman = new List<correlationResult>();
+        List<СorrelationResult> resCorSpearman = new List<СorrelationResult>();
 
         #endregion
 
@@ -244,9 +244,16 @@ namespace Statix
                 MetroCheckBox[] rB;
 
                 //Скроем кнопки с других вкладок
-                metroButton15.Visible = false;
-                metroButton21.Visible = false;
-                metroButton25.Visible = false;
+                //Кнопки выполнения анализа
+                metroButton104.Visible = false;
+                metroButton204.Visible = false;
+                metroButton302.Visible = false;
+
+                //Кнопки вывод в Word
+                metroButton10.Visible = false;
+                metroButton105.Visible = false;
+                metroButton205.Visible = false;
+                metroButton303.Visible = false;
 
                 //Вывод списка группирующих переменных
                 //Вывод бинарных переменных
@@ -359,8 +366,14 @@ namespace Statix
 
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
-                metroButton21.Visible = false;
-                metroButton25.Visible = false;
+                metroButton204.Visible = false;
+                metroButton302.Visible = false;
+
+                //Кнопки вывод в Word
+                metroButton10.Visible = false;
+                metroButton105.Visible = false;
+                metroButton205.Visible = false;
+                metroButton303.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -378,12 +391,12 @@ namespace Statix
                 }
 
                 //Изменение положения кнопок
-                Point point = new Point(metroButton11.Location.X, metroButton11.Location.Y);
+                Point point = new Point(metroButton100.Location.X, metroButton100.Location.Y);
                 point.Y = groupBox8.Size.Height + 25;
-                metroButton11.Location = point;
-                point = new Point(metroButton12.Location.X, metroButton12.Location.Y);
+                metroButton100.Location = point;
+                point = new Point(metroButton101.Location.X, metroButton101.Location.Y);
                 point.Y = groupBox8.Size.Height + 25;
-                metroButton12.Location = point;
+                metroButton101.Location = point;
 
                 //Вывод списка порядковых переменных
                 rB = new MetroCheckBox[porList.Count];
@@ -400,12 +413,12 @@ namespace Statix
                 }
 
                 //Изменение положения кнопок
-                point = new Point(metroButton13.Location.X, metroButton13.Location.Y);
+                point = new Point(metroButton102.Location.X, metroButton102.Location.Y);
                 point.Y = groupBox9.Size.Height + 25;
-                metroButton13.Location = point;
-                point = new Point(metroButton14.Location.X, metroButton14.Location.Y);
+                metroButton102.Location = point;
+                point = new Point(metroButton103.Location.X, metroButton103.Location.Y);
                 point.Y = groupBox9.Size.Height + 25;
-                metroButton14.Location = point;
+                metroButton103.Location = point;
             }
             #endregion
 
@@ -419,8 +432,14 @@ namespace Statix
 
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
-                metroButton15.Visible = false;
-                metroButton25.Visible = false;
+                metroButton104.Visible = false;
+                metroButton302.Visible = false;
+
+                //Кнопки вывод в Word
+                metroButton10.Visible = false;
+                metroButton105.Visible = false;
+                metroButton205.Visible = false;
+                metroButton303.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -438,12 +457,12 @@ namespace Statix
                 }
 
                 //Изменение положения кнопок
-                Point point = new Point(metroButton17.Location.X, metroButton17.Location.Y);
+                Point point = new Point(metroButton200.Location.X, metroButton200.Location.Y);
                 point.Y = groupBox11.Size.Height + 25;
-                metroButton17.Location = point;
-                point = new Point(metroButton18.Location.X, metroButton18.Location.Y);
+                metroButton200.Location = point;
+                point = new Point(metroButton201.Location.X, metroButton201.Location.Y);
                 point.Y = groupBox11.Size.Height + 25;
-                metroButton18.Location = point;
+                metroButton201.Location = point;
 
                 //Вывод списка порядковых переменных
                 rB = new MetroCheckBox[porList.Count];
@@ -460,12 +479,12 @@ namespace Statix
                 }
 
                 //Изменение положения кнопок
-                point = new Point(metroButton19.Location.X, metroButton19.Location.Y);
+                point = new Point(metroButton202.Location.X, metroButton202.Location.Y);
                 point.Y = groupBox12.Size.Height + 25;
-                metroButton19.Location = point;
-                point = new Point(metroButton20.Location.X, metroButton20.Location.Y);
+                metroButton202.Location = point;
+                point = new Point(metroButton203.Location.X, metroButton203.Location.Y);
                 point.Y = groupBox12.Size.Height + 25;
-                metroButton20.Location = point;
+                metroButton203.Location = point;
             }
 
             #endregion
@@ -479,8 +498,14 @@ namespace Statix
 
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
-                metroButton15.Visible = false;
-                metroButton21.Visible = false;
+                metroButton104.Visible = false;
+                metroButton204.Visible = false;
+
+                //Кнопки вывод в Word
+                metroButton10.Visible = false;
+                metroButton105.Visible = false;
+                metroButton205.Visible = false;
+                metroButton303.Visible = false;
 
                 //Вывод признаков
                 //Вывод номинальных переменных
@@ -498,12 +523,12 @@ namespace Statix
                 }
 
                 //Изменение положения кнопок
-                Point point = new Point(metroButton23.Location.X, metroButton23.Location.Y);
+                Point point = new Point(metroButton300.Location.X, metroButton300.Location.Y);
                 point.Y = groupBox14.Size.Height + 25;
-                metroButton23.Location = point;
-                point = new Point(metroButton24.Location.X, metroButton24.Location.Y);
+                metroButton300.Location = point;
+                point = new Point(metroButton301.Location.X, metroButton301.Location.Y);
                 point.Y = groupBox14.Size.Height + 25;
-                metroButton24.Location = point;
+                metroButton301.Location = point;
             }
 
             #endregion
@@ -559,9 +584,9 @@ namespace Statix
                 switch(parentTag)
                 {
                     case 1: metroButton9.Visible = true; break;
-                    case 2: metroButton15.Visible = true; break;
-                    case 3: metroButton21.Visible = true; break;
-                    case 4: metroButton25.Visible = true; break;
+                    case 2: metroButton104.Visible = true; break;
+                    case 3: metroButton204.Visible = true; break;
+                    case 4: metroButton302.Visible = true; break;
                 }
             }
             else
@@ -571,10 +596,10 @@ namespace Statix
                     //Отобразим соответствующую кнопку обработки
                     switch (parentTag)
                     {
-                        case 1: metroButton9.Visible = false; break;
-                        case 2: metroButton15.Visible = false; break;
-                        case 3: metroButton21.Visible = false; break;
-                        case 4: metroButton25.Visible = false; break;
+                        case 1: metroButton9.Visible = false; metroButton10.Visible = false; break;
+                        case 2: metroButton104.Visible = false; metroButton105.Visible = false; break;
+                        case 3: metroButton204.Visible = false; metroButton205.Visible = false; break;
+                        case 4: metroButton302.Visible = false; metroButton303.Visible = false; break;
                     }
             }
         }
@@ -644,8 +669,7 @@ namespace Statix
                 case 6: Uncheck(groupBox5); break;
                 //Порядковые переменные
                 case 8: Uncheck(groupBox6); break;
-
-
+                    
                 //"Сравнение зависимых групп"
                 //Количественные переменные
                 case 10: Uncheck(groupBox8); break;
@@ -724,7 +748,11 @@ namespace Statix
 
         #region Сравнение независимых групп
 
-        //Выоплнить "Сравнение независимых групп"
+        /// <summary>
+        /// Выоплнить "Сравнение независимых групп"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton9_Click(object sender, EventArgs e)
         {
             Sample testRes;
@@ -732,6 +760,11 @@ namespace Statix
             engine = REngine.GetInstance();
             List<Sample> samples = new List<Sample>();
             samples = Sample.GetSample(data, groupFactList, signsList);
+
+            //Очистим списки результатов
+            resIndMannaWhitney.Clear();
+            resIndKruskalWallis.Clear();
+
             for (int i = 0; i < samples.Count; i++)
             {
                 testRes = new Sample();
@@ -776,8 +809,12 @@ namespace Statix
             //Отобразим кнопку для вывода в Word
             metroButton10.Visible = true;
         }
-        
-        //Вывод результатов проверки независимых выборок в Word
+
+        /// <summary>
+        /// Вывод результатов проверки независимых выборок в Word
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton10_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
@@ -834,12 +871,12 @@ namespace Statix
                     s = grpRes[i][j];
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
                     rt1.Rows[j + 1][0].Write((j + 1).ToString());
-                    rt1.Rows[j + 1][1].WriteLine(s.NameSign);
+                    rt1.Rows[j + 1][1].Write(s.NameSign);
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
                     {
                         rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(s.SubSampleList[k].StandartDeviation, 3).ToString());
-                        rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].Median.ToString());
-                        rt1.Rows[j + 1][2 + k].Write("(" + s.SubSampleList[k].LowerQuintile.ToString() + "; " + s.SubSampleList[k].TopQuintile.ToString() + ")");
+                        rt1.Rows[j + 1][2 + k].WriteLine(Math.Round(s.SubSampleList[k].Median, 3).ToString());
+                        rt1.Rows[j + 1][2 + k].Write("(" + Math.Round(s.SubSampleList[k].LowerQuintile, 3).ToString() + "; " + Math.Round(s.SubSampleList[k].TopQuintile, 3).ToString() + ")");
                     }
 
                     double p = grpRes[i][j].PValue;
@@ -895,14 +932,21 @@ namespace Statix
 
         #region Сравнение зависимых групп
 
-        //Выоплнить "Сравнение зависимых групп"
+        /// <summary>
+        /// Выоплнить "Сравнение зависимых групп"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton15_Click(object sender, EventArgs e)
         {
             engine = REngine.GetInstance();
-
             GenericVector tmp;
             Sample sample = new Sample();
             sample = Sample.GetSample(data, signsList);
+
+            //Очистим списки результатов
+            resDepWilcoxon.Clear();
+            resDepFridman.Clear();
 
             if (signsList.Count == 2)
             {
@@ -941,10 +985,14 @@ namespace Statix
                 resDepFridman.Add(sample);
             }
             //Отобразим кнопку для вывода в Word
-            metroButton16.Visible = true;
+            metroButton105.Visible = true;
         }
 
-        //Вывод результатов проверки зависимых выборок в Word
+        /// <summary>
+        /// Вывод результатов проверки зависимых выборок в Word
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton16_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
@@ -1018,14 +1066,22 @@ namespace Statix
 
         #region Корреляционный анализ
 
-        //Выполнить "Корреляционный анализ"
+        /// <summary>
+        /// Выполнить "Корреляционный анализ"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton21_Click(object sender, EventArgs e)
         {
             engine = REngine.GetInstance();
             Sample sample = new Sample();
-            correlationResult cor = new correlationResult();
+            СorrelationResult cor = new СorrelationResult();
             sample = Sample.GetSample(data, signsList);
             int colSample = sample.SubSampleList.Count;
+
+            //Очистим списки результатов
+            resCorPearson.Clear();
+            resCorSpearman.Clear();
 
             for (int i = 0; i < colSample; i++)
             {
@@ -1053,7 +1109,7 @@ namespace Statix
                     cor.toCompare = signsList[j];
                     string toC = data.TakeVariableNameAtIndex(cor.toCompare);
                     resCorPearson.Add(cor);
-                    cor = new correlationResult();
+                    cor = new СorrelationResult();
 
                     //Спирмен
                     tmpRes = engine.Evaluate("cor.test(x, y, method=\"spearman\")").AsList();
@@ -1062,14 +1118,18 @@ namespace Statix
                     cor.thatCompare = signsList[i];
                     cor.toCompare = signsList[j];
                     resCorSpearman.Add(cor);
-                    cor = new correlationResult();
+                    cor = new СorrelationResult();
                 }
             }
             //Отобразим кнопку для вывода в Word
-            metroButton22.Visible = true;
+            metroButton205.Visible = true;
         }
 
-        //Вывод результатов корреляционного анализа в Word
+        /// <summary>
+        /// Вывод результатов корреляционного анализа в Word
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroButton22_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
@@ -1092,7 +1152,7 @@ namespace Statix
         /// <param name="_methodName">Название метода</param>
         /// <param name="_resList">Список с результатами проверки</param>
         /// <returns></returns>
-        private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<correlationResult> _result)
+        private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<СorrelationResult> _result)
         {
             //максимальное размер таблицы
             int MaxSize = 5;
@@ -1322,12 +1382,12 @@ namespace Statix
         /// <param name="_wordDocument">Документ</param>
         /// <param name="_result">Список с результатами проверки</param>
         /// <returns></returns>
-        private WordDocument ReportByCorrelationAnalysis(WordDocument _wordDocument, List<correlationResult> _result)
+        private WordDocument ReportByCorrelationAnalysis(WordDocument _wordDocument, List<СorrelationResult> _result)
         {
             _wordDocument.WriteLine();
             _wordDocument.SetTextAlign(WordTextAlign.Justified);
-            List<correlationResult> significiant = SignificiantAssociation(_result);
-            List<correlationResult> insignificant = InsignificiantAssociation(_result);
+            List<СorrelationResult> significiant = SignificiantAssociation(_result);
+            List<СorrelationResult> insignificant = InsignificiantAssociation(_result);
 
             //Вывод информации о значимых связях
             //Наиболее значимая связь
@@ -1397,11 +1457,11 @@ namespace Statix
         /// </summary>
         /// <param name="_result"></param>
         /// <returns></returns>
-        private List<correlationResult> SignificiantAssociation(List<correlationResult> _result)
+        private List<СorrelationResult> SignificiantAssociation(List<СorrelationResult> _result)
         {
             //Составим список из связей, где гипотеза не отвергается и положительный коэффициент
-            List<correlationResult> H = new List<correlationResult>();
-            foreach (correlationResult h in _result)
+            List<СorrelationResult> H = new List<СorrelationResult>();
+            foreach (СorrelationResult h in _result)
             {
                 if (h.p <= 0.05 && h.r >= 0)
                     H.Add(h);
@@ -1417,7 +1477,7 @@ namespace Statix
                         index = i;
                 }
                 //Поставим максимальный элемент на первое место
-                correlationResult buf = H[0];
+                СorrelationResult buf = H[0];
                 H[0] = H[index];
                 H[index] = buf;
             }
@@ -1429,11 +1489,11 @@ namespace Statix
         /// </summary>
         /// <param name="_result"></param>
         /// <returns></returns>
-        private List<correlationResult> InsignificiantAssociation(List<correlationResult> _result)
+        private List<СorrelationResult> InsignificiantAssociation(List<СorrelationResult> _result)
         {
             //Составим список из связей, где гипотеза не отвергается и отрицатедльный коэффициент
-            List<correlationResult> H = new List<correlationResult>();
-            foreach (correlationResult h in _result)
+            List<СorrelationResult> H = new List<СorrelationResult>();
+            foreach (СorrelationResult h in _result)
             {
                 if (h.p <= 0.05 && h.r < 0)
                     H.Add(h);
@@ -1449,7 +1509,7 @@ namespace Statix
                         index = i;
                 }
                 //Поставим минимальный элемент на первое место
-                correlationResult buf = H[0];
+                СorrelationResult buf = H[0];
                 H[0] = H[index];
                 H[index] = buf;
             }
@@ -1467,11 +1527,11 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton25_Click(object sender, EventArgs e)
         {
+            engine = REngine.GetInstance();
 
         }
 
         #endregion
-
-
+        
     }
 }

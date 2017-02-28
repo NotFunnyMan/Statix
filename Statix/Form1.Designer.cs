@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle22 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle23 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle24 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.metroTabControl1 = new MetroFramework.Controls.MetroTabControl();
             this.metroTabPage1 = new MetroFramework.Controls.MetroTabPage();
             this.metroButton700 = new MetroFramework.Controls.MetroButton();
@@ -53,32 +53,32 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.metroTabPage3 = new MetroFramework.Controls.MetroTabPage();
-            this.metroButton16 = new MetroFramework.Controls.MetroButton();
-            this.metroButton15 = new MetroFramework.Controls.MetroButton();
+            this.metroButton105 = new MetroFramework.Controls.MetroButton();
+            this.metroButton104 = new MetroFramework.Controls.MetroButton();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.metroButton14 = new MetroFramework.Controls.MetroButton();
-            this.metroButton13 = new MetroFramework.Controls.MetroButton();
-            this.metroButton12 = new MetroFramework.Controls.MetroButton();
-            this.metroButton11 = new MetroFramework.Controls.MetroButton();
+            this.metroButton103 = new MetroFramework.Controls.MetroButton();
+            this.metroButton102 = new MetroFramework.Controls.MetroButton();
+            this.metroButton101 = new MetroFramework.Controls.MetroButton();
+            this.metroButton100 = new MetroFramework.Controls.MetroButton();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.metroTabPage4 = new MetroFramework.Controls.MetroTabPage();
-            this.metroButton22 = new MetroFramework.Controls.MetroButton();
-            this.metroButton21 = new MetroFramework.Controls.MetroButton();
+            this.metroButton205 = new MetroFramework.Controls.MetroButton();
+            this.metroButton204 = new MetroFramework.Controls.MetroButton();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.metroButton20 = new MetroFramework.Controls.MetroButton();
-            this.metroButton19 = new MetroFramework.Controls.MetroButton();
-            this.metroButton18 = new MetroFramework.Controls.MetroButton();
-            this.metroButton17 = new MetroFramework.Controls.MetroButton();
+            this.metroButton203 = new MetroFramework.Controls.MetroButton();
+            this.metroButton202 = new MetroFramework.Controls.MetroButton();
+            this.metroButton201 = new MetroFramework.Controls.MetroButton();
+            this.metroButton200 = new MetroFramework.Controls.MetroButton();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.metroTabPage5 = new MetroFramework.Controls.MetroTabPage();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.metroButton24 = new MetroFramework.Controls.MetroButton();
-            this.metroButton23 = new MetroFramework.Controls.MetroButton();
+            this.metroButton301 = new MetroFramework.Controls.MetroButton();
+            this.metroButton300 = new MetroFramework.Controls.MetroButton();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.metroButton26 = new MetroFramework.Controls.MetroButton();
-            this.metroButton25 = new MetroFramework.Controls.MetroButton();
+            this.metroButton303 = new MetroFramework.Controls.MetroButton();
+            this.metroButton302 = new MetroFramework.Controls.MetroButton();
             this.metroTabControl1.SuspendLayout();
             this.metroTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroGrid1)).BeginInit();
@@ -141,37 +141,37 @@
             this.metroGrid1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.metroGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.metroGrid1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle22.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle22.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-            dataGridViewCellStyle22.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle22.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle22.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle22.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle22.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle22;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metroGrid1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.metroGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle23.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle23.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle23.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle23.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
-            dataGridViewCellStyle23.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle23.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle23.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle23;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(136)))), ((int)(((byte)(136)))), ((int)(((byte)(136)))));
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.metroGrid1.DefaultCellStyle = dataGridViewCellStyle2;
             this.metroGrid1.EnableHeadersVisualStyles = false;
             this.metroGrid1.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.metroGrid1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.metroGrid1.Location = new System.Drawing.Point(3, 3);
             this.metroGrid1.Name = "metroGrid1";
             this.metroGrid1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle24.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
-            dataGridViewCellStyle24.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
-            dataGridViewCellStyle24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            dataGridViewCellStyle24.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
-            dataGridViewCellStyle24.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            dataGridViewCellStyle24.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle24;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
+            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(198)))), ((int)(((byte)(247)))));
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.metroGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.metroGrid1.Size = new System.Drawing.Size(964, 411);
@@ -384,8 +384,8 @@
             // 
             // metroTabPage3
             // 
-            this.metroTabPage3.Controls.Add(this.metroButton16);
-            this.metroTabPage3.Controls.Add(this.metroButton15);
+            this.metroTabPage3.Controls.Add(this.metroButton105);
+            this.metroTabPage3.Controls.Add(this.metroButton104);
             this.metroTabPage3.Controls.Add(this.groupBox7);
             this.metroTabPage3.HorizontalScrollbarBarColor = true;
             this.metroTabPage3.HorizontalScrollbarHighlightOnWheel = false;
@@ -399,36 +399,36 @@
             this.metroTabPage3.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage3.VerticalScrollbarSize = 10;
             // 
-            // metroButton16
+            // metroButton105
             // 
-            this.metroButton16.Location = new System.Drawing.Point(487, 441);
-            this.metroButton16.Name = "metroButton16";
-            this.metroButton16.Size = new System.Drawing.Size(159, 43);
-            this.metroButton16.TabIndex = 11;
-            this.metroButton16.Text = "Вывести результат в Word";
-            this.metroButton16.UseSelectable = true;
-            this.metroButton16.Visible = false;
-            this.metroButton16.Click += new System.EventHandler(this.metroButton16_Click);
+            this.metroButton105.Location = new System.Drawing.Point(487, 441);
+            this.metroButton105.Name = "metroButton105";
+            this.metroButton105.Size = new System.Drawing.Size(159, 43);
+            this.metroButton105.TabIndex = 11;
+            this.metroButton105.Text = "Вывести результат в Word";
+            this.metroButton105.UseSelectable = true;
+            this.metroButton105.Visible = false;
+            this.metroButton105.Click += new System.EventHandler(this.metroButton16_Click);
             // 
-            // metroButton15
+            // metroButton104
             // 
-            this.metroButton15.Location = new System.Drawing.Point(324, 441);
-            this.metroButton15.Name = "metroButton15";
-            this.metroButton15.Size = new System.Drawing.Size(159, 43);
-            this.metroButton15.TabIndex = 10;
-            this.metroButton15.Text = "Выполнить сравнение";
-            this.metroButton15.UseSelectable = true;
-            this.metroButton15.Visible = false;
-            this.metroButton15.Click += new System.EventHandler(this.metroButton15_Click);
+            this.metroButton104.Location = new System.Drawing.Point(324, 441);
+            this.metroButton104.Name = "metroButton104";
+            this.metroButton104.Size = new System.Drawing.Size(159, 43);
+            this.metroButton104.TabIndex = 10;
+            this.metroButton104.Text = "Выполнить сравнение";
+            this.metroButton104.UseSelectable = true;
+            this.metroButton104.Visible = false;
+            this.metroButton104.Click += new System.EventHandler(this.metroButton15_Click);
             // 
             // groupBox7
             // 
             this.groupBox7.AutoSize = true;
             this.groupBox7.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox7.Controls.Add(this.metroButton14);
-            this.groupBox7.Controls.Add(this.metroButton13);
-            this.groupBox7.Controls.Add(this.metroButton12);
-            this.groupBox7.Controls.Add(this.metroButton11);
+            this.groupBox7.Controls.Add(this.metroButton103);
+            this.groupBox7.Controls.Add(this.metroButton102);
+            this.groupBox7.Controls.Add(this.metroButton101);
+            this.groupBox7.Controls.Add(this.metroButton100);
             this.groupBox7.Controls.Add(this.groupBox9);
             this.groupBox7.Controls.Add(this.groupBox8);
             this.groupBox7.Location = new System.Drawing.Point(3, 3);
@@ -438,49 +438,49 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Выберите признаки";
             // 
-            // metroButton14
+            // metroButton103
             // 
-            this.metroButton14.Location = new System.Drawing.Point(369, 220);
-            this.metroButton14.Name = "metroButton14";
-            this.metroButton14.Size = new System.Drawing.Size(75, 23);
-            this.metroButton14.TabIndex = 5;
-            this.metroButton14.Tag = "12";
-            this.metroButton14.Text = "Очистить";
-            this.metroButton14.UseSelectable = true;
-            this.metroButton14.Click += new System.EventHandler(this.CleanAll_Click);
+            this.metroButton103.Location = new System.Drawing.Point(369, 220);
+            this.metroButton103.Name = "metroButton103";
+            this.metroButton103.Size = new System.Drawing.Size(75, 23);
+            this.metroButton103.TabIndex = 5;
+            this.metroButton103.Tag = "12";
+            this.metroButton103.Text = "Очистить";
+            this.metroButton103.UseSelectable = true;
+            this.metroButton103.Click += new System.EventHandler(this.CleanAll_Click);
             // 
-            // metroButton13
+            // metroButton102
             // 
-            this.metroButton13.Location = new System.Drawing.Point(274, 220);
-            this.metroButton13.Name = "metroButton13";
-            this.metroButton13.Size = new System.Drawing.Size(75, 23);
-            this.metroButton13.TabIndex = 4;
-            this.metroButton13.Tag = "11";
-            this.metroButton13.Text = "Выбрать все";
-            this.metroButton13.UseSelectable = true;
-            this.metroButton13.Click += new System.EventHandler(this.SelectAll_Click);
+            this.metroButton102.Location = new System.Drawing.Point(274, 220);
+            this.metroButton102.Name = "metroButton102";
+            this.metroButton102.Size = new System.Drawing.Size(75, 23);
+            this.metroButton102.TabIndex = 4;
+            this.metroButton102.Tag = "11";
+            this.metroButton102.Text = "Выбрать все";
+            this.metroButton102.UseSelectable = true;
+            this.metroButton102.Click += new System.EventHandler(this.SelectAll_Click);
             // 
-            // metroButton12
+            // metroButton101
             // 
-            this.metroButton12.Location = new System.Drawing.Point(131, 220);
-            this.metroButton12.Name = "metroButton12";
-            this.metroButton12.Size = new System.Drawing.Size(75, 23);
-            this.metroButton12.TabIndex = 3;
-            this.metroButton12.Tag = "10";
-            this.metroButton12.Text = "Очистить";
-            this.metroButton12.UseSelectable = true;
-            this.metroButton12.Click += new System.EventHandler(this.CleanAll_Click);
+            this.metroButton101.Location = new System.Drawing.Point(131, 220);
+            this.metroButton101.Name = "metroButton101";
+            this.metroButton101.Size = new System.Drawing.Size(75, 23);
+            this.metroButton101.TabIndex = 3;
+            this.metroButton101.Tag = "10";
+            this.metroButton101.Text = "Очистить";
+            this.metroButton101.UseSelectable = true;
+            this.metroButton101.Click += new System.EventHandler(this.CleanAll_Click);
             // 
-            // metroButton11
+            // metroButton100
             // 
-            this.metroButton11.Location = new System.Drawing.Point(36, 220);
-            this.metroButton11.Name = "metroButton11";
-            this.metroButton11.Size = new System.Drawing.Size(75, 23);
-            this.metroButton11.TabIndex = 2;
-            this.metroButton11.Tag = "9";
-            this.metroButton11.Text = "Выбрать все";
-            this.metroButton11.UseSelectable = true;
-            this.metroButton11.Click += new System.EventHandler(this.SelectAll_Click);
+            this.metroButton100.Location = new System.Drawing.Point(36, 220);
+            this.metroButton100.Name = "metroButton100";
+            this.metroButton100.Size = new System.Drawing.Size(75, 23);
+            this.metroButton100.TabIndex = 2;
+            this.metroButton100.Tag = "9";
+            this.metroButton100.Text = "Выбрать все";
+            this.metroButton100.UseSelectable = true;
+            this.metroButton100.Click += new System.EventHandler(this.SelectAll_Click);
             // 
             // groupBox9
             // 
@@ -506,8 +506,8 @@
             // 
             // metroTabPage4
             // 
-            this.metroTabPage4.Controls.Add(this.metroButton22);
-            this.metroTabPage4.Controls.Add(this.metroButton21);
+            this.metroTabPage4.Controls.Add(this.metroButton205);
+            this.metroTabPage4.Controls.Add(this.metroButton204);
             this.metroTabPage4.Controls.Add(this.groupBox10);
             this.metroTabPage4.HorizontalScrollbarBarColor = true;
             this.metroTabPage4.HorizontalScrollbarHighlightOnWheel = false;
@@ -521,36 +521,36 @@
             this.metroTabPage4.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage4.VerticalScrollbarSize = 10;
             // 
-            // metroButton22
+            // metroButton205
             // 
-            this.metroButton22.Location = new System.Drawing.Point(487, 441);
-            this.metroButton22.Name = "metroButton22";
-            this.metroButton22.Size = new System.Drawing.Size(159, 43);
-            this.metroButton22.TabIndex = 13;
-            this.metroButton22.Text = "Вывести результат в Word";
-            this.metroButton22.UseSelectable = true;
-            this.metroButton22.Visible = false;
-            this.metroButton22.Click += new System.EventHandler(this.metroButton22_Click);
+            this.metroButton205.Location = new System.Drawing.Point(487, 441);
+            this.metroButton205.Name = "metroButton205";
+            this.metroButton205.Size = new System.Drawing.Size(159, 43);
+            this.metroButton205.TabIndex = 13;
+            this.metroButton205.Text = "Вывести результат в Word";
+            this.metroButton205.UseSelectable = true;
+            this.metroButton205.Visible = false;
+            this.metroButton205.Click += new System.EventHandler(this.metroButton22_Click);
             // 
-            // metroButton21
+            // metroButton204
             // 
-            this.metroButton21.Location = new System.Drawing.Point(324, 441);
-            this.metroButton21.Name = "metroButton21";
-            this.metroButton21.Size = new System.Drawing.Size(159, 43);
-            this.metroButton21.TabIndex = 12;
-            this.metroButton21.Text = "Выполнить сравнение";
-            this.metroButton21.UseSelectable = true;
-            this.metroButton21.Visible = false;
-            this.metroButton21.Click += new System.EventHandler(this.metroButton21_Click);
+            this.metroButton204.Location = new System.Drawing.Point(324, 441);
+            this.metroButton204.Name = "metroButton204";
+            this.metroButton204.Size = new System.Drawing.Size(159, 43);
+            this.metroButton204.TabIndex = 12;
+            this.metroButton204.Text = "Выполнить сравнение";
+            this.metroButton204.UseSelectable = true;
+            this.metroButton204.Visible = false;
+            this.metroButton204.Click += new System.EventHandler(this.metroButton21_Click);
             // 
             // groupBox10
             // 
             this.groupBox10.AutoSize = true;
             this.groupBox10.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox10.Controls.Add(this.metroButton20);
-            this.groupBox10.Controls.Add(this.metroButton19);
-            this.groupBox10.Controls.Add(this.metroButton18);
-            this.groupBox10.Controls.Add(this.metroButton17);
+            this.groupBox10.Controls.Add(this.metroButton203);
+            this.groupBox10.Controls.Add(this.metroButton202);
+            this.groupBox10.Controls.Add(this.metroButton201);
+            this.groupBox10.Controls.Add(this.metroButton200);
             this.groupBox10.Controls.Add(this.groupBox12);
             this.groupBox10.Controls.Add(this.groupBox11);
             this.groupBox10.Location = new System.Drawing.Point(3, 3);
@@ -560,49 +560,49 @@
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Выберите признаки";
             // 
-            // metroButton20
+            // metroButton203
             // 
-            this.metroButton20.Location = new System.Drawing.Point(369, 220);
-            this.metroButton20.Name = "metroButton20";
-            this.metroButton20.Size = new System.Drawing.Size(75, 23);
-            this.metroButton20.TabIndex = 5;
-            this.metroButton20.Tag = "16";
-            this.metroButton20.Text = "Очистить";
-            this.metroButton20.UseSelectable = true;
-            this.metroButton20.Click += new System.EventHandler(this.CleanAll_Click);
+            this.metroButton203.Location = new System.Drawing.Point(369, 220);
+            this.metroButton203.Name = "metroButton203";
+            this.metroButton203.Size = new System.Drawing.Size(75, 23);
+            this.metroButton203.TabIndex = 5;
+            this.metroButton203.Tag = "16";
+            this.metroButton203.Text = "Очистить";
+            this.metroButton203.UseSelectable = true;
+            this.metroButton203.Click += new System.EventHandler(this.CleanAll_Click);
             // 
-            // metroButton19
+            // metroButton202
             // 
-            this.metroButton19.Location = new System.Drawing.Point(274, 220);
-            this.metroButton19.Name = "metroButton19";
-            this.metroButton19.Size = new System.Drawing.Size(75, 23);
-            this.metroButton19.TabIndex = 4;
-            this.metroButton19.Tag = "15";
-            this.metroButton19.Text = "Выбрать все";
-            this.metroButton19.UseSelectable = true;
-            this.metroButton19.Click += new System.EventHandler(this.SelectAll_Click);
+            this.metroButton202.Location = new System.Drawing.Point(274, 220);
+            this.metroButton202.Name = "metroButton202";
+            this.metroButton202.Size = new System.Drawing.Size(75, 23);
+            this.metroButton202.TabIndex = 4;
+            this.metroButton202.Tag = "15";
+            this.metroButton202.Text = "Выбрать все";
+            this.metroButton202.UseSelectable = true;
+            this.metroButton202.Click += new System.EventHandler(this.SelectAll_Click);
             // 
-            // metroButton18
+            // metroButton201
             // 
-            this.metroButton18.Location = new System.Drawing.Point(131, 220);
-            this.metroButton18.Name = "metroButton18";
-            this.metroButton18.Size = new System.Drawing.Size(75, 23);
-            this.metroButton18.TabIndex = 3;
-            this.metroButton18.Tag = "14";
-            this.metroButton18.Text = "Очистить";
-            this.metroButton18.UseSelectable = true;
-            this.metroButton18.Click += new System.EventHandler(this.CleanAll_Click);
+            this.metroButton201.Location = new System.Drawing.Point(131, 220);
+            this.metroButton201.Name = "metroButton201";
+            this.metroButton201.Size = new System.Drawing.Size(75, 23);
+            this.metroButton201.TabIndex = 3;
+            this.metroButton201.Tag = "14";
+            this.metroButton201.Text = "Очистить";
+            this.metroButton201.UseSelectable = true;
+            this.metroButton201.Click += new System.EventHandler(this.CleanAll_Click);
             // 
-            // metroButton17
+            // metroButton200
             // 
-            this.metroButton17.Location = new System.Drawing.Point(36, 220);
-            this.metroButton17.Name = "metroButton17";
-            this.metroButton17.Size = new System.Drawing.Size(75, 23);
-            this.metroButton17.TabIndex = 2;
-            this.metroButton17.Tag = "13";
-            this.metroButton17.Text = "Выбрать все";
-            this.metroButton17.UseSelectable = true;
-            this.metroButton17.Click += new System.EventHandler(this.SelectAll_Click);
+            this.metroButton200.Location = new System.Drawing.Point(36, 220);
+            this.metroButton200.Name = "metroButton200";
+            this.metroButton200.Size = new System.Drawing.Size(75, 23);
+            this.metroButton200.TabIndex = 2;
+            this.metroButton200.Tag = "13";
+            this.metroButton200.Text = "Выбрать все";
+            this.metroButton200.UseSelectable = true;
+            this.metroButton200.Click += new System.EventHandler(this.SelectAll_Click);
             // 
             // groupBox12
             // 
@@ -628,8 +628,8 @@
             // 
             // metroTabPage5
             // 
-            this.metroTabPage5.Controls.Add(this.metroButton26);
-            this.metroTabPage5.Controls.Add(this.metroButton25);
+            this.metroTabPage5.Controls.Add(this.metroButton303);
+            this.metroTabPage5.Controls.Add(this.metroButton302);
             this.metroTabPage5.Controls.Add(this.groupBox13);
             this.metroTabPage5.HorizontalScrollbarBarColor = true;
             this.metroTabPage5.HorizontalScrollbarHighlightOnWheel = false;
@@ -647,8 +647,8 @@
             // 
             this.groupBox13.AutoSize = true;
             this.groupBox13.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.groupBox13.Controls.Add(this.metroButton24);
-            this.groupBox13.Controls.Add(this.metroButton23);
+            this.groupBox13.Controls.Add(this.metroButton301);
+            this.groupBox13.Controls.Add(this.metroButton300);
             this.groupBox13.Controls.Add(this.groupBox14);
             this.groupBox13.Location = new System.Drawing.Point(3, 3);
             this.groupBox13.Name = "groupBox13";
@@ -657,27 +657,27 @@
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Выберите признаки";
             // 
-            // metroButton24
+            // metroButton301
             // 
-            this.metroButton24.Location = new System.Drawing.Point(131, 220);
-            this.metroButton24.Name = "metroButton24";
-            this.metroButton24.Size = new System.Drawing.Size(75, 23);
-            this.metroButton24.TabIndex = 3;
-            this.metroButton24.Tag = "18";
-            this.metroButton24.Text = "Очистить";
-            this.metroButton24.UseSelectable = true;
-            this.metroButton24.Click += new System.EventHandler(this.CleanAll_Click);
+            this.metroButton301.Location = new System.Drawing.Point(131, 220);
+            this.metroButton301.Name = "metroButton301";
+            this.metroButton301.Size = new System.Drawing.Size(75, 23);
+            this.metroButton301.TabIndex = 3;
+            this.metroButton301.Tag = "18";
+            this.metroButton301.Text = "Очистить";
+            this.metroButton301.UseSelectable = true;
+            this.metroButton301.Click += new System.EventHandler(this.CleanAll_Click);
             // 
-            // metroButton23
+            // metroButton300
             // 
-            this.metroButton23.Location = new System.Drawing.Point(36, 220);
-            this.metroButton23.Name = "metroButton23";
-            this.metroButton23.Size = new System.Drawing.Size(75, 23);
-            this.metroButton23.TabIndex = 2;
-            this.metroButton23.Tag = "17";
-            this.metroButton23.Text = "Выбрать все";
-            this.metroButton23.UseSelectable = true;
-            this.metroButton23.Click += new System.EventHandler(this.SelectAll_Click);
+            this.metroButton300.Location = new System.Drawing.Point(36, 220);
+            this.metroButton300.Name = "metroButton300";
+            this.metroButton300.Size = new System.Drawing.Size(75, 23);
+            this.metroButton300.TabIndex = 2;
+            this.metroButton300.Tag = "17";
+            this.metroButton300.Text = "Выбрать все";
+            this.metroButton300.UseSelectable = true;
+            this.metroButton300.Click += new System.EventHandler(this.SelectAll_Click);
             // 
             // groupBox14
             // 
@@ -690,26 +690,26 @@
             this.groupBox14.Tag = "4";
             this.groupBox14.Text = "Номинальные переменные";
             // 
-            // metroButton26
+            // metroButton303
             // 
-            this.metroButton26.Location = new System.Drawing.Point(487, 441);
-            this.metroButton26.Name = "metroButton26";
-            this.metroButton26.Size = new System.Drawing.Size(159, 43);
-            this.metroButton26.TabIndex = 15;
-            this.metroButton26.Text = "Вывести результат в Word";
-            this.metroButton26.UseSelectable = true;
-            this.metroButton26.Visible = false;
+            this.metroButton303.Location = new System.Drawing.Point(487, 441);
+            this.metroButton303.Name = "metroButton303";
+            this.metroButton303.Size = new System.Drawing.Size(159, 43);
+            this.metroButton303.TabIndex = 15;
+            this.metroButton303.Text = "Вывести результат в Word";
+            this.metroButton303.UseSelectable = true;
+            this.metroButton303.Visible = false;
             // 
-            // metroButton25
+            // metroButton302
             // 
-            this.metroButton25.Location = new System.Drawing.Point(324, 441);
-            this.metroButton25.Name = "metroButton25";
-            this.metroButton25.Size = new System.Drawing.Size(159, 43);
-            this.metroButton25.TabIndex = 14;
-            this.metroButton25.Text = "Выполнить сравнение";
-            this.metroButton25.UseSelectable = true;
-            this.metroButton25.Visible = false;
-            this.metroButton25.Click += new System.EventHandler(this.metroButton25_Click);
+            this.metroButton302.Location = new System.Drawing.Point(324, 441);
+            this.metroButton302.Name = "metroButton302";
+            this.metroButton302.Size = new System.Drawing.Size(159, 43);
+            this.metroButton302.TabIndex = 14;
+            this.metroButton302.Text = "Выполнить сравнение";
+            this.metroButton302.UseSelectable = true;
+            this.metroButton302.Visible = false;
+            this.metroButton302.Click += new System.EventHandler(this.metroButton25_Click);
             // 
             // Form1
             // 
@@ -770,31 +770,31 @@
         private MetroFramework.Controls.MetroButton metroButton5;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.GroupBox groupBox5;
-        private MetroFramework.Controls.MetroButton metroButton16;
-        private MetroFramework.Controls.MetroButton metroButton15;
+        private MetroFramework.Controls.MetroButton metroButton105;
+        private MetroFramework.Controls.MetroButton metroButton104;
         private System.Windows.Forms.GroupBox groupBox7;
-        private MetroFramework.Controls.MetroButton metroButton14;
-        private MetroFramework.Controls.MetroButton metroButton13;
-        private MetroFramework.Controls.MetroButton metroButton12;
-        private MetroFramework.Controls.MetroButton metroButton11;
+        private MetroFramework.Controls.MetroButton metroButton103;
+        private MetroFramework.Controls.MetroButton metroButton102;
+        private MetroFramework.Controls.MetroButton metroButton101;
+        private MetroFramework.Controls.MetroButton metroButton100;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.GroupBox groupBox8;
-        private MetroFramework.Controls.MetroButton metroButton22;
-        private MetroFramework.Controls.MetroButton metroButton21;
+        private MetroFramework.Controls.MetroButton metroButton205;
+        private MetroFramework.Controls.MetroButton metroButton204;
         private System.Windows.Forms.GroupBox groupBox10;
-        private MetroFramework.Controls.MetroButton metroButton20;
-        private MetroFramework.Controls.MetroButton metroButton19;
-        private MetroFramework.Controls.MetroButton metroButton18;
-        private MetroFramework.Controls.MetroButton metroButton17;
+        private MetroFramework.Controls.MetroButton metroButton203;
+        private MetroFramework.Controls.MetroButton metroButton202;
+        private MetroFramework.Controls.MetroButton metroButton201;
+        private MetroFramework.Controls.MetroButton metroButton200;
         private System.Windows.Forms.GroupBox groupBox12;
         private System.Windows.Forms.GroupBox groupBox11;
         private MetroFramework.Controls.MetroTabPage metroTabPage5;
         private System.Windows.Forms.GroupBox groupBox13;
-        private MetroFramework.Controls.MetroButton metroButton24;
-        private MetroFramework.Controls.MetroButton metroButton23;
+        private MetroFramework.Controls.MetroButton metroButton301;
+        private MetroFramework.Controls.MetroButton metroButton300;
         private System.Windows.Forms.GroupBox groupBox14;
-        private MetroFramework.Controls.MetroButton metroButton26;
-        private MetroFramework.Controls.MetroButton metroButton25;
+        private MetroFramework.Controls.MetroButton metroButton303;
+        private MetroFramework.Controls.MetroButton metroButton302;
     }
 }
 
