@@ -1564,5 +1564,16 @@ namespace Statix
         }
 
         #endregion
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            Size size = groupBox1.Size;
+            size.Width = metroTabPage2.Width / 2 - 10;
+            groupBox1.Size = size;
+
+            groupBox4.Location = new Point(size.Width + 5, groupBox4.Location.Y);
+            size.Width = size.Width - 10;
+            groupBox4.Size = size;
+        }
     }
 }

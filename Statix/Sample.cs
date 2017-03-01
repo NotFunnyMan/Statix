@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Statix
 {
-    /*Класс "Выборка"
+    /*
+     * Класс "Выборка"
      * Хранит информацию о выборке
      */
     class Sample
