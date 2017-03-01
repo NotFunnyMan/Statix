@@ -233,8 +233,12 @@ namespace Statix
                                 }
                             }
                         }
-                        sS.AverageValue = Math.Round(sS.SampleList.Average(), 1);
-                        oneSample.Add(sS);
+                        //Посмотреть!!!
+                        if (sS.SampleList.Count != 0)
+                        {
+                            sS.AverageValue = Math.Round(sS.SampleList.Average(), 1);
+                            oneSample.Add(sS);
+                        }
                     }
                     S.SubSampleList = oneSample;
                     resList.Add(S);

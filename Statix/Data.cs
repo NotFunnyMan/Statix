@@ -317,10 +317,14 @@ namespace Statix
         {
             //Проверка строки на пустоту
             if (_str != "")
+            {
+                //Заменим "," на "."
+                _str = _str.Replace(',', '.');
                 //Если введено число и оно больше нуля, то все хорошо
                 if (ThisNumber(_str))
                     if (_str[0] != '-')
                         return _str;
+            }
             return "NA";
         }
 

@@ -151,7 +151,7 @@ namespace Statix
         {
             //Считывание данных из файла
             //Далее будет выбор файла
-            data = new Data("ExampleCSV.csv", Encoding.Default);
+            data = new Data("Input.csv", Encoding.Default);
 
             //Вывод считанной информации для проверки
             OutRedingInformation();
@@ -353,6 +353,14 @@ namespace Statix
 
                 //Скроем вкладку с признаками. Это для корректного отображения при возврате на данную вкладку
                 groupBox4.Visible = false;
+
+                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
+                point = new Point(metroButton9.Location.X, groupBox1.Size.Height);
+                point.Y += 20;
+                metroButton9.Location = point;
+                point = new Point(metroButton10.Location.X, groupBox1.Size.Height);
+                point.Y += 20;
+                metroButton10.Location = point;
             }
             #endregion
 
@@ -419,6 +427,14 @@ namespace Statix
                 point = new Point(metroButton103.Location.X, metroButton103.Location.Y);
                 point.Y = groupBox9.Size.Height + 25;
                 metroButton103.Location = point;
+
+                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
+                point = new Point(metroButton104.Location.X, groupBox7.Size.Height);
+                point.Y += 20;
+                metroButton104.Location = point;
+                point = new Point(metroButton105.Location.X, groupBox7.Size.Height);
+                point.Y += 20;
+                metroButton105.Location = point;
             }
             #endregion
 
@@ -485,6 +501,14 @@ namespace Statix
                 point = new Point(metroButton203.Location.X, metroButton203.Location.Y);
                 point.Y = groupBox12.Size.Height + 25;
                 metroButton203.Location = point;
+
+                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
+                point = new Point(metroButton204.Location.X, groupBox10.Size.Height);
+                point.Y += 20;
+                metroButton204.Location = point;
+                point = new Point(metroButton205.Location.X, groupBox10.Size.Height);
+                point.Y += 20;
+                metroButton205.Location = point;
             }
 
             #endregion
@@ -529,6 +553,14 @@ namespace Statix
                 point = new Point(metroButton301.Location.X, metroButton301.Location.Y);
                 point.Y = groupBox14.Size.Height + 25;
                 metroButton301.Location = point;
+
+                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
+                point = new Point(metroButton302.Location.X, groupBox13.Size.Height);
+                point.Y += 20;
+                metroButton302.Location = point;
+                point = new Point(metroButton303.Location.X, groupBox13.Size.Height);
+                point.Y += 20;
+                metroButton303.Location = point;
             }
 
             #endregion
@@ -1532,6 +1564,5 @@ namespace Statix
         }
 
         #endregion
-        
     }
 }
