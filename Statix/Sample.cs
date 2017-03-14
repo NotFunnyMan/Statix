@@ -253,7 +253,7 @@ namespace Statix
         /// </summary>
         /// <param name="_index">Индекс группирующего элемента</param>
         /// <returns></returns>
-        private static List<string> UniqueValues(List<List<string>> _patients, int _index)
+        public static List<string> UniqueValues(List<List<string>> _patients, int _index)
         {
             List<string> res = new List<string>();
             string data = "";
@@ -275,7 +275,7 @@ namespace Statix
         /// <param name="_data">Данные</param>
         /// <param name="_listIndex">Список индексов</param>
         /// <returns></returns>
-        private static List<int> MissingList(Data _data, List<int> _listIndex)
+        public static List<int> MissingList(Data _data, List<int> _listIndex)
         {
             List<int> naList = new List<int>();
             List<string> patient = new List<string>();
@@ -304,7 +304,7 @@ namespace Statix
         /// <param name="_data">Данные</param>
         /// <param name="_listIndex">Список индексов</param>
         /// <returns></returns>
-        private static List<int> MissingList(Data _data, List<int> _listIndex, List<int> _naList)
+        public static List<int> MissingList(Data _data, List<int> _listIndex, List<int> _naList)
         {
             List<string> patient = new List<string>();
             int index = 0;
@@ -366,7 +366,7 @@ namespace Statix
             }
             return sample;
         }
-
+        
         #endregion
 
         #region Свойства

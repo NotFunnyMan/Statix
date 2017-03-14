@@ -339,7 +339,7 @@ namespace Statix
                 return "NA";
             else
                 if (char.IsDigit(_str[0])) return "NA";
-            return _str.ToLower();
+            return _str.ToLower().Replace(" ","");
         }
 
         /// <summary>
