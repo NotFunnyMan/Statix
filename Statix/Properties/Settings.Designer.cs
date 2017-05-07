@@ -25,10 +25,28 @@ namespace Statix.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
-        public int padding {
+        [global::System.Configuration.DefaultSettingValueAttribute("22")]
+        public int paddingBetweenCheckBoxes {
             get {
-                return ((int)(this["padding"]));
+                return ((int)(this["paddingBetweenCheckBoxes"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int StandartPadding {
+            get {
+                return ((int)(this["StandartPadding"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int PaddingBetweenGroupBoxes {
+            get {
+                return ((int)(this["PaddingBetweenGroupBoxes"]));
             }
         }
     }

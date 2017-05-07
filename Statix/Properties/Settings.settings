@@ -2,8 +2,14 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Statix.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="padding" Type="System.Int32" Scope="Application">
-      <Value Profile="(Default)">20</Value>
+    <Setting Name="paddingBetweenCheckBoxes" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">22</Value>
+    </Setting>
+    <Setting Name="StandartPadding" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="PaddingBetweenGroupBoxes" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">10</Value>
     </Setting>
   </Settings>
 </SettingsFile>
