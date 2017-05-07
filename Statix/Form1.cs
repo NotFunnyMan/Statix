@@ -32,6 +32,11 @@ namespace Statix
         private REngine engine;
 
         /// <summary>
+        /// Ностройки приложения.
+        /// </summary>
+        Properties.Settings settings = new Properties.Settings();
+
+        /// <summary>
         /// Считанные данные
         /// </summary>
         private Data data;
@@ -225,7 +230,7 @@ namespace Statix
                 }
             }
         }
-
+        
         /// <summary>
         /// Обработчик выбранной вкладки
         /// </summary>
@@ -236,10 +241,7 @@ namespace Statix
             //При переходе между вкладками, данные очищаются
             groupFactList.Clear();
             signsList.Clear();
-
-            //Отступ между textBox'ами
-            const int padding = 20;
-
+            
             #region "Сравнение независимых групп"
             if (e.TabPageIndex == 1)
             {
@@ -260,7 +262,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = binList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
                     groupBox2.Controls.Add(rB[i]);
                 }
@@ -274,7 +276,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = nomList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
                     groupBox3.Controls.Add(rB[i]);
                 }
@@ -289,7 +291,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox5.Controls.Add(rB[i]);
                 }
@@ -303,7 +305,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox6.Controls.Add(rB[i]);
                 }
@@ -324,24 +326,27 @@ namespace Statix
                 //Настроим размеры groupBox'ов
                 //Выровним groupBox'ы, которые хранят textBox'ы
                 int height = groupBox2.Size.Height;
-                int width = 230;
-                if (groupBox2.Controls.Count * padding > height)
-                    height = groupBox2.Controls.Count * padding;
+                int width = groupBox2.Size.Width;
+                if (groupBox2.Controls.Count * settings.padding > height)
+                    height = groupBox2.Controls.Count * settings.padding;
                 groupBox2.Size = new Size(width, height);
 
                 height = groupBox3.Size.Height;
-                if (groupBox3.Controls.Count * padding > height)
-                    height = groupBox3.Controls.Count * padding;
+                width = groupBox3.Size.Width;
+                if (groupBox3.Controls.Count * settings.padding > height)
+                    height = groupBox3.Controls.Count * settings.padding;
                 groupBox3.Size = new Size(width, height);
 
                 height = groupBox5.Size.Height;
-                if (groupBox5.Controls.Count * padding > height)
-                    height = groupBox5.Controls.Count * padding;
-                groupBox5.Size = new Size(width - 10, height); //ОООООООООООООЧЕНЬ СТРАННО!
+                width = groupBox5.Size.Width;
+                if (groupBox5.Controls.Count * settings.padding > height)
+                    height = groupBox5.Controls.Count * settings.padding;
+                groupBox5.Size = new Size(width /*- 10*/, height); //ОООООООООООООЧЕНЬ СТРАННО!
 
                 height = groupBox6.Size.Height;
-                if (groupBox6.Controls.Count * padding > height)
-                    height = groupBox6.Controls.Count * padding;
+                width = groupBox6.Size.Width;
+                if (groupBox6.Controls.Count * settings.padding > height)
+                    height = groupBox6.Controls.Count * settings.padding;
                 groupBox6.Size = new Size(width, height);
                 
                 //Подвинем кнопки под groupBox'ами
@@ -430,7 +435,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox8.Controls.Add(rB[i]);
                 }
@@ -452,7 +457,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox9.Controls.Add(rB[i]);
                 }
@@ -504,7 +509,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox11.Controls.Add(rB[i]);
                 }
@@ -526,7 +531,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox12.Controls.Add(rB[i]);
                 }
@@ -578,7 +583,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = nomList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].Location = new Point(6, settings.padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
                     groupBox14.Controls.Add(rB[i]);
                 }
