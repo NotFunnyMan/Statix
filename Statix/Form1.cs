@@ -7,9 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
-//Таблицы сопрояженности
-//Критерии независимости
+using System.IO;
 
 //Пакет R
 using RDotNet;
@@ -71,22 +69,22 @@ namespace Statix
         /// <summary>
         /// Сравнение независимых групп. Тест Манна-Уитни
         /// </summary>
-        List<Sample> resIndMannaWhitney = new List<Sample>();
+        private List<Sample> resIndMannaWhitney = new List<Sample>();
 
         /// <summary>
         /// Сравнение независимых групп. Тест Краскела-Уоллиса
         /// </summary>
-        List<Sample> resIndKruskalWallis = new List<Sample>();
+        private List<Sample> resIndKruskalWallis = new List<Sample>();
 
         /// <summary>
         /// Сравнение зависимых групп. Тест Вилкоксона
         /// </summary>
-        List<Sample> resDepWilcoxon = new List<Sample>();
+        private List<Sample> resDepWilcoxon = new List<Sample>();
 
         /// <summary>
         /// Сравнение зависимых групп. Тест Фридмана
         /// </summary>
-        List<Sample> resDepFridman = new List<Sample>();
+        private List<Sample> resDepFridman = new List<Sample>();
 
         /// <summary>
         /// Структура для хранения результата корреляционного анализа
@@ -117,17 +115,17 @@ namespace Statix
         /// <summary>
         /// Корреляционный анализ. Метод Пирсона
         /// </summary>
-        List<СorrelationResult> resCorPearson = new List<СorrelationResult>();
+        private List<СorrelationResult> resCorPearson = new List<СorrelationResult>();
 
         /// <summary>
         /// Корреляционный анализ. Метод Спирмена
         /// </summary>
-        List<СorrelationResult> resCorSpearman = new List<СorrelationResult>();
+        private List<СorrelationResult> resCorSpearman = new List<СorrelationResult>();
 
         /// <summary>
         /// Таблицы сопряженности. Список таблиц сопряженности
         /// </summary>
-        List<ContingencyTable> contingencyTable = new List<ContingencyTable>();
+        private List<ContingencyTable> contingencyTable = new List<ContingencyTable>();
 
         #endregion
 
@@ -156,7 +154,7 @@ namespace Statix
         {
             //Считывание данных из файла
             //Далее будет выбор файла
-            data = new Data("Input.csv", Encoding.Default);
+            data = new Data("ExampleCSV.csv", Encoding.Default);
 
             //Вывод считанной информации для проверки
             OutRedingInformation();
@@ -239,15 +237,78 @@ namespace Statix
             groupFactList.Clear();
             signsList.Clear();
 
+            //Отступ между textBox'ами
+            const int padding = 20;
+
             #region "Сравнение независимых групп"
             if (e.TabPageIndex == 1)
             {
+                //Очистим хранилища textBox'ов
                 groupBox2.Controls.Clear();
                 groupBox3.Controls.Clear();
                 groupBox5.Controls.Clear();
                 groupBox6.Controls.Clear();
                 MetroCheckBox[] rB;
+                
+                //Вывод списка группирующих переменных
+                //Вывод бинарных переменных
+                rB = new MetroCheckBox[binList.Count];
+                for (int i = 0; i < binList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(binList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = binList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForGroupFac;
+                    groupBox2.Controls.Add(rB[i]);
+                }
+                
+                //Вывод номинальных переменных
+                rB = new MetroCheckBox[nomList.Count];
+                for (int i = 0; i < nomList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(nomList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = nomList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForGroupFac;
+                    groupBox3.Controls.Add(rB[i]);
+                }
 
+                //Вывод признаков
+                //Вывод списка количественных переменных
+                rB = new MetroCheckBox[colList.Count];
+                for (int i = 0; i < colList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(colList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = colList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForSigns;
+                    groupBox5.Controls.Add(rB[i]);
+                }
+                
+                //Вывод списка порядковых переменных
+                rB = new MetroCheckBox[porList.Count];
+                for (int i = 0; i < porList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(porList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = porList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(6, padding * (i + 1));
+                    rB[i].CheckedChanged += CheckedChangedForSigns;
+                    groupBox6.Controls.Add(rB[i]);
+                }
+                
+                /***************************Внешний вид кладки***************************/
                 //Скроем кнопки с других вкладок
                 //Кнопки выполнения анализа
                 metroButton104.Visible = false;
@@ -260,97 +321,68 @@ namespace Statix
                 metroButton205.Visible = false;
                 metroButton303.Visible = false;
 
-                //Вывод списка группирующих переменных
-                //Вывод бинарных переменных
-                rB = new MetroCheckBox[binList.Count];
-                for (int i = 0; i < binList.Count; i++)
-                {
-                    rB[i] = new MetroCheckBox();
-                    rB[i].Text = data.TakeVariableNameAtIndex(binList[i]);
-                    rB[i].Checked = false;
-                    rB[i].Tag = binList[i];
-                    rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
-                    rB[i].CheckedChanged += CheckedChangedForGroupFac;
-                    groupBox2.Controls.Add(rB[i]);
-                }
+                //Настроим размеры groupBox'ов
+                //Выровним groupBox'ы, которые хранят textBox'ы
+                int height = groupBox2.Size.Height;
+                int width = 230;
+                if (groupBox2.Controls.Count * padding > height)
+                    height = groupBox2.Controls.Count * padding;
+                groupBox2.Size = new Size(width, height);
 
-                //Изменение положения кнопок
+                height = groupBox3.Size.Height;
+                if (groupBox3.Controls.Count * padding > height)
+                    height = groupBox3.Controls.Count * padding;
+                groupBox3.Size = new Size(width, height);
+
+                height = groupBox5.Size.Height;
+                if (groupBox5.Controls.Count * padding > height)
+                    height = groupBox5.Controls.Count * padding;
+                groupBox5.Size = new Size(width - 10, height); //ОООООООООООООЧЕНЬ СТРАННО!
+
+                height = groupBox6.Size.Height;
+                if (groupBox6.Controls.Count * padding > height)
+                    height = groupBox6.Controls.Count * padding;
+                groupBox6.Size = new Size(width, height);
+                
+                //Подвинем кнопки под groupBox'ами
+                //Изменение положения кнопок бинарных переменных
                 Point point = new Point(metroButton1.Location.X, metroButton1.Location.Y);
-                point.Y = groupBox2.Size.Height + 19/*groupBox2.Location.Y*/ + 6;
+                point.Y = groupBox2.Size.Height + groupBox2.Location.Y + 6;
                 metroButton1.Location = point;
                 point = new Point(metroButton2.Location.X, metroButton2.Location.Y);
-                point.Y = groupBox2.Size.Height + 25;
+                point.Y = groupBox2.Size.Height + groupBox2.Location.Y + 6;
                 metroButton2.Location = point;
 
-                //Вывод номинальных переменных
-                rB = new MetroCheckBox[nomList.Count];
-                for (int i = 0; i < nomList.Count; i++)
-                {
-                    rB[i] = new MetroCheckBox();
-                    rB[i].Text = data.TakeVariableNameAtIndex(nomList[i]);
-                    rB[i].Checked = false;
-                    rB[i].Tag = nomList[i];
-                    rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
-                    rB[i].CheckedChanged += CheckedChangedForGroupFac;
-                    groupBox3.Controls.Add(rB[i]);
-                }
-
-                //Изменение положения кнопок
+                //Изменение положения кнопок номинальных переменных
                 point = new Point(metroButton3.Location.X, metroButton3.Location.Y);
-                point.Y = groupBox3.Size.Height + 25;
+                point.Y = groupBox3.Size.Height + groupBox3.Location.Y + 6;
                 metroButton3.Location = point;
                 point = new Point(metroButton4.Location.X, metroButton4.Location.Y);
-                point.Y = groupBox3.Size.Height + 25;
+                point.Y = groupBox3.Size.Height + groupBox3.Location.Y + 6;
                 metroButton4.Location = point;
 
-                //Вывод признаков
-                //Вывод списка количественных переменных
-                rB = new MetroCheckBox[colList.Count];
-                for (int i = 0; i < colList.Count; i++)
-                {
-                    rB[i] = new MetroCheckBox();
-                    rB[i].Text = data.TakeVariableNameAtIndex(colList[i]);
-                    rB[i].Checked = false;
-                    rB[i].Tag = colList[i];
-                    rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
-                    rB[i].CheckedChanged += CheckedChangedForSigns;
-                    groupBox5.Controls.Add(rB[i]);
-                }
-
-                //Изменение положения кнопок
+                //Изменение положения кнопок количественных переменных
                 point = new Point(metroButton5.Location.X, metroButton5.Location.Y);
-                point.Y = groupBox5.Size.Height + 25;
+                point.Y = groupBox5.Size.Height + groupBox5.Location.Y + 6;
                 metroButton5.Location = point;
                 point = new Point(metroButton6.Location.X, metroButton6.Location.Y);
-                point.Y = groupBox5.Size.Height + 25;
+                point.Y = groupBox5.Size.Height + groupBox5.Location.Y + 6;
                 metroButton6.Location = point;
 
-                //Вывод списка порядковых переменных
-                rB = new MetroCheckBox[porList.Count];
-                for (int i = 0; i < porList.Count; i++)
-                {
-                    rB[i] = new MetroCheckBox();
-                    rB[i].Text = data.TakeVariableNameAtIndex(porList[i]);
-                    rB[i].Checked = false;
-                    rB[i].Tag = porList[i];
-                    rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
-                    rB[i].CheckedChanged += CheckedChangedForSigns;
-                    groupBox6.Controls.Add(rB[i]);
-                }
-
-                //Изменение положения кнопок
+                //Изменение положения кнопок порядковых переменных
                 point = new Point(metroButton7.Location.X, metroButton7.Location.Y);
-                point.Y = groupBox6.Size.Height + 25;
+                point.Y = groupBox6.Size.Height + groupBox6.Location.Y + 6;
                 metroButton7.Location = point;
                 point = new Point(metroButton8.Location.X, metroButton8.Location.Y);
-                point.Y = groupBox6.Size.Height + 25;
+                point.Y = groupBox6.Size.Height + groupBox6.Location.Y + 6;
                 metroButton8.Location = point;
 
-                //Выровним боксы для Груп. факторов и признаков
+                //Выровним groupBox'ы для Груп. факторов и признаков
+                if (groupBox2.Size.Height > groupBox3.Size.Height)
+                    groupBox1.Size = new Size(groupBox1.Size.Width, groupBox2.Size.Height + 64);
+                if (groupBox5.Size.Height > groupBox6.Size.Height)
+                    groupBox4.Size = new Size(groupBox4.Size.Width, groupBox5.Size.Height + 64);
+
                 if (groupBox1.Height > groupBox4.Height)
                     groupBox4.Height = groupBox1.Height;
                 else
@@ -398,7 +430,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].Location = new Point(6, padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox8.Controls.Add(rB[i]);
                 }
@@ -420,7 +452,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].Location = new Point(6, padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox9.Controls.Add(rB[i]);
                 }
@@ -472,7 +504,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].Location = new Point(6, padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox11.Controls.Add(rB[i]);
                 }
@@ -494,7 +526,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].Location = new Point(6, padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForSigns;
                     groupBox12.Controls.Add(rB[i]);
                 }
@@ -546,7 +578,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = nomList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(6, 22 * (i + 1));
+                    rB[i].Location = new Point(6, padding * (i + 1));
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
                     groupBox14.Controls.Add(rB[i]);
                 }
@@ -569,6 +601,7 @@ namespace Statix
             }
 
             #endregion
+
 
         }
 
@@ -807,46 +840,60 @@ namespace Statix
             //Очистим списки результатов
             resIndMannaWhitney.Clear();
             resIndKruskalWallis.Clear();
-
+            
             for (int i = 0; i < samples.Count; i++)
             {
                 testRes = new Sample();
                 testRes = samples[i];
                 if (samples[i].SubSampleList.Count == 2)
                 {
-                    //Вызвать тест Манна-Уитни
-                    NumericVector group1 = engine.CreateNumericVector(samples[i].SubSampleList[0].SampleList);
-                    engine.SetSymbol("Rgroup1", group1);
-                    NumericVector group2 = engine.CreateNumericVector(samples[i].SubSampleList[1].SampleList);
-                    engine.SetSymbol("Rgroup2", group2);
-                    tmp = engine.Evaluate("wilcox.test(Rgroup1, Rgroup2)").AsList();
-                    double p = tmp["p.value"].AsNumeric().First();
-                    testRes.PValue = p;
+                    //Огриничение на количество элементов в выборке. В каждой выборке их должно быть не менее 3
+                    if (samples[i].SubSampleList[0].SampleList.Count >= 3 && samples[i].SubSampleList[1].SampleList.Count >= 3)
+                    {
+                        //Вызвать тест Манна-Уитни
+                        NumericVector group1 = engine.CreateNumericVector(samples[i].SubSampleList[0].SampleList);
+                        engine.SetSymbol("Rgroup1", group1);
+                        NumericVector group2 = engine.CreateNumericVector(samples[i].SubSampleList[1].SampleList);
+                        engine.SetSymbol("Rgroup2", group2);
+                        tmp = engine.Evaluate("wilcox.test(Rgroup1, Rgroup2, paired = FALSE)").AsList();
+                        double p = tmp["p.value"].AsNumeric().First();
+                        testRes.PValue = p;
 
-                    //Посчитаем медиану и стандартное отклонение
-                    testRes = FillingResults(samples[i].SubSampleList, testRes);
-                    resIndMannaWhitney.Add(testRes);
+                        //Посчитаем медиану и стандартное отклонение
+                        testRes = FillingResults(samples[i].SubSampleList, testRes);
+                        resIndMannaWhitney.Add(testRes);
+                    }
+                    //else
+                        //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
                 }
                 else
                 {
-                    //Вызвать тест Краскела-Уоллиса
-                    //Создадим список выборок для отправки в тест Краскела-Уоллиса
-                    GenericVector gV = new GenericVector(engine, samples[i].SubSampleList.Count);
-                    NumericVector nV;
-                    for (int j = 0; j < samples[i].SubSampleList.Count; j++)
+                    try
                     {
-                        nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList);
-                        gV[j] = nV;
+                        //Вызвать тест Краскела-Уоллиса
+                        //Создадим список выборок для отправки в тест Краскела-Уоллиса
+                        GenericVector gV = new GenericVector(engine, samples[i].SubSampleList.Count);
+                        NumericVector nV;
+                        for (int j = 0; j < samples[i].SubSampleList.Count; j++)
+                        {
+                            nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList);
+                            if (nV.Length < 3) throw new Exception();
+                            gV[j] = nV;
+                        }
+
+                        engine.SetSymbol("sample", gV);
+                        tmp = engine.Evaluate("kruskal.test(sample)").AsList();
+                        double p = tmp["p.value"].AsNumeric().First();
+                        testRes.PValue = p;
+
+                        //Посчитаем медиану и стандартное отклонение
+                        testRes = FillingResults(samples[i].SubSampleList, testRes);
+                        resIndKruskalWallis.Add(testRes);
                     }
-
-                    engine.SetSymbol("sample", gV);
-                    tmp = engine.Evaluate("kruskal.test(sample)").AsList();
-                    double p = tmp["p.value"].AsNumeric().First();
-                    testRes.PValue = p;
-
-                    //Посчитаем медиану и стандартное отклонение
-                    testRes = FillingResults(samples[i].SubSampleList, testRes);
-                    resIndKruskalWallis.Add(testRes);
+                    catch(Exception)
+                    {
+                        //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
+                    }
                 }
             }
             //Отобразим кнопку для вывода в Word
@@ -1134,12 +1181,26 @@ namespace Statix
                 NumericVector x = new NumericVector(engine, sample.SubSampleList[i].SampleList);
                 engine.SetSymbol("x", x);
 
+                StreamWriter sw = new StreamWriter("outX.txt");
+                string buf = "";
+                for (int a = 0; a < x.Length; a++)
+                    buf += x[a].ToString() + Environment.NewLine;
+                sw.WriteLine(buf);
+                sw.Close();
+
                 for (int j = 0; j < i; j++)
                 {
                     string ToCompare = data.TakeVariableNameAtIndex(signsList[j]);
                     //Создаем второй вектор (с чем сравниваем)
                     NumericVector y = new NumericVector(engine, sample.SubSampleList[j].SampleList);
                     engine.SetSymbol("y", y);
+
+                    sw = new StreamWriter("outY.txt");
+                    buf = "";
+                    for (int a = 0; a < x.Length; a++)
+                        buf += y[a].ToString() + Environment.NewLine;
+                    sw.WriteLine(buf);
+                    sw.Close();
 
                     GenericVector tmpRes;
 
@@ -1664,14 +1725,44 @@ namespace Statix
 
         private void Form1_Resize(object sender, EventArgs e)
         {
+            //Size size = groupBox1.Size;
+            //size.Width = metroTabPage2.Width / 2 - 10;
+            //groupBox1.Size = size;
+
+            //groupBox4.Location = new Point(size.Width + 5, groupBox4.Location.Y);
+            //size.Width = size.Width - 10;
+            //groupBox4.Size = size;
+        }
+
+        //Изменение размера вкладки "Сравнение независимых групп"
+        private void metroTabPage2_SizeChanged(object sender, EventArgs e)
+        {
+            //Группирующие факторы
             Size size = groupBox1.Size;
             size.Width = metroTabPage2.Width / 2 - 10;
             groupBox1.Size = size;
+            //Бинарные переменные
+            size = groupBox2.Size;
+            size.Width = groupBox1.Width / 2 - 10;
+            groupBox2.Size = size;
+            //Номинальные переменные
+            groupBox3.Location = new Point(size.Width + 10, groupBox3.Location.Y);
+            size.Width = size.Width;
+            groupBox3.Size = size;
 
+            //Признаки
+            size = groupBox1.Size;
             groupBox4.Location = new Point(size.Width + 5, groupBox4.Location.Y);
             size.Width = size.Width - 10;
             groupBox4.Size = size;
+            //Количественные переменные
+            size = groupBox5.Size;
+            size.Width = groupBox4.Width / 2 - 10;
+            groupBox5.Size = size;
+            //Порядковые переменные
+            groupBox6.Location = new Point(size.Width + 10, groupBox6.Location.Y);
+            size.Width = size.Width;
+            groupBox6.Size = size;
         }
-
     }
 }

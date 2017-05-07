@@ -106,7 +106,7 @@
             this.metroTabControl1.Location = new System.Drawing.Point(23, 63);
             this.metroTabControl1.Multiline = true;
             this.metroTabControl1.Name = "metroTabControl1";
-            this.metroTabControl1.SelectedIndex = 4;
+            this.metroTabControl1.SelectedIndex = 1;
             this.metroTabControl1.Size = new System.Drawing.Size(978, 529);
             this.metroTabControl1.TabIndex = 0;
             this.metroTabControl1.UseSelectable = true;
@@ -119,9 +119,9 @@
             this.metroTabPage1.HorizontalScrollbarBarColor = true;
             this.metroTabPage1.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage1.HorizontalScrollbarSize = 10;
-            this.metroTabPage1.Location = new System.Drawing.Point(4, 35);
+            this.metroTabPage1.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage1.Name = "metroTabPage1";
-            this.metroTabPage1.Size = new System.Drawing.Size(970, 490);
+            this.metroTabPage1.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage1.TabIndex = 0;
             this.metroTabPage1.Text = "Данные для обработки";
             this.metroTabPage1.VerticalScrollbarBarColor = true;
@@ -131,7 +131,7 @@
             // metroButton700
             // 
             this.metroButton700.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.metroButton700.Location = new System.Drawing.Point(422, 446);
+            this.metroButton700.Location = new System.Drawing.Point(422, 443);
             this.metroButton700.Name = "metroButton700";
             this.metroButton700.Size = new System.Drawing.Size(144, 23);
             this.metroButton700.TabIndex = 3;
@@ -182,7 +182,7 @@
             this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.metroGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.metroGrid1.Size = new System.Drawing.Size(964, 411);
+            this.metroGrid1.Size = new System.Drawing.Size(964, 408);
             this.metroGrid1.TabIndex = 2;
             // 
             // metroTabPage2
@@ -205,10 +205,10 @@
             this.metroTabPage2.VerticalScrollbarBarColor = true;
             this.metroTabPage2.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage2.VerticalScrollbarSize = 10;
+            this.metroTabPage2.SizeChanged += new System.EventHandler(this.metroTabPage2_SizeChanged);
             // 
             // groupBox4
             // 
-            this.groupBox4.AutoSize = true;
             this.groupBox4.BackColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox4.Controls.Add(this.metroButton8);
             this.groupBox4.Controls.Add(this.metroButton7);
@@ -218,7 +218,7 @@
             this.groupBox4.Controls.Add(this.groupBox5);
             this.groupBox4.Location = new System.Drawing.Point(487, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(480, 262);
+            this.groupBox4.Size = new System.Drawing.Size(480, 260);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Выберите признаки";
@@ -273,7 +273,6 @@
             // groupBox6
             // 
             this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox6.AutoSize = true;
             this.groupBox6.Location = new System.Drawing.Point(244, 19);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Size = new System.Drawing.Size(230, 195);
@@ -284,7 +283,6 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.AutoSize = true;
             this.groupBox5.Location = new System.Drawing.Point(6, 19);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(230, 195);
@@ -317,7 +315,6 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.AutoSize = true;
             this.groupBox1.BackColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox1.Controls.Add(this.metroButton4);
             this.groupBox1.Controls.Add(this.metroButton3);
@@ -381,7 +378,6 @@
             // groupBox3
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.AutoSize = true;
             this.groupBox3.Location = new System.Drawing.Point(244, 19);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(230, 195);
@@ -392,7 +388,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.AutoSize = true;
             this.groupBox2.Location = new System.Drawing.Point(6, 19);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(230, 195);
@@ -742,6 +737,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1024, 600);
             this.Controls.Add(this.metroTabControl1);
+            this.MinimumSize = new System.Drawing.Size(1024, 600);
             this.Name = "Form1";
             this.Text = "StatiX";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -750,11 +746,8 @@
             this.metroTabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.metroGrid1)).EndInit();
             this.metroTabPage2.ResumeLayout(false);
-            this.metroTabPage2.PerformLayout();
             this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.metroTabPage3.ResumeLayout(false);
             this.metroTabPage3.PerformLayout();
             this.groupBox7.ResumeLayout(false);
