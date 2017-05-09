@@ -938,6 +938,14 @@ namespace Statix
             WordTable rt1;
             string grpFact = "";
 
+            //Вставка графиков в отчет
+            //Добавим отступ от таблицы
+            string[] dirs;
+            if (_methodName.Contains("Манна"))
+                dirs = Directory.GetFiles(pathC, "MW*"); //Результаты для Манна-Уитни
+            else
+                dirs = Directory.GetFiles(pathC, "KW*"); //Результаты для Краскела-Уоллиса
+
             var grpRes = Grouping(_resList);
             for (int i = 0; i < grpRes.Count; i++)
             {
@@ -983,31 +991,12 @@ namespace Statix
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
                 rt1.SaveToDocument(9600, 0);
+                //Вставим график
+                _wordDocument.PutImage(dirs[i], 96);
+                _wordDocument.WriteLine();
             }
 
-            //Вставка графиков в отчет
-            //Добавим отступ от таблицы
-            _wordDocument.WriteLine();
-            if (_methodName.Contains("Манна"))
-            {
-                //Результаты для Манна-Уитни
-                string[] dirs = Directory.GetFiles(pathC, "MW*");
-                for (int i = 0; i < dirs.Length; i++)
-                {
-                    _wordDocument.PutImage(dirs[i], 96);
-                    _wordDocument.WriteLine();
-                }
-            }
-            else
-            {
-                //Результаты для Краскела-Уоллиса
-                string[] dirs = Directory.GetFiles(pathC, "KW*");
-                for (int i = 0; i < dirs.Length; i++)
-                {
-                    _wordDocument.PutImage(dirs[i], 96);
-                    _wordDocument.WriteLine();
-                }
-            }
+            
             return _wordDocument;
         }
 
