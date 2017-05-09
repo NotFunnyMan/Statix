@@ -889,6 +889,9 @@ namespace Statix
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
                     }
                 }
+
+                //Рисуем графики для выборок
+                CreateGraphics(samples);
             }
             //Отобразим кнопку для вывода в Word
             metroButton10.Visible = true;
@@ -1778,6 +1781,44 @@ namespace Statix
             formHeight = Height;
         }
 
+        /// <summary>
+        /// Отрисовка графиков по полученным выборкам
+        /// </summary>
+        /// <param name="_samples">Список сгруппированных выборок</param>
+        private void CreateGraphics(List<Sample> _samples)
+        {
+            string pathC = "..\\..\\graphics";
+            string pathR = "../../graphics/";
 
+            if (!Directory.Exists(pathC))
+                Directory.CreateDirectory(pathC); 
+            int j = 0;
+            foreach(Sample sample in _samples)
+            {
+                string data = "";
+                string names = "";
+                for (int i = 0; i < sample.SubSampleList.Count; i++)
+                {
+                    //Создать вектор
+                    string name = "group" + i.ToString();
+                    NumericVector group = engine.CreateNumericVector(sample.SubSampleList[i].SampleList);
+                    //Перевести его в R
+                    engine.SetSymbol(name, group);
+                    if (i != sample.SubSampleList.Count - 1)
+                        data += name + ",";
+                    else
+                        data += name;
+
+                    if (i != sample.SubSampleList.Count - 1)
+                        names += "\"" + sample.SubSampleList[i].UniqueVal.ToString() + "\"" + ",";
+                    else
+                        names += "\"" + sample.SubSampleList[i].UniqueVal.ToString() + "\"";
+                }
+                engine.Evaluate("jpeg(\"" + pathR + "graph" + j.ToString() + ".jpg\")");
+                engine.Evaluate("boxplot(" + data + ", main=\"" + sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + sample.NameSign.ToString()+"\")");
+                engine.Evaluate("dev.off()");
+                j++;
+            }
+        }
     }
 }
