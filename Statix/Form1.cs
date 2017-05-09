@@ -33,6 +33,12 @@ namespace Statix
         private int formHeight;
 
         /// <summary>
+        /// Дирректории для C# и R
+        /// </summary>
+        private string pathC = "..\\..\\graphics";
+        private string pathR = "../../graphics/";
+
+        /// <summary>
         /// Пространство языка R
         /// </summary>
         private REngine engine;
@@ -856,6 +862,9 @@ namespace Statix
                         //Посчитаем медиану и стандартное отклонение
                         testRes = FillingResults(samples[i].SubSampleList, testRes);
                         resIndMannaWhitney.Add(testRes);
+
+                        //Нарисовать график для выборки
+                        CreateGraphic(samples[i], "MW", i);
                     }
                     //else
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
@@ -883,15 +892,15 @@ namespace Statix
                         //Посчитаем медиану и стандартное отклонение
                         testRes = FillingResults(samples[i].SubSampleList, testRes);
                         resIndKruskalWallis.Add(testRes);
+
+                        //Нарисовать график для выборки
+                        CreateGraphic(samples[i], "KW", i);
                     }
                     catch(Exception)
                     {
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
                     }
                 }
-
-                //Рисуем графики для выборок
-                CreateGraphics(samples);
             }
             //Отобразим кнопку для вывода в Word
             metroButton10.Visible = true;
@@ -974,6 +983,30 @@ namespace Statix
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
                 rt1.SaveToDocument(9600, 0);
+            }
+
+            //Вставка графиков в отчет
+            //Добавим отступ от таблицы
+            _wordDocument.WriteLine();
+            if (_methodName.Contains("Манна"))
+            {
+                //Результаты для Манна-Уитни
+                string[] dirs = Directory.GetFiles(pathC, "MW*");
+                for (int i = 0; i < dirs.Length; i++)
+                {
+                    _wordDocument.PutImage(dirs[i], 96);
+                    _wordDocument.WriteLine();
+                }
+            }
+            else
+            {
+                //Результаты для Краскела-Уоллиса
+                string[] dirs = Directory.GetFiles(pathC, "KW*");
+                for (int i = 0; i < dirs.Length; i++)
+                {
+                    _wordDocument.PutImage(dirs[i], 96);
+                    _wordDocument.WriteLine();
+                }
             }
             return _wordDocument;
         }
@@ -1785,40 +1818,34 @@ namespace Statix
         /// Отрисовка графиков по полученным выборкам
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateGraphics(List<Sample> _samples)
+        private void CreateGraphic(Sample _sample, string _Methodname, int _index)
         {
-            string pathC = "..\\..\\graphics";
-            string pathR = "../../graphics/";
-
+            //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
                 Directory.CreateDirectory(pathC); 
-            int j = 0;
-            foreach(Sample sample in _samples)
-            {
-                string data = "";
-                string names = "";
-                for (int i = 0; i < sample.SubSampleList.Count; i++)
-                {
-                    //Создать вектор
-                    string name = "group" + i.ToString();
-                    NumericVector group = engine.CreateNumericVector(sample.SubSampleList[i].SampleList);
-                    //Перевести его в R
-                    engine.SetSymbol(name, group);
-                    if (i != sample.SubSampleList.Count - 1)
-                        data += name + ",";
-                    else
-                        data += name;
 
-                    if (i != sample.SubSampleList.Count - 1)
-                        names += "\"" + sample.SubSampleList[i].UniqueVal.ToString() + "\"" + ",";
-                    else
-                        names += "\"" + sample.SubSampleList[i].UniqueVal.ToString() + "\"";
-                }
-                engine.Evaluate("jpeg(\"" + pathR + "graph" + j.ToString() + ".jpg\")");
-                engine.Evaluate("boxplot(" + data + ", main=\"" + sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + sample.NameSign.ToString()+"\")");
-                engine.Evaluate("dev.off()");
-                j++;
+            string data = "";
+            string names = "";
+            for (int i = 0; i < _sample.SubSampleList.Count; i++)
+            {
+                //Создать вектор
+                string name = "group" + i.ToString();
+                NumericVector group = engine.CreateNumericVector(_sample.SubSampleList[i].SampleList);
+                //Перевести его в R
+                engine.SetSymbol(name, group);
+                if (i != _sample.SubSampleList.Count - 1)
+                    data += name + ",";
+                else
+                    data += name;
+
+                if (i != _sample.SubSampleList.Count - 1)
+                    names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"" + ",";
+                else
+                    names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"";
             }
+            engine.Evaluate("jpeg(\"" + pathR + _Methodname + "graph" + _index.ToString() + ".jpg\")");
+            engine.Evaluate("boxplot(" + data + ", main=\"" + _sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\")");
+            engine.Evaluate("dev.off()");
         }
     }
 }
