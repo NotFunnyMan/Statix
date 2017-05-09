@@ -168,7 +168,7 @@ namespace Statix
         {
             //Считывание данных из файла
             //Далее будет выбор файла
-            data = new Data("Input.csv", Encoding.Default);
+            data = new Data("ExampleCSV.csv", Encoding.Default);
 
             //Вывод считанной информации для проверки
             OutRedingInformation();
@@ -271,7 +271,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = binList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
@@ -287,7 +287,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = nomList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
@@ -304,7 +304,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -321,7 +321,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -346,26 +346,26 @@ namespace Statix
                 //Настроим высоту groupBox'ов, которые хранят в себе CheckBox'ы
                 int height = groupBox2.Size.Height;
                 int width = groupBox2.Size.Width;
-                if (groupBox2.Controls.Count * settings.paddingBetweenCheckBoxes > height)
-                    height = groupBox2.Controls.Count * settings.paddingBetweenCheckBoxes;
+                if (groupBox2.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox2.Controls.Count * settings.PaddingBetweenCheckBoxes;
                 groupBox2.Size = new Size(width, height);
 
                 height = groupBox3.Size.Height;
                 width = groupBox3.Size.Width;
-                if (groupBox3.Controls.Count * settings.paddingBetweenCheckBoxes > height)
-                    height = groupBox3.Controls.Count * settings.paddingBetweenCheckBoxes;
+                if (groupBox3.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox3.Controls.Count * settings.PaddingBetweenCheckBoxes;
                 groupBox3.Size = new Size(width, height);
 
                 height = groupBox5.Size.Height;
                 width = groupBox5.Size.Width;
-                if (groupBox5.Controls.Count * settings.paddingBetweenCheckBoxes > height)
-                    height = groupBox5.Controls.Count * settings.paddingBetweenCheckBoxes;
+                if (groupBox5.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox5.Controls.Count * settings.PaddingBetweenCheckBoxes;
                 groupBox5.Size = new Size(width, height);
 
                 height = groupBox6.Size.Height;
                 width = groupBox6.Size.Width;
-                if (groupBox6.Controls.Count * settings.paddingBetweenCheckBoxes > height)
-                    height = groupBox6.Controls.Count * settings.paddingBetweenCheckBoxes;
+                if (groupBox6.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox6.Controls.Count * settings.PaddingBetweenCheckBoxes;
                 groupBox6.Size = new Size(width, height);
 
                 //Выровним groupBox'ы для Груп. факторов и признаков
@@ -414,7 +414,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -438,7 +438,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -492,7 +492,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = colList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -516,7 +516,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = porList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForSigns;
@@ -570,7 +570,7 @@ namespace Statix
                     rB[i].Checked = false;
                     rB[i].Tag = nomList[i];
                     rB[i].AutoSize = true;
-                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.paddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
                     rB[i].Padding = new Padding(settings.StandartPadding * 2);
                     rB[i].Margin = new Padding(settings.StandartPadding * 2);
                     rB[i].CheckedChanged += CheckedChangedForGroupFac;
@@ -1717,18 +1717,11 @@ namespace Statix
 
         #endregion
 
-        private void Form1_Resize(object sender, EventArgs e)
-        {
-            //Size size = groupBox1.Size;
-            //size.Width = metroTabPage2.Width / 2 - 10;
-            //groupBox1.Size = size;
-
-            //groupBox4.Location = new Point(size.Width + 5, groupBox4.Location.Y);
-            //size.Width = size.Width - 10;
-            //groupBox4.Size = size;
-        }
-
-        //Изменение размера вкладки "Сравнение независимых групп"
+        /// <summary>
+        /// Изменение размера вкладки "Сравнение независимых групп"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void metroTabPage2_SizeChanged(object sender, EventArgs e)
         {
             int rWidth = Width - formWidth;
@@ -1762,20 +1755,20 @@ namespace Statix
             //Кнопки
             //Подвинем кнопки под groupBox'ами
             //Изменение положения кнопок бинарных переменных
-            metroButton1.Location = new Point(groupBox2.Location.X, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
-            metroButton2.Location = new Point(groupBox2.Location.X + groupBox2.Size.Width - metroButton2.Width, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
+            metroButton1.Location = new Point(groupBox2.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
+            metroButton2.Location = new Point(groupBox2.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
 
             //Изменение положения кнопок номинальных переменных
-            metroButton3.Location = new Point(groupBox3.Location.X, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
-            metroButton4.Location = new Point(groupBox3.Location.X + groupBox3.Size.Width - metroButton4.Width, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
+            metroButton3.Location = new Point(groupBox3.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
+            metroButton4.Location = new Point(groupBox3.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
             
             //Изменение положения кнопок количественных переменных
-            metroButton5.Location = new Point(groupBox5.Location.X, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
-            metroButton6.Location = new Point(groupBox5.Location.X + groupBox5.Size.Width - metroButton6.Width, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
+            metroButton5.Location = new Point(groupBox5.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
+            metroButton6.Location = new Point(groupBox5.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
             
             //Изменение положения кнопок порядковых переменных            
-            metroButton7.Location = new Point(groupBox6.Location.X, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
-            metroButton8.Location = new Point(groupBox6.Location.X + groupBox6.Size.Width - metroButton8.Width, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
+            metroButton7.Location = new Point(groupBox6.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
+            metroButton8.Location = new Point(groupBox6.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
 
             //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
             metroButton9.Location = new Point(groupBox1.Location.X + groupBox1.Size.Width - metroButton9.Width, groupBox1.Size.Height + groupBox1.Location.Y + settings.StandartPadding * 2);
@@ -1784,5 +1777,7 @@ namespace Statix
             formWidth = Width;
             formHeight = Height;
         }
+
+
     }
 }
