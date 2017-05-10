@@ -864,7 +864,7 @@ namespace Statix
                         resIndMannaWhitney.Add(testRes);
 
                         //Нарисовать график для выборки
-                        CreateGraphic(samples[i], "MW", i);
+                        CreateGraphic(samples[i], "MW");
                     }
                     //else
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
@@ -894,7 +894,7 @@ namespace Statix
                         resIndKruskalWallis.Add(testRes);
 
                         //Нарисовать график для выборки
-                        CreateGraphic(samples[i], "KW", i);
+                        CreateGraphic(samples[i], "KW");
                     }
                     catch(Exception)
                     {
@@ -941,11 +941,17 @@ namespace Statix
             //Вставка графиков в отчет
             //Добавим отступ от таблицы
             string[] dirs;
+            string methodName = "";
             if (_methodName.Contains("Манна"))
+            {
                 dirs = Directory.GetFiles(pathC, "MW*"); //Результаты для Манна-Уитни
+                methodName = "MW";
+            }
             else
+            {
                 dirs = Directory.GetFiles(pathC, "KW*"); //Результаты для Краскела-Уоллиса
-
+                methodName = "KW";
+            }
             var grpRes = Grouping(_resList);
             for (int i = 0; i < grpRes.Count; i++)
             {
@@ -991,9 +997,22 @@ namespace Statix
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
                 rt1.SaveToDocument(9600, 0);
+
                 //Вставим график
-                _wordDocument.PutImage(dirs[i], 96);
-                _wordDocument.WriteLine();
+                List<string> graphNames = new List<string>();
+                for (int j = 0; j < dirs.Length; j++)
+                {
+                    string name = Path.GetFileNameWithoutExtension(dirs[j]);
+                    graphNames.Add(name);
+                }
+                for (int j = 0; j < grpRes[i].Count; j++)
+                {
+                    int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + grpRes[i][j].NameSign);
+                    _wordDocument.PutImage(dirs[curGraph], 96);
+                    _wordDocument.WriteLine();
+                    //Удалить вставленный график
+                    //File.Delete(dirs[curGraph]);
+                }
             }
 
             
@@ -1807,7 +1826,7 @@ namespace Statix
         /// Отрисовка графиков по полученным выборкам
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateGraphic(Sample _sample, string _Methodname, int _index)
+        private void CreateGraphic(Sample _sample, string _Methodname)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
@@ -1818,7 +1837,7 @@ namespace Statix
             for (int i = 0; i < _sample.SubSampleList.Count; i++)
             {
                 //Создать вектор
-                string name = "group" + i.ToString();
+                string name =  "group" + i.ToString();
                 NumericVector group = engine.CreateNumericVector(_sample.SubSampleList[i].SampleList);
                 //Перевести его в R
                 engine.SetSymbol(name, group);
@@ -1832,7 +1851,7 @@ namespace Statix
                 else
                     names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"";
             }
-            engine.Evaluate("jpeg(\"" + pathR + _Methodname + "graph" + _index.ToString() + ".jpg\")");
+            engine.Evaluate("jpeg(\"" + pathR + _Methodname + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + _sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\")");
             engine.Evaluate("dev.off()");
         }
