@@ -1008,7 +1008,7 @@ namespace Statix
                 for (int j = 0; j < grpRes[i].Count; j++)
                 {
                     int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + grpRes[i][j].NameSign);
-                    _wordDocument.PutImage(dirs[curGraph], 96);
+                    _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
                     _wordDocument.WriteLine();
                     //Удалить вставленный график
                     //File.Delete(dirs[curGraph]);
@@ -1671,6 +1671,7 @@ namespace Statix
         {
             //Получим список таблиц
             contingencyTable = ContingencyTable.GetTableList(data, groupFactList);
+            double w = ContingencyTable.Wulf(contingencyTable[0]);
             metroButton303.Visible = true;
         }
 

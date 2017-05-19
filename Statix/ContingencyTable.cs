@@ -29,6 +29,16 @@ namespace Statix
         /// Количество совпадений. Пересечение переменных
         /// </summary>
         List<int> data;
+
+        /// <summary>
+        /// Количество строк в таблице
+        /// </summary>
+        int rowCount;
+
+        /// <summary>
+        /// Количество столбцов в таблице
+        /// </summary>
+        int columnCount;
         
         #endregion
 
@@ -106,7 +116,7 @@ namespace Statix
                         {
                             //Информацию о пациенте
                             patient = _data.TakePatientAtIndex(k);
-                            //Если информация пациета совпадает с уникальными значениями, то увеличиваем счетчик
+                            //Если информация пациента совпадает с уникальными значениями, то увеличиваем счетчик
                             if (patient[_index1] == uniq1[i] && patient[_index2] == uniq2[j])
                                 count++;
                         }
@@ -120,7 +130,36 @@ namespace Statix
             table.variable1 = uniq1;
             table.variable2 = uniq2;
             table.data = data;
+            table.rowCount = uniq1.Count;
+            table.columnCount = uniq2.Count;
             return table;
+        }
+
+        /// <summary>
+        /// Критерий Вулфа
+        /// </summary>
+        /// <param name="_table">Таблица сопряженности</param>
+        /// <returns></returns>
+        public static double Wulf(ContingencyTable _table)
+        {
+            double stat = 0;
+            double a = _table.Data[0];
+            double b = _table.Data[1];
+            double c = _table.Data[2];
+            double d = _table.Data[3];
+            List<double> buf = new List<double>(new double[] { a, b, c, d });
+            double min = buf.Min();
+            int indexMin = buf.IndexOf(min);
+            if (indexMin == 0 || indexMin == 3)
+                { a += 0.5; b -= 0.5; c -= 0.5; d += 0.5; }
+            else
+                { a -= 0.5; b += 0.5; c += 0.5; d -= 0.5; }
+            
+            stat = 2 * (a * Math.Log(a) + b * Math.Log(b) + c * Math.Log(c) + d * Math.Log(d) -
+                       (a + b) * Math.Log(a + b) - (c + d) * Math.Log(c + d) - (a + c) * Math.Log(a + c) - (b + d) * Math.Log(b + d) +
+                       (a + b + c + d) * Math.Log(a + b + c + d));
+
+            return stat;
         }
 
         #endregion
@@ -149,6 +188,22 @@ namespace Statix
         public List<int> Data
         {
             get { return data; }
+        }
+
+        /// <summary>
+        /// Количество строк в таблице
+        /// </summary>
+        public int RowCount
+        {
+            get { return RowCount; }
+        }
+
+        /// <summary>
+        /// Количество столбцов в таблице
+        /// </summary>
+        public int ColumnCount
+        {
+            get { return columnCount; }
         }
 
         #endregion
