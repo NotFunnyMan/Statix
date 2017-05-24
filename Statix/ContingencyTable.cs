@@ -33,12 +33,12 @@ namespace Statix
         /// <summary>
         /// Количество строк в таблице
         /// </summary>
-        int rowCount;
+        public int rowCount;
 
         /// <summary>
         /// Количество столбцов в таблице
         /// </summary>
-        int columnCount;
+        public int columnCount;
         
         #endregion
 
@@ -161,6 +161,48 @@ namespace Statix
 
             return stat;
         }
+        
+        /// <summary>
+        /// Критерий Хи-квадрат Пирсона
+        /// </summary>
+        /// <param name="_table">Таблица сопряженности</param>
+        public static double Hi2Pearson(ContingencyTable _table)
+        {
+            //Составим списко ожидаемых частот
+            List<double> waitFreq = new List<double>();
+            List<int> sumInRow = new List<int>();
+            List<int> sumInColumn = new List<int>();
+            int sum = 0;
+            
+            //Сумма по строке
+            for (int i = 0; i < _table.rowCount; i++)
+            {
+                sum = 0;
+                for (int j = 0; j < _table.columnCount; j++)
+                    sum += _table.Data[i * _table.columnCount + j];
+                sumInRow.Add(sum);
+            }
+            //Сумма по столбцу
+            for (int i = 0; i < _table.columnCount; i++)
+            {
+                sum = 0;
+                for (int j = 0; j < _table.rowCount; j++)
+                    sum += _table.Data[j * _table.columnCount + i];
+                sumInColumn.Add(sum);
+            }
+            //Подсчет ожидаемых значений
+            double sumAll = sumInColumn.Sum();
+            for (int i = 0; i < _table.rowCount; i++)
+                for (int j = 0; j < _table.columnCount; j++)
+                    waitFreq.Add(Convert.ToDouble((sumInRow[i] * sumInColumn[j]) / sumAll));
+
+            double stat = 0;
+            List<int> observerFreq = _table.Data;
+            for (int i = 0; i < _table.rowCount; i++)
+                for (int j = 0; j < _table.columnCount; j++)
+                    stat += Math.Pow(observerFreq[i * _table.columnCount + j] - waitFreq[i * _table.columnCount + j], 2) / waitFreq[i * _table.columnCount + j];
+            return stat;
+        }
 
         #endregion
 
@@ -195,7 +237,7 @@ namespace Statix
         /// </summary>
         public int RowCount
         {
-            get { return RowCount; }
+            get { return rowCount; }
         }
 
         /// <summary>

@@ -142,7 +142,15 @@ namespace Statix
         /// <summary>
         /// Таблицы сопряженности. Список таблиц сопряженности
         /// </summary>
-        private List<ContingencyTable> contingencyTable = new List<ContingencyTable>();
+        private List<ContingencyTable> rescontingencyTables = new List<ContingencyTable>();
+
+        /// <summary>
+        /// Структура для хранения результата сравнения таблиц методом сопряженных таблиц
+        /// </summary>
+        private struct ContingencyTableResult
+        {
+            
+        }
 
         #endregion
 
@@ -1670,8 +1678,16 @@ namespace Statix
         private void metroButton25_Click(object sender, EventArgs e)
         {
             //Получим список таблиц
-            contingencyTable = ContingencyTable.GetTableList(data, groupFactList);
-            double w = ContingencyTable.Wulf(contingencyTable[0]);
+            rescontingencyTables = ContingencyTable.GetTableList(data, groupFactList);
+            foreach(ContingencyTable table in rescontingencyTables)
+            {
+                double stat;
+                if (table.RowCount == 2 && table.ColumnCount == 2)
+                    stat = ContingencyTable.Wulf(table);
+                else
+                    stat = ContingencyTable.Hi2Pearson(table);
+                
+            }
             metroButton303.Visible = true;
         }
 
@@ -1688,7 +1704,7 @@ namespace Statix
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Таблицы смежности ");
 
-            report = OutResultInContingencyTable(report, contingencyTable);
+            report = OutResultInContingencyTable(report, rescontingencyTables);
 
             report.SaveToFile("..\\..\\Table.doc");
             System.Diagnostics.Process.Start("..\\..\\Table.doc");
