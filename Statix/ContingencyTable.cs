@@ -16,14 +16,24 @@ namespace Statix
         #region Поля
 
         /// <summary>
-        /// Переменная 1
+        /// Первая переменная
         /// </summary>
-        List<string> variable1;
+        string variable1;
 
         /// <summary>
-        /// Переменная 2
+        /// Уникальные значения первой переменной
         /// </summary>
-        List<string> variable2;
+        List<string> variable1List;
+
+        /// <summary>
+        /// Вторая переменная
+        /// </summary>
+        string variable2;
+
+        /// <summary>
+        /// Уникальные значения второй переменной
+        /// </summary>
+        List<string> variable2List;
 
         /// <summary>
         /// Количество совпадений. Пересечение переменных
@@ -33,12 +43,17 @@ namespace Statix
         /// <summary>
         /// Количество строк в таблице
         /// </summary>
-        public int rowCount;
+        int rowCount;
 
         /// <summary>
         /// Количество столбцов в таблице
         /// </summary>
-        public int columnCount;
+        int columnCount;
+
+        /// <summary>
+        /// Число степеней свободы
+        /// </summary>
+        int df;
         
         #endregion
 
@@ -49,9 +64,12 @@ namespace Statix
         /// </summary>
         public ContingencyTable()
         {
-            variable1 = new List<string>();
-            variable2 = new List<string>();
+            variable1List = new List<string>();
+            variable2List = new List<string>();
             data = new List<int>();
+            rowCount = 0;
+            columnCount = 0;
+            df = 0;
         }
 
         #endregion
@@ -127,11 +145,14 @@ namespace Statix
             }
 
             //Сформируем выходные данные
-            table.variable1 = uniq1;
-            table.variable2 = uniq2;
+            table.variable1 = _data.TakeVariableNameAtIndex(_index1);
+            table.variable1List = uniq1;
+            table.variable2 = _data.TakeVariableNameAtIndex(_index2);
+            table.variable2List = uniq2;
             table.data = data;
             table.rowCount = uniq1.Count;
             table.columnCount = uniq2.Count;
+            table.df = (table.rowCount - 1) * (table.columnCount - 1);
             return table;
         }
 
@@ -209,19 +230,35 @@ namespace Statix
         #region Свойства
 
         /// <summary>
-        /// Уникальные значения первой переменной
+        /// Первая переменная
         /// </summary>
-        public List<string> Variable1
+        public string Variable1
         {
             get { return variable1; }
+        }
+        
+        /// <summary>
+        /// Уникальные значения первой переменной
+        /// </summary>
+        public List<string> Variable1List
+        {
+            get { return variable1List; }
+        }
+
+        /// <summary>
+        /// Вторая переменная
+        /// </summary>
+        public string Variable2
+        {
+            get { return variable2; }
         }
 
         /// <summary>
         /// Уникальные значения второй переменной
         /// </summary>
-        public List<string> Variable2
+        public List<string> Variable2List
         {
-            get { return variable2; }
+            get { return variable2List; }
         }
 
         /// <summary>
@@ -247,6 +284,15 @@ namespace Statix
         {
             get { return columnCount; }
         }
+
+        /// <summary>
+        /// Число степеней свободы
+        /// </summary>
+        public int Df
+        {
+            get { return df; }
+        }
+
 
         #endregion
     }

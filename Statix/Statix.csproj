@@ -94,6 +94,7 @@
       <DependentUpon>FormForErrors.cs</DependentUpon>
     </Compile>
     <Compile Include="IndependentSamples.cs" />
+    <Compile Include="ITest.cs" />
     <Compile Include="Sample.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

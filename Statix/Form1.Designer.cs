@@ -73,12 +73,15 @@
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.metroTabPage5 = new MetroFramework.Controls.MetroTabPage();
-            this.metroButton303 = new MetroFramework.Controls.MetroButton();
-            this.metroButton302 = new MetroFramework.Controls.MetroButton();
+            this.metroButton305 = new MetroFramework.Controls.MetroButton();
+            this.metroButton304 = new MetroFramework.Controls.MetroButton();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.metroButton301 = new MetroFramework.Controls.MetroButton();
             this.metroButton300 = new MetroFramework.Controls.MetroButton();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
+            this.metroButton303 = new MetroFramework.Controls.MetroButton();
+            this.metroButton302 = new MetroFramework.Controls.MetroButton();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
             this.metroTabControl1.SuspendLayout();
             this.metroTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroGrid1)).BeginInit();
@@ -106,7 +109,7 @@
             this.metroTabControl1.Location = new System.Drawing.Point(23, 63);
             this.metroTabControl1.Multiline = true;
             this.metroTabControl1.Name = "metroTabControl1";
-            this.metroTabControl1.SelectedIndex = 1;
+            this.metroTabControl1.SelectedIndex = 4;
             this.metroTabControl1.Size = new System.Drawing.Size(978, 529);
             this.metroTabControl1.TabIndex = 0;
             this.metroTabControl1.UseSelectable = true;
@@ -406,9 +409,9 @@
             this.metroTabPage3.HorizontalScrollbarBarColor = true;
             this.metroTabPage3.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage3.HorizontalScrollbarSize = 10;
-            this.metroTabPage3.Location = new System.Drawing.Point(4, 35);
+            this.metroTabPage3.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage3.Name = "metroTabPage3";
-            this.metroTabPage3.Size = new System.Drawing.Size(970, 490);
+            this.metroTabPage3.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage3.TabIndex = 2;
             this.metroTabPage3.Text = "Сравнение зависимых групп";
             this.metroTabPage3.VerticalScrollbar = true;
@@ -531,9 +534,9 @@
             this.metroTabPage4.HorizontalScrollbarBarColor = true;
             this.metroTabPage4.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage4.HorizontalScrollbarSize = 10;
-            this.metroTabPage4.Location = new System.Drawing.Point(4, 35);
+            this.metroTabPage4.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage4.Name = "metroTabPage4";
-            this.metroTabPage4.Size = new System.Drawing.Size(970, 490);
+            this.metroTabPage4.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage4.TabIndex = 3;
             this.metroTabPage4.Text = "Корреляционный анализ";
             this.metroTabPage4.VerticalScrollbar = true;
@@ -648,53 +651,56 @@
             // 
             // metroTabPage5
             // 
-            this.metroTabPage5.Controls.Add(this.metroButton303);
-            this.metroTabPage5.Controls.Add(this.metroButton302);
+            this.metroTabPage5.Controls.Add(this.metroButton305);
+            this.metroTabPage5.Controls.Add(this.metroButton304);
             this.metroTabPage5.Controls.Add(this.groupBox13);
             this.metroTabPage5.HorizontalScrollbarBarColor = true;
             this.metroTabPage5.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage5.HorizontalScrollbarSize = 10;
-            this.metroTabPage5.Location = new System.Drawing.Point(4, 35);
+            this.metroTabPage5.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage5.Name = "metroTabPage5";
-            this.metroTabPage5.Size = new System.Drawing.Size(970, 490);
+            this.metroTabPage5.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage5.TabIndex = 4;
             this.metroTabPage5.Text = "Таблицы сопряженности";
             this.metroTabPage5.VerticalScrollbarBarColor = true;
             this.metroTabPage5.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage5.VerticalScrollbarSize = 10;
             // 
-            // metroButton303
+            // metroButton305
             // 
-            this.metroButton303.Location = new System.Drawing.Point(487, 441);
-            this.metroButton303.Name = "metroButton303";
-            this.metroButton303.Size = new System.Drawing.Size(159, 43);
-            this.metroButton303.TabIndex = 15;
-            this.metroButton303.Text = "Вывести результат в Word";
-            this.metroButton303.UseSelectable = true;
-            this.metroButton303.Visible = false;
-            this.metroButton303.Click += new System.EventHandler(this.metroButton303_Click);
+            this.metroButton305.Location = new System.Drawing.Point(487, 441);
+            this.metroButton305.Name = "metroButton305";
+            this.metroButton305.Size = new System.Drawing.Size(159, 43);
+            this.metroButton305.TabIndex = 15;
+            this.metroButton305.Text = "Вывести результат в Word";
+            this.metroButton305.UseSelectable = true;
+            this.metroButton305.Visible = false;
+            this.metroButton305.Click += new System.EventHandler(this.metroButton303_Click);
             // 
-            // metroButton302
+            // metroButton304
             // 
-            this.metroButton302.Location = new System.Drawing.Point(324, 441);
-            this.metroButton302.Name = "metroButton302";
-            this.metroButton302.Size = new System.Drawing.Size(159, 43);
-            this.metroButton302.TabIndex = 14;
-            this.metroButton302.Text = "Выполнить сравнение";
-            this.metroButton302.UseSelectable = true;
-            this.metroButton302.Visible = false;
-            this.metroButton302.Click += new System.EventHandler(this.metroButton25_Click);
+            this.metroButton304.Location = new System.Drawing.Point(324, 441);
+            this.metroButton304.Name = "metroButton304";
+            this.metroButton304.Size = new System.Drawing.Size(159, 43);
+            this.metroButton304.TabIndex = 14;
+            this.metroButton304.Text = "Выполнить сравнение";
+            this.metroButton304.UseSelectable = true;
+            this.metroButton304.Visible = false;
+            this.metroButton304.Click += new System.EventHandler(this.metroButton25_Click);
             // 
             // groupBox13
             // 
             this.groupBox13.AutoSize = true;
             this.groupBox13.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.groupBox13.Controls.Add(this.metroButton303);
+            this.groupBox13.Controls.Add(this.metroButton302);
+            this.groupBox13.Controls.Add(this.groupBox15);
             this.groupBox13.Controls.Add(this.metroButton301);
             this.groupBox13.Controls.Add(this.metroButton300);
             this.groupBox13.Controls.Add(this.groupBox14);
             this.groupBox13.Location = new System.Drawing.Point(3, 3);
             this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size(242, 262);
+            this.groupBox13.Size = new System.Drawing.Size(480, 262);
             this.groupBox13.TabIndex = 11;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Выберите признаки";
@@ -731,6 +737,39 @@
             this.groupBox14.TabStop = false;
             this.groupBox14.Tag = "4";
             this.groupBox14.Text = "Номинальные переменные";
+            // 
+            // metroButton303
+            // 
+            this.metroButton303.Location = new System.Drawing.Point(369, 220);
+            this.metroButton303.Name = "metroButton303";
+            this.metroButton303.Size = new System.Drawing.Size(75, 23);
+            this.metroButton303.TabIndex = 8;
+            this.metroButton303.Tag = "20";
+            this.metroButton303.Text = "Очистить";
+            this.metroButton303.UseSelectable = true;
+            this.metroButton303.Click += new System.EventHandler(this.CleanAll_Click);
+            // 
+            // metroButton302
+            // 
+            this.metroButton302.Location = new System.Drawing.Point(274, 220);
+            this.metroButton302.Name = "metroButton302";
+            this.metroButton302.Size = new System.Drawing.Size(75, 23);
+            this.metroButton302.TabIndex = 7;
+            this.metroButton302.Tag = "19";
+            this.metroButton302.Text = "Выбрать все";
+            this.metroButton302.UseSelectable = true;
+            this.metroButton302.Click += new System.EventHandler(this.SelectAll_Click);
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.AutoSize = true;
+            this.groupBox15.Location = new System.Drawing.Point(244, 19);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(230, 195);
+            this.groupBox15.TabIndex = 6;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Tag = "4";
+            this.groupBox15.Text = "Бинарные переменные";
             // 
             // Form1
             // 
@@ -811,9 +850,12 @@
         private MetroFramework.Controls.MetroButton metroButton301;
         private MetroFramework.Controls.MetroButton metroButton300;
         private System.Windows.Forms.GroupBox groupBox14;
+        private MetroFramework.Controls.MetroButton metroButton305;
+        private MetroFramework.Controls.MetroButton metroButton304;
+        private System.Windows.Forms.GroupBox groupBox1;
         private MetroFramework.Controls.MetroButton metroButton303;
         private MetroFramework.Controls.MetroButton metroButton302;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox15;
     }
 }
 

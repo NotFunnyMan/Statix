@@ -142,14 +142,16 @@ namespace Statix
         /// <summary>
         /// Таблицы сопряженности. Список таблиц сопряженности
         /// </summary>
-        private List<ContingencyTable> rescontingencyTables = new List<ContingencyTable>();
+        private List<ContingencyTableResult> resContingencyTables = new List<ContingencyTableResult>();
 
         /// <summary>
         /// Структура для хранения результата сравнения таблиц методом сопряженных таблиц
         /// </summary>
         private struct ContingencyTableResult
         {
-            
+            public double pvalue;
+            public double stat;
+            public ContingencyTable table;
         }
 
         #endregion
@@ -159,8 +161,8 @@ namespace Statix
             InitializeComponent();
             REngine.SetEnvironmentVariables();
 
-            formWidth = Width;
-            formHeight = Height;
+            //formWidth = Width;
+            //formHeight = Height;
         }
 
         /// <summary>
@@ -346,13 +348,13 @@ namespace Statix
                 //Кнопки выполнения анализа
                 metroButton104.Visible = false;
                 metroButton204.Visible = false;
-                metroButton302.Visible = false;
+                metroButton304.Visible = false;
 
                 //Кнопки вывод в Word
                 metroButton10.Visible = false;
                 metroButton105.Visible = false;
                 metroButton205.Visible = false;
-                metroButton303.Visible = false;
+                metroButton305.Visible = false;
 
                 //Скроем вкладку с признаками. Это для корректного отображения при возврате на данную вкладку
                 groupBox4.Visible = false;
@@ -410,13 +412,13 @@ namespace Statix
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
                 metroButton204.Visible = false;
-                metroButton302.Visible = false;
+                metroButton304.Visible = false;
 
                 //Кнопки вывод в Word
                 metroButton10.Visible = false;
                 metroButton105.Visible = false;
                 metroButton205.Visible = false;
-                metroButton303.Visible = false;
+                metroButton305.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -488,13 +490,13 @@ namespace Statix
                 //Скроем кнопки с других вкладок
                 metroButton9.Visible = false;
                 metroButton104.Visible = false;
-                metroButton302.Visible = false;
+                metroButton304.Visible = false;
 
                 //Кнопки вывод в Word
                 metroButton10.Visible = false;
                 metroButton105.Visible = false;
                 metroButton205.Visible = false;
-                metroButton303.Visible = false;
+                metroButton305.Visible = false;
 
                 //Вывод признаков
                 //Вывод списка количественных переменных
@@ -572,7 +574,7 @@ namespace Statix
                 metroButton10.Visible = false;
                 metroButton105.Visible = false;
                 metroButton205.Visible = false;
-                metroButton303.Visible = false;
+                metroButton305.Visible = false;
 
                 //Вывод признаков
                 //Вывод номинальных переменных
@@ -599,13 +601,37 @@ namespace Statix
                 point.Y = groupBox14.Size.Height + 25;
                 metroButton301.Location = point;
 
-                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
-                point = new Point(metroButton302.Location.X, groupBox13.Size.Height);
-                point.Y += 20;
+                //Вывод бинарных переменных
+                rB = new MetroCheckBox[binList.Count];
+                for (int i = 0; i < binList.Count; i++)
+                {
+                    rB[i] = new MetroCheckBox();
+                    rB[i].Text = data.TakeVariableNameAtIndex(binList[i]);
+                    rB[i].Checked = false;
+                    rB[i].Tag = binList[i];
+                    rB[i].AutoSize = true;
+                    rB[i].Location = new Point(settings.StandartPadding * 2, settings.PaddingBetweenCheckBoxes * (i + 1));
+                    rB[i].Padding = new Padding(settings.StandartPadding * 2);
+                    rB[i].Margin = new Padding(settings.StandartPadding * 2);
+                    rB[i].CheckedChanged += CheckedChangedForGroupFac;
+                    groupBox15.Controls.Add(rB[i]);
+                }
+
+                //Изменение положения кнопок
+                point = new Point(metroButton302.Location.X, metroButton302.Location.Y);
+                point.Y = groupBox15.Size.Height + 25;
                 metroButton302.Location = point;
-                point = new Point(metroButton303.Location.X, groupBox13.Size.Height);
-                point.Y += 20;
+                point = new Point(metroButton303.Location.X, metroButton303.Location.Y);
+                point.Y = groupBox15.Size.Height + 25;
                 metroButton303.Location = point;
+
+                //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
+                point = new Point(metroButton304.Location.X, groupBox13.Size.Height);
+                point.Y += 20;
+                metroButton304.Location = point;
+                point = new Point(metroButton305.Location.X, groupBox13.Size.Height);
+                point.Y += 20;
+                metroButton305.Location = point;
             }
 
             #endregion
@@ -633,7 +659,7 @@ namespace Statix
                     groupBox4.Visible = true;
                 }
                 if (Convert.ToInt32(mCB.Parent.Tag) == 4 && groupFactList.Count >= 2)
-                    metroButton302.Visible = true;
+                    metroButton304.Visible = true;
             }
             else
             {
@@ -641,7 +667,7 @@ namespace Statix
                 if (groupFactList.Count == 0)
                     groupBox4.Visible = false;
                 if (Convert.ToInt32(mCB.Parent.Tag) == 4 && groupFactList.Count < 2)
-                    metroButton302.Visible = false;
+                    metroButton304.Visible = false;
             }
         }
 
@@ -727,6 +753,8 @@ namespace Statix
                 //"Таблицы сопряженности"
                 //Номинальные переменные
                 case 17: Check(groupBox14); break;
+                //Бинарные переменные
+                case 19: Check(groupBox15); break;
             }
         }
 
@@ -769,6 +797,8 @@ namespace Statix
                 //"Таблицы сопряженности"
                 //Номинальные переменные
                 case 18: Uncheck(groupBox14); break;
+                //Бинарные переменные
+                case 20: Uncheck(groupBox15); break;
             }
 
             //Если сняли все галочки на группирующих переменных, то
@@ -1677,9 +1707,11 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton25_Click(object sender, EventArgs e)
         {
+            engine = REngine.GetInstance();
+            ContingencyTableResult res = new ContingencyTableResult();
             //Получим список таблиц
-            rescontingencyTables = ContingencyTable.GetTableList(data, groupFactList);
-            foreach(ContingencyTable table in rescontingencyTables)
+            List<ContingencyTable> tables = ContingencyTable.GetTableList(data, groupFactList);
+            foreach (ContingencyTable table in tables)
             {
                 double stat;
                 if (table.RowCount == 2 && table.ColumnCount == 2)
@@ -1687,8 +1719,22 @@ namespace Statix
                 else
                     stat = ContingencyTable.Hi2Pearson(table);
                 
+                string str = "pv <- 1 - pchisq(" + stat.ToString().Replace(',','.') + ", " + table.Df.ToString() + ")";
+                var pval = engine.Evaluate(str).AsNumeric();
+
+                res.stat = stat;
+                res.pvalue = pval[0];
+                res.table = table;
+                resContingencyTables.Add(res);
             }
-            metroButton303.Visible = true;
+            //NumericVector group1 = engine.CreateNumericVector(rescontingencyTables[0].Data.Count);
+            //for (int i = 0; i < rescontingencyTables[0].Data.Count; i++)
+            //    group1[i] = rescontingencyTables[0].Data[i];
+            //engine.SetSymbol("Rgroup1", group1);
+            //var tmp = engine.Evaluate("mice <- matrix(Rgroup1, nrow = " + rescontingencyTables[0].RowCount + ", ncol = " + rescontingencyTables[0].ColumnCount + ", byrow = TRUE)");
+            //engine.Evaluate("mice");
+            //var asd = engine.Evaluate("chisq.test(mice)");
+            metroButton305.Visible = true;
         }
 
         /// <summary>
@@ -1702,9 +1748,9 @@ namespace Statix
 
             report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
             report.SetTextAlign(WordTextAlign.Center);
-            report.WriteLine("Таблицы смежности ");
+            report.WriteLine("Таблицы сопряженности ");
 
-            report = OutResultInContingencyTable(report, rescontingencyTables);
+            report = OutResultInContingencyTable(report, resContingencyTables);
 
             report.SaveToFile("..\\..\\Table.doc");
             System.Diagnostics.Process.Start("..\\..\\Table.doc");
@@ -1717,61 +1763,57 @@ namespace Statix
         /// <param name="_methodName">Название метода</param>
         /// <param name="_resList">Список с результатами проверки</param>
         /// <returns></returns>
-        private WordDocument OutResultInContingencyTable(WordDocument _wordDocument, List<ContingencyTable> _resList)
+        private WordDocument OutResultInContingencyTable(WordDocument _wordDocument, List<ContingencyTableResult> _resList)
         {
             //Идем по спискам тиблиц
-            for (int i = 0; i < _resList.Count; i++)
+            foreach(ContingencyTableResult table in _resList)
             {
-                WordTable rt1 = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, _resList[i].Variable1.Count + 2, _resList[i].Variable2.Count + 2, 2);
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                WordTable rt1 = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, table.table.Variable1List.Count + 2, table.table.Variable2List.Count + 2, 2);
+                //_wordDocument.SetTextAlign(WordTextAlign.Left);
                 _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.WriteLine();
+                if (table.table.RowCount == 2 && table.table.ColumnCount == 2)
+                    _wordDocument.WriteLine("Критерий Вулфа");
+                else
+                    _wordDocument.WriteLine("Критерий Хи-квадрат Пирсона");
+                
+                //Выведем список уникальных значений первой переменной. Вывод по строке
+                for (int j = 0; j < table.table.Variable1List.Count; j++)
+                    rt1.Rows[j + 2][1].Write(table.table.Variable1List[j]);
+                //Выведем список уникальных значений второй переменной. Вывод по столбцу
+                for (int j = 0; j < table.table.Variable2List.Count; j++)
+                    rt1.Rows[1][j + 2].Write(table.table.Variable2List[j]);
 
-                //Выведем список уникальных значений первой переменной
-                for (int j = 0; j < _resList[i].Variable1.Count; j++)
-                    rt1.Rows[j + 1][0].Write(_resList[i].Variable1[j]);
-                //Выведем список уникальных значений второй переменной
-                for (int j = 0; j < _resList[i].Variable2.Count; j++)
-                    rt1.Rows[0][j + 1].Write(_resList[i].Variable2[j]);
+                //Объединение ячеек и заполнение их данными
+                rt1.Rows[0][0].ColSpan = 2;
+                rt1.Rows[1][0].ColSpan = 2;
+                rt1.Rows[0][0].RowSpan = 2;
+                rt1.Rows[0][0].SetBorders(Color.Black, 1, true, true, true, true);
+
+                rt1.Rows[2][0].RowSpan = table.table.Variable1List.Count;
+                rt1.Rows[2][0].Write(table.table.Variable1);
+                rt1.Rows[2][0].SetBorders(Color.Black, 1, true, true, true, true);
+
+                rt1.Rows[0][2].ColSpan = table.table.Variable2List.Count;
+                rt1.Rows[0][2].Write(table.table.Variable2);
+                rt1.Rows[0][2].SetBorders(Color.Black, 1, true, true, true, true);
 
                 //Выведем данные в таблицу
-                //Сумма по столбцам
-                List<int> sumCol = new List<int>();
-                //Сбросим сумму на 0-ли
-                for (int j = 0; j < _resList[i].Variable2.Count; j++)
-                    sumCol.Add(0);
-
-                //Идем по строкам
-                for (int j = 0; j < _resList[i].Variable1.Count; j++)
-                {
-                    //Посчитаем сумму в строке
-                    int sum = 0;
+                for (int j = 0; j < table.table.Variable1List.Count; j++)
                     //Идем по столбцам
-                    for (int k = 0; k < _resList[i].Variable2.Count; k++)
-                    {
-                        rt1.Rows[j + 1][k + 1].Write(_resList[i].Data[k + j * _resList[i].Variable2.Count].ToString());
-                        sum += _resList[i].Data[k + j * _resList[i].Variable2.Count];
-                        sumCol[k] += _resList[i].Data[k + j * _resList[i].Variable2.Count];
-                    }
-                    //Выведем сумму в конец сторки
-                    rt1.Rows[j + 1][_resList[i].Variable2.Count + 1].Write(sum.ToString());
-                }
-                //Выведем сумму по столбцам
-                for (int j = 0; j < sumCol.Count; j++)
-                    rt1.Rows[_resList[i].Variable1.Count + 1][j + 1].Write(sumCol[j].ToString());
-
-                //Сумма в последней строке. Всего элементов в таблице
-                rt1.Rows[_resList[i].Variable1.Count + 1][_resList[i].Variable2.Count + 1].Write(_resList[i].Data.Sum().ToString());
+                    for (int k = 0; k < table.table.Variable2List.Count; k++)
+                        rt1.Rows[j + 2][k + 2].Write(table.table.Data[k + j * table.table.Variable2List.Count].ToString());
 
                 //Нарисуем рамки у ячеек
-                for (int j = 0; j < _resList[i].Variable1.Count + 2; j++)
-                {
-                    for (int k = 0; k < _resList[i].Variable2.Count + 2; k++)
+                for (int j = 0; j < table.table.Variable1List.Count + 2; j++)
+                    for (int k = 0; k < table.table.Variable2List.Count + 2; k++)
                         rt1.Rows[j][k].SetBorders(Color.Black, 1, true, true, true, true);
-                }
 
                 rt1.SaveToDocument(9600, 0);
+                _wordDocument.WriteLine();
+                _wordDocument.WriteLine("Stat = " + table.stat.ToString());
+                _wordDocument.WriteLine("Pval = " + table.pvalue.ToString());
+                _wordDocument.WriteLine();
             }
             return _wordDocument;
         }
