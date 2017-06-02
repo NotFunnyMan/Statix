@@ -76,12 +76,12 @@
             this.metroButton305 = new MetroFramework.Controls.MetroButton();
             this.metroButton304 = new MetroFramework.Controls.MetroButton();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.metroButton301 = new MetroFramework.Controls.MetroButton();
-            this.metroButton300 = new MetroFramework.Controls.MetroButton();
-            this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.metroButton303 = new MetroFramework.Controls.MetroButton();
             this.metroButton302 = new MetroFramework.Controls.MetroButton();
             this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.metroButton301 = new MetroFramework.Controls.MetroButton();
+            this.metroButton300 = new MetroFramework.Controls.MetroButton();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.metroTabControl1.SuspendLayout();
             this.metroTabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroGrid1)).BeginInit();
@@ -109,7 +109,7 @@
             this.metroTabControl1.Location = new System.Drawing.Point(23, 63);
             this.metroTabControl1.Multiline = true;
             this.metroTabControl1.Name = "metroTabControl1";
-            this.metroTabControl1.SelectedIndex = 4;
+            this.metroTabControl1.SelectedIndex = 1;
             this.metroTabControl1.Size = new System.Drawing.Size(978, 529);
             this.metroTabControl1.TabIndex = 0;
             this.metroTabControl1.UseSelectable = true;
@@ -122,9 +122,9 @@
             this.metroTabPage1.HorizontalScrollbarBarColor = true;
             this.metroTabPage1.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage1.HorizontalScrollbarSize = 10;
-            this.metroTabPage1.Location = new System.Drawing.Point(4, 35);
+            this.metroTabPage1.Location = new System.Drawing.Point(4, 38);
             this.metroTabPage1.Name = "metroTabPage1";
-            this.metroTabPage1.Size = new System.Drawing.Size(970, 490);
+            this.metroTabPage1.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage1.TabIndex = 0;
             this.metroTabPage1.Text = "Данные для обработки";
             this.metroTabPage1.VerticalScrollbarBarColor = true;
@@ -134,7 +134,7 @@
             // metroButton700
             // 
             this.metroButton700.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.metroButton700.Location = new System.Drawing.Point(422, 440);
+            this.metroButton700.Location = new System.Drawing.Point(422, 437);
             this.metroButton700.Name = "metroButton700";
             this.metroButton700.Size = new System.Drawing.Size(144, 23);
             this.metroButton700.TabIndex = 3;
@@ -174,6 +174,7 @@
             this.metroGrid1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.metroGrid1.Location = new System.Drawing.Point(3, 3);
             this.metroGrid1.Name = "metroGrid1";
+            this.metroGrid1.ReadOnly = true;
             this.metroGrid1.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(174)))), ((int)(((byte)(219)))));
@@ -185,7 +186,7 @@
             this.metroGrid1.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.metroGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.metroGrid1.Size = new System.Drawing.Size(964, 405);
+            this.metroGrid1.Size = new System.Drawing.Size(964, 402);
             this.metroGrid1.TabIndex = 2;
             // 
             // metroTabPage2
@@ -221,7 +222,7 @@
             this.groupBox4.Controls.Add(this.groupBox5);
             this.groupBox4.Location = new System.Drawing.Point(487, 3);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(480, 260);
+            this.groupBox4.Size = new System.Drawing.Size(480, 262);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Выберите признаки";
@@ -418,6 +419,7 @@
             this.metroTabPage3.VerticalScrollbarBarColor = true;
             this.metroTabPage3.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage3.VerticalScrollbarSize = 10;
+            this.metroTabPage3.SizeChanged += new System.EventHandler(this.metroTabPage3_SizeChanged);
             // 
             // metroButton105
             // 
@@ -443,7 +445,6 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.AutoSize = true;
             this.groupBox7.BackColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox7.Controls.Add(this.metroButton103);
             this.groupBox7.Controls.Add(this.metroButton102);
@@ -504,7 +505,6 @@
             // 
             // groupBox9
             // 
-            this.groupBox9.AutoSize = true;
             this.groupBox9.Location = new System.Drawing.Point(244, 19);
             this.groupBox9.Name = "groupBox9";
             this.groupBox9.Size = new System.Drawing.Size(230, 195);
@@ -515,7 +515,6 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.AutoSize = true;
             this.groupBox8.Location = new System.Drawing.Point(6, 19);
             this.groupBox8.Name = "groupBox8";
             this.groupBox8.Size = new System.Drawing.Size(230, 195);
@@ -543,6 +542,7 @@
             this.metroTabPage4.VerticalScrollbarBarColor = true;
             this.metroTabPage4.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage4.VerticalScrollbarSize = 10;
+            this.metroTabPage4.SizeChanged += new System.EventHandler(this.metroTabPage4_SizeChanged);
             // 
             // metroButton205
             // 
@@ -568,7 +568,6 @@
             // 
             // groupBox10
             // 
-            this.groupBox10.AutoSize = true;
             this.groupBox10.BackColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox10.Controls.Add(this.metroButton203);
             this.groupBox10.Controls.Add(this.metroButton202);
@@ -629,7 +628,6 @@
             // 
             // groupBox12
             // 
-            this.groupBox12.AutoSize = true;
             this.groupBox12.Location = new System.Drawing.Point(244, 19);
             this.groupBox12.Name = "groupBox12";
             this.groupBox12.Size = new System.Drawing.Size(230, 195);
@@ -640,7 +638,6 @@
             // 
             // groupBox11
             // 
-            this.groupBox11.AutoSize = true;
             this.groupBox11.Location = new System.Drawing.Point(6, 19);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Size = new System.Drawing.Size(230, 195);
@@ -651,9 +648,11 @@
             // 
             // metroTabPage5
             // 
+            this.metroTabPage5.AutoScroll = true;
             this.metroTabPage5.Controls.Add(this.metroButton305);
             this.metroTabPage5.Controls.Add(this.metroButton304);
             this.metroTabPage5.Controls.Add(this.groupBox13);
+            this.metroTabPage5.HorizontalScrollbar = true;
             this.metroTabPage5.HorizontalScrollbarBarColor = true;
             this.metroTabPage5.HorizontalScrollbarHighlightOnWheel = false;
             this.metroTabPage5.HorizontalScrollbarSize = 10;
@@ -662,9 +661,11 @@
             this.metroTabPage5.Size = new System.Drawing.Size(970, 487);
             this.metroTabPage5.TabIndex = 4;
             this.metroTabPage5.Text = "Таблицы сопряженности";
+            this.metroTabPage5.VerticalScrollbar = true;
             this.metroTabPage5.VerticalScrollbarBarColor = true;
             this.metroTabPage5.VerticalScrollbarHighlightOnWheel = false;
             this.metroTabPage5.VerticalScrollbarSize = 10;
+            this.metroTabPage5.SizeChanged += new System.EventHandler(this.metroTabPage5_SizeChanged);
             // 
             // metroButton305
             // 
@@ -690,7 +691,6 @@
             // 
             // groupBox13
             // 
-            this.groupBox13.AutoSize = true;
             this.groupBox13.BackColor = System.Drawing.SystemColors.HighlightText;
             this.groupBox13.Controls.Add(this.metroButton303);
             this.groupBox13.Controls.Add(this.metroButton302);
@@ -704,39 +704,6 @@
             this.groupBox13.TabIndex = 11;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Выберите признаки";
-            // 
-            // metroButton301
-            // 
-            this.metroButton301.Location = new System.Drawing.Point(131, 220);
-            this.metroButton301.Name = "metroButton301";
-            this.metroButton301.Size = new System.Drawing.Size(75, 23);
-            this.metroButton301.TabIndex = 3;
-            this.metroButton301.Tag = "18";
-            this.metroButton301.Text = "Очистить";
-            this.metroButton301.UseSelectable = true;
-            this.metroButton301.Click += new System.EventHandler(this.CleanAll_Click);
-            // 
-            // metroButton300
-            // 
-            this.metroButton300.Location = new System.Drawing.Point(36, 220);
-            this.metroButton300.Name = "metroButton300";
-            this.metroButton300.Size = new System.Drawing.Size(75, 23);
-            this.metroButton300.TabIndex = 2;
-            this.metroButton300.Tag = "17";
-            this.metroButton300.Text = "Выбрать все";
-            this.metroButton300.UseSelectable = true;
-            this.metroButton300.Click += new System.EventHandler(this.SelectAll_Click);
-            // 
-            // groupBox14
-            // 
-            this.groupBox14.AutoSize = true;
-            this.groupBox14.Location = new System.Drawing.Point(6, 19);
-            this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size(230, 195);
-            this.groupBox14.TabIndex = 0;
-            this.groupBox14.TabStop = false;
-            this.groupBox14.Tag = "4";
-            this.groupBox14.Text = "Номинальные переменные";
             // 
             // metroButton303
             // 
@@ -762,7 +729,6 @@
             // 
             // groupBox15
             // 
-            this.groupBox15.AutoSize = true;
             this.groupBox15.Location = new System.Drawing.Point(244, 19);
             this.groupBox15.Name = "groupBox15";
             this.groupBox15.Size = new System.Drawing.Size(230, 195);
@@ -770,6 +736,38 @@
             this.groupBox15.TabStop = false;
             this.groupBox15.Tag = "4";
             this.groupBox15.Text = "Бинарные переменные";
+            // 
+            // metroButton301
+            // 
+            this.metroButton301.Location = new System.Drawing.Point(131, 220);
+            this.metroButton301.Name = "metroButton301";
+            this.metroButton301.Size = new System.Drawing.Size(75, 23);
+            this.metroButton301.TabIndex = 3;
+            this.metroButton301.Tag = "18";
+            this.metroButton301.Text = "Очистить";
+            this.metroButton301.UseSelectable = true;
+            this.metroButton301.Click += new System.EventHandler(this.CleanAll_Click);
+            // 
+            // metroButton300
+            // 
+            this.metroButton300.Location = new System.Drawing.Point(36, 220);
+            this.metroButton300.Name = "metroButton300";
+            this.metroButton300.Size = new System.Drawing.Size(75, 23);
+            this.metroButton300.TabIndex = 2;
+            this.metroButton300.Tag = "17";
+            this.metroButton300.Text = "Выбрать все";
+            this.metroButton300.UseSelectable = true;
+            this.metroButton300.Click += new System.EventHandler(this.SelectAll_Click);
+            // 
+            // groupBox14
+            // 
+            this.groupBox14.Location = new System.Drawing.Point(6, 19);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(230, 195);
+            this.groupBox14.TabIndex = 0;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Tag = "4";
+            this.groupBox14.Text = "Номинальные переменные";
             // 
             // Form1
             // 
@@ -788,17 +786,11 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.metroTabPage3.ResumeLayout(false);
-            this.metroTabPage3.PerformLayout();
             this.groupBox7.ResumeLayout(false);
-            this.groupBox7.PerformLayout();
             this.metroTabPage4.ResumeLayout(false);
-            this.metroTabPage4.PerformLayout();
             this.groupBox10.ResumeLayout(false);
-            this.groupBox10.PerformLayout();
             this.metroTabPage5.ResumeLayout(false);
-            this.metroTabPage5.PerformLayout();
             this.groupBox13.ResumeLayout(false);
-            this.groupBox13.PerformLayout();
             this.ResumeLayout(false);
 
         }

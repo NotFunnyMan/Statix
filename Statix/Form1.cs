@@ -25,13 +25,7 @@ namespace Statix
     public partial class Form1 : MetroForm
     {
         #region Поля
-
-        /// <summary>
-        /// Ширина и высота формы
-        /// </summary>
-        private int formWidth;
-        private int formHeight;
-
+        
         /// <summary>
         /// Дирректории для C# и R
         /// </summary>
@@ -161,8 +155,7 @@ namespace Statix
             InitializeComponent();
             REngine.SetEnvironmentVariables();
 
-            formWidth = Width;
-            formHeight = Height;
+            metroTabControl1.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -476,6 +469,28 @@ namespace Statix
                 point = new Point(metroButton105.Location.X, groupBox7.Size.Height);
                 point.Y += 20;
                 metroButton105.Location = point;
+
+                //Настроим высоту groupBox'ов, которые хранят в себе CheckBox'ы
+                int height = groupBox8.Size.Height;
+                int width = groupBox8.Size.Width;
+                if (groupBox8.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox8.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox8.Size = new Size(width, height);
+
+                height = groupBox9.Size.Height;
+                width = groupBox9.Size.Width;
+                if (groupBox9.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox9.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox9.Size = new Size(width, height);
+
+
+                if (groupBox8.Size.Height > groupBox9.Size.Height)
+                    groupBox7.Size = new Size(groupBox7.Size.Width, groupBox8.Size.Height + 64);
+                else
+                    groupBox7.Size = new Size(groupBox7.Size.Width, groupBox9.Size.Height + 64);
+
+                //Настроим внешний вид страницы
+                metroTabPage3_SizeChanged(sender, e);
             }
             #endregion
 
@@ -554,6 +569,27 @@ namespace Statix
                 point = new Point(metroButton205.Location.X, groupBox10.Size.Height);
                 point.Y += 20;
                 metroButton205.Location = point;
+
+                //Настроим высоту groupBox'ов, которые хранят в себе CheckBox'ы
+                int height = groupBox11.Size.Height;
+                int width = groupBox11.Size.Width;
+                if (groupBox11.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox11.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox11.Size = new Size(width, height);
+
+                height = groupBox12.Size.Height;
+                width = groupBox12.Size.Width;
+                if (groupBox12.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox12.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox12.Size = new Size(width, height);
+
+                if (groupBox11.Size.Height > groupBox12.Size.Height)
+                    groupBox10.Size = new Size(groupBox10.Size.Width, groupBox11.Size.Height + 64);
+                else
+                    groupBox10.Size = new Size(groupBox10.Size.Width, groupBox12.Size.Height + 64);
+
+                //Настроим внешний вид страницы
+                metroTabPage4_SizeChanged(sender, e);
             }
 
             #endregion
@@ -563,6 +599,7 @@ namespace Statix
             if (e.TabPageIndex == 4)
             {
                 groupBox14.Controls.Clear();
+                groupBox15.Controls.Clear();
                 MetroCheckBox[] rB;
 
                 //Скроем кнопки с других вкладок
@@ -632,6 +669,27 @@ namespace Statix
                 point = new Point(metroButton305.Location.X, groupBox13.Size.Height);
                 point.Y += 20;
                 metroButton305.Location = point;
+
+                //Настроим высоту groupBox'ов, которые хранят в себе CheckBox'ы
+                int height = groupBox14.Size.Height;
+                int width = groupBox14.Size.Width;
+                if (groupBox14.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox14.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox14.Size = new Size(width, height);
+
+                height = groupBox15.Size.Height;
+                width = groupBox15.Size.Width;
+                if (groupBox15.Controls.Count * settings.PaddingBetweenCheckBoxes > height)
+                    height = groupBox15.Controls.Count * settings.PaddingBetweenCheckBoxes;
+                groupBox15.Size = new Size(width, height);
+
+                if (groupBox14.Size.Height > groupBox15.Size.Height)
+                    groupBox13.Size = new Size(groupBox13.Size.Width, groupBox14.Size.Height + 64);
+                else
+                    groupBox13.Size = new Size(groupBox13.Size.Width, groupBox15.Size.Height + 64);
+
+                //Настроим внешний вид страницы
+                metroTabPage5_SizeChanged(sender, e);
             }
 
             #endregion
@@ -1827,21 +1885,20 @@ namespace Statix
         /// <param name="e"></param>
         private void metroTabPage2_SizeChanged(object sender, EventArgs e)
         {
-            int rWidth = Width - formWidth;
-
             /***************************Внешний вид кладки***************************/
             //GroupBox'ы
             //Группирующие факторы
             Size size = groupBox1.Size;
-            size.Width += rWidth / 2;
+            //size.Width += rWidth / 2;
+            size.Width = (metroTabPage2.Size.Width - 10) / 2;
             groupBox1.Size = size;
             //Бинарные переменные
             size = groupBox2.Size;
-            size.Width += rWidth / 4;
+            size.Width = (groupBox1.Size.Width / 2) - 10;
             groupBox2.Size = size;
             //Номинальные переменные
             groupBox3.Location = new Point(size.Width + settings.PaddingBetweenGroupBoxes, groupBox3.Location.Y);
-            groupBox3.Size = size;
+            groupBox3.Size = new Size(size.Width, groupBox3.Size.Height);
 
             //Признаки
             size = groupBox1.Size;
@@ -1849,36 +1906,38 @@ namespace Statix
             groupBox4.Size = size;
             //Количественные переменные
             size = groupBox5.Size;
-            size.Width += rWidth / 4;
+            size.Width = (groupBox4.Size.Width / 2) - 10;
             groupBox5.Size = size;
             //Порядковые переменные
             groupBox6.Location = new Point(size.Width + settings.PaddingBetweenGroupBoxes, groupBox6.Location.Y);
-            groupBox6.Size = size;
+            groupBox6.Size = new Size(size.Width, groupBox6.Size.Height);
 
             //Кнопки
             //Подвинем кнопки под groupBox'ами
             //Изменение положения кнопок бинарных переменных
-            metroButton1.Location = new Point(groupBox2.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
-            metroButton2.Location = new Point(groupBox2.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox2.Size.Height + groupBox2.Location.Y + settings.StandartPadding * 2);
+            int padding = settings.PaddingFromBtnSelectAll;
+            Point grpLoc = groupBox2.Location;
+            metroButton1.Location = new Point(grpLoc.X + padding, groupBox2.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton2.Location = new Point(grpLoc.X + groupBox2.Width - metroButton2.Width - padding, groupBox2.Height + grpLoc.Y + settings.StandartPadding * 2);
 
             //Изменение положения кнопок номинальных переменных
-            metroButton3.Location = new Point(groupBox3.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
-            metroButton4.Location = new Point(groupBox3.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox3.Size.Height + groupBox3.Location.Y + settings.StandartPadding * 2);
-            
+            grpLoc = groupBox3.Location;
+            metroButton3.Location = new Point(grpLoc.X + padding, groupBox3.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton4.Location = new Point(grpLoc.X + groupBox3.Width - metroButton3.Width - padding, groupBox3.Height + grpLoc.Y + settings.StandartPadding * 2);
+
             //Изменение положения кнопок количественных переменных
-            metroButton5.Location = new Point(groupBox5.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
-            metroButton6.Location = new Point(groupBox5.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox5.Size.Height + groupBox5.Location.Y + settings.StandartPadding * 2);
-            
-            //Изменение положения кнопок порядковых переменных            
-            metroButton7.Location = new Point(groupBox6.Location.X + settings.PaddingFromBtnSelectAll + rWidth / 8, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
-            metroButton8.Location = new Point(groupBox6.Location.X + settings.PaddingFromBtnCleanAll + rWidth / 8, groupBox6.Size.Height + groupBox6.Location.Y + settings.StandartPadding * 2);
+            grpLoc = groupBox5.Location;
+            metroButton5.Location = new Point(grpLoc.X + padding, groupBox5.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton6.Location = new Point(grpLoc.X + groupBox5.Width - metroButton6.Width - padding, groupBox5.Height + grpLoc.Y + settings.StandartPadding * 2);
+
+            //Изменение положения кнопок порядковых переменных  
+            grpLoc = groupBox6.Location;
+            metroButton7.Location = new Point(grpLoc.X + padding, groupBox6.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton8.Location = new Point(grpLoc.X + groupBox6.Width - metroButton8.Width - padding, groupBox6.Height + grpLoc.Y + settings.StandartPadding * 2);
 
             //Выровняем кнопки "Выполнить сравнение" и "Вывести в Word"
             metroButton9.Location = new Point(groupBox1.Location.X + groupBox1.Size.Width - metroButton9.Width, groupBox1.Size.Height + groupBox1.Location.Y + settings.StandartPadding * 2);
             metroButton10.Location = new Point(groupBox4.Location.X, groupBox4.Size.Height + groupBox4.Location.Y + settings.StandartPadding * 2);
-
-            formWidth = Width;
-            formHeight = Height;
         }
 
         /// <summary>
@@ -1913,6 +1972,94 @@ namespace Statix
             engine.Evaluate("jpeg(\"" + pathR + _Methodname + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + _sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\")");
             engine.Evaluate("dev.off()");
+        }
+
+        private void metroTabPage3_SizeChanged(object sender, EventArgs e)
+        {
+            //grpBoxes 7 -> [8, 9]
+            //Bth 100 - 104 ;   105, 106
+            //970 -> 480 -> 230
+
+            //Признаки
+            //Контейнер для признаков
+            Size size = groupBox7.Size;
+            size.Width = (metroTabPage3.Size.Width - 10) / 2;
+            groupBox7.Size = size;
+            //Количественные переменные
+            size = groupBox8.Size;
+            size.Width = (groupBox7.Size.Width / 2) - 10;
+            groupBox8.Size = size;
+            //Порядковые переменные
+            groupBox9.Location = new Point(size.Width + settings.PaddingBetweenGroupBoxes, groupBox9.Location.Y);
+            groupBox9.Size = new Size(size.Width, groupBox9.Size.Height);
+
+            //Кнопки
+            int padding = settings.PaddingFromBtnSelectAll;
+            Point grpLoc = groupBox8.Location;
+            metroButton100.Location = new Point(grpLoc.X + padding, groupBox8.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton101.Location = new Point(grpLoc.X + groupBox8.Width - metroButton101.Width - padding, groupBox8.Height + grpLoc.Y + settings.StandartPadding * 2);
+            grpLoc = groupBox9.Location;
+            metroButton102.Location = new Point(grpLoc.X + padding, groupBox9.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton103.Location = new Point(grpLoc.X + groupBox9.Width - metroButton103.Width - padding, groupBox9.Height + grpLoc.Y + settings.StandartPadding * 2);
+        }
+
+        private void metroTabPage4_SizeChanged(object sender, EventArgs e)
+        {
+            //grpBoxes 10 -> [11, 12]
+            //Bth 200 - 204 ;   205, 206
+            //970 -> 480 -> 230
+
+            //Признаки
+            //Контейнер для признаков
+            Size size = groupBox10.Size;
+            size.Width = (metroTabPage4.Size.Width - 10) / 2;
+            groupBox10.Size = size;
+            //Количественные переменные
+            size = groupBox11.Size;
+            size.Width = (groupBox10.Size.Width / 2) - 10;
+            groupBox11.Size = size;
+            //Порядковые переменные
+            groupBox12.Location = new Point(size.Width + settings.PaddingBetweenGroupBoxes, groupBox12.Location.Y);
+            groupBox12.Size = new Size(size.Width, groupBox12.Size.Height);
+
+            //Кнопки
+            int padding = settings.PaddingFromBtnSelectAll;
+            Point grpLoc = groupBox11.Location;
+            metroButton200.Location = new Point(grpLoc.X + padding, groupBox11.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton201.Location = new Point(grpLoc.X + groupBox11.Width - metroButton201.Width - padding, groupBox11.Height + grpLoc.Y + settings.StandartPadding * 2);
+            grpLoc = groupBox12.Location;
+            metroButton202.Location = new Point(grpLoc.X + padding, groupBox12.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton203.Location = new Point(grpLoc.X + groupBox12.Width - metroButton203.Width - padding, groupBox12.Height + grpLoc.Y + settings.StandartPadding * 2);
+        }
+
+        private void metroTabPage5_SizeChanged(object sender, EventArgs e)
+        {
+            //grpBoxes 13 -> [14, 15]
+            //10 11 12
+            //Bth 300 - 304 ;   305, 306
+            //970 -> 480 -> 230
+
+            //Признаки
+            //Контейнер для признаков
+            Size size = groupBox13.Size;
+            size.Width = (metroTabPage5.Size.Width - 10) / 2;
+            groupBox13.Size = size;
+            //Номинальные переменные
+            size = groupBox14.Size;
+            size.Width = (groupBox13.Size.Width / 2) - 10;
+            groupBox14.Size = size;
+            //Бинарные переменные
+            groupBox15.Location = new Point(size.Width + settings.PaddingBetweenGroupBoxes, groupBox15.Location.Y);
+            groupBox15.Size = new Size(size.Width, groupBox15.Size.Height);
+
+            //Кнопки
+            int padding = settings.PaddingFromBtnSelectAll;
+            Point grpLoc = groupBox14.Location;
+            metroButton300.Location = new Point(grpLoc.X + padding, groupBox14.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton301.Location = new Point(grpLoc.X + groupBox14.Width - metroButton301.Width - padding, groupBox14.Height + grpLoc.Y + settings.StandartPadding * 2);
+            grpLoc = groupBox15.Location;
+            metroButton302.Location = new Point(grpLoc.X + padding, groupBox15.Height + grpLoc.Y + settings.StandartPadding * 2);
+            metroButton303.Location = new Point(grpLoc.X + groupBox15.Width - metroButton303.Width - padding, groupBox15.Height + grpLoc.Y + settings.StandartPadding * 2);
         }
     }
 }
