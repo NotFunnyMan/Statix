@@ -161,8 +161,8 @@ namespace Statix
             InitializeComponent();
             REngine.SetEnvironmentVariables();
 
-            //formWidth = Width;
-            //formHeight = Height;
+            formWidth = Width;
+            formHeight = Height;
         }
 
         /// <summary>
