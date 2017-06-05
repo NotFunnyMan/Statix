@@ -40,7 +40,7 @@ namespace Statix
         /// <summary>
         /// Ностройки приложения.
         /// </summary>
-        Properties.Settings settings = new Properties.Settings();
+        Properties.Settings settings;
 
         /// <summary>
         /// Считанные данные
@@ -50,22 +50,22 @@ namespace Statix
         /// <summary>
         /// Получаем список индексов с Бин и Ном шкалами
         /// </summary>
-        private List<int> binList = new List<int>();
+        private List<int> binList;
 
         /// <summary>
         /// Получаем список индексов с Ном шкалами
         /// </summary>
-        private List<int> nomList = new List<int>();
+        private List<int> nomList;
 
         /// <summary>
         /// Получаем список индексов с Кол шкалой
         /// </summary>
-        private List<int> colList = new List<int>();
+        private List<int> colList;
 
         /// <summary>
         /// Получаем список индексов с Пор шкалой
         /// </summary>
-        private List<int> porList = new List<int>();
+        private List<int> porList;
 
         /// <summary>
         /// Список индексов группирующих факторов
@@ -143,8 +143,19 @@ namespace Statix
         /// </summary>
         private struct ContingencyTableResult
         {
+            /// <summary>
+            /// p-значение
+            /// </summary>
             public double pvalue;
+
+            /// <summary>
+            /// значение статистики
+            /// </summary>
             public double stat;
+
+            /// <summary>
+            /// Таблица сопряженности
+            /// </summary>
             public ContingencyTable table;
         }
 
@@ -153,9 +164,7 @@ namespace Statix
         public Form1()
         {
             InitializeComponent();
-            REngine.SetEnvironmentVariables();
-
-            metroTabControl1.SelectedIndex = 0;
+            settings = new Properties.Settings();
         }
 
         /// <summary>
@@ -165,7 +174,13 @@ namespace Statix
         /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
+            REngine.SetEnvironmentVariables();
+            metroTabControl1.SelectedIndex = 0;
 
+            binList = new List<int>();
+            nomList = new List<int>();
+            colList = new List<int>();
+            porList = new List<int>();
         }
 
         /// <summary>
@@ -230,10 +245,10 @@ namespace Statix
         /// </summary>
         private void CreateListsByTypeScale()
         {
-            colList.Clear();
-            porList.Clear();
-            binList.Clear();
-            nomList.Clear();
+            colList = new List<int>();
+            porList = new List<int>();
+            binList = new List<int>();
+            nomList = new List<int>();
 
             //Получаем списки индексов шкал
             for (int i = 0; i < data.Records; i++)
@@ -693,8 +708,7 @@ namespace Statix
             }
 
             #endregion
-
-
+            
         }
 
         /// <summary>
@@ -1011,15 +1025,20 @@ namespace Statix
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
 
-            report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
+            report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 независимым выборкам ");
 
-            report = OutResultInTableIndependent(report, "Критерий Манна-Уитни, ", resIndMannaWhitney);
-            report = OutResultInTableIndependent(report, "Критерий Краскела-Уоллиса, ", resIndKruskalWallis);
+            report = OutResultInTableIndependent(report, "Манна-Уитни", resIndMannaWhitney);
+            report = OutResultInTableIndependent(report, "Краскела-Уоллиса", resIndKruskalWallis);
 
             report.SaveToFile("..\\..\\ResultIndep.doc");
             System.Diagnostics.Process.Start("..\\..\\ResultIndep.doc");
+
+            //Удалим все созданные графики
+            var files = Directory.GetFiles(pathC);
+            foreach(string file in files)
+                File.Delete(file);
         }
 
         /// <summary>
@@ -1031,11 +1050,7 @@ namespace Statix
         /// <returns></returns>
         private WordDocument OutResultInTableIndependent(WordDocument _wordDocument, string _methodName, List<Sample> _resList)
         {
-            WordTable rt1;
-            string grpFact = "";
-
-            //Вставка графиков в отчет
-            //Добавим отступ от таблицы
+            //Получим пути созданных графиков для текущего метода
             string[] dirs;
             string methodName = "";
             if (_methodName.Contains("Манна"))
@@ -1049,18 +1064,24 @@ namespace Statix
                 methodName = "KW";
             }
             var grpRes = Grouping(_resList);
+
+            //Вывод результата
             for (int i = 0; i < grpRes.Count; i++)
             {
+                WordTable rt1;
                 Sample s;
                 //Создаем табилицу и заполняем шапку
-                rt1 = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 3, 2);
+                rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 3, 2);
+                //Название таблицы
+                _wordDocument.SetFont(settings.FontStandart);
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.WriteLine();
-                _wordDocument.WriteLine(_methodName);
-                grpFact = grpRes[i][0].GroupFact;
-                _wordDocument.WriteLine("Группирующий фактор: " + grpFact.ToString());
+                string tableNumber = Environment.NewLine + "Таблица " + (i + 1).ToString();                
+                _wordDocument.WriteLine(tableNumber);
+                string tableCaption = "Название таблицы";
+                _wordDocument.SetTextAlign(WordTextAlign.Center);
+                _wordDocument.WriteLine(tableCaption);
+
+                //Заполнение таблицы
                 rt1.Rows[0][0].Write("N");
                 rt1.Rows[0][1].Write("Показатель");
                 for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
@@ -1094,23 +1115,35 @@ namespace Statix
                 }
                 rt1.SaveToDocument(9600, 0);
 
+                //Примечание к таблице
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                string grpFact = grpRes[i][0].GroupFact;
+                string note = "Примечание: данный анализ был проведен с использованием критерия " + _methodName + ". " + 
+                              "В качестве группирующего фактора используется " + grpFact + ".";
+                _wordDocument.WriteLine(note);
+
                 //Вставим график
+                _wordDocument.SetTextAlign(WordTextAlign.Center);
                 List<string> graphNames = new List<string>();
+                //Получим список названий графиков
                 for (int j = 0; j < dirs.Length; j++)
                 {
                     string name = Path.GetFileNameWithoutExtension(dirs[j]);
                     graphNames.Add(name);
                 }
+                //Добавляем графики
                 for (int j = 0; j < grpRes[i].Count; j++)
                 {
                     int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + grpRes[i][j].NameSign);
                     _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
                     _wordDocument.WriteLine();
-                    //Удалить вставленный график
-                    //File.Delete(dirs[curGraph]);
+
+                    //Подпись к графику
+                    note = "Рисунок " + (j + 1).ToString() + " - " +
+                            "Название рисунка.";
+                    _wordDocument.WriteLine(note);
                 }
             }
-
             
             return _wordDocument;
         }
@@ -1221,7 +1254,7 @@ namespace Statix
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
 
-            report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
+            report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 зависимым выборкам ");
 
@@ -1248,9 +1281,9 @@ namespace Statix
             {
                 Sample s;
                 //Создаем табилицу и заполняем шапку
-                rt1 = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 1, 2);
+                rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 1, 2);
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                _wordDocument.SetFont(settings.FontStandart);
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
                 _wordDocument.WriteLine();
                 _wordDocument.WriteLine(_methodName);
@@ -1372,7 +1405,7 @@ namespace Statix
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
 
-            report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
+            report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Корреляционный анализ");
 
@@ -1428,7 +1461,7 @@ namespace Statix
                     else
                         heightTable = MaxSize;
 
-                    WordTable wt = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, widthTable + 1, heightTable + 1, 2);
+                    WordTable wt = _wordDocument.NewTable(settings.FontStandart, Color.Black, widthTable + 1, heightTable + 1, 2);
                     //Заполняем первую строку таблицы
                     string strRow = "";
                     for (int k = 0; k < widthTable; k++)
@@ -1449,7 +1482,7 @@ namespace Statix
                             wt.Rows[k][l].SetBorders(Color.Black, 1, true, true, true, true);
 
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
-                    _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                    _wordDocument.SetFont(settings.FontStandart);
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
                     _wordDocument.WriteLine(Environment.NewLine + "Таблица " + (tables.Count + 1).ToString() + " - Корреляционный анализ. " + _methodName);
 
@@ -1458,7 +1491,7 @@ namespace Statix
 
                     //Добавим примечание
                     _wordDocument.SetTextAlign(WordTextAlign.Justified);
-                    _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                    _wordDocument.SetFont(settings.FontStandart);
                     _wordDocument.WriteLine("Примечание: r - коэффициент корреляции; p - уровень статистической значимости; жирным шрифтом " +
                                             "выделена статистически значимая связь.");
                 }
@@ -1481,7 +1514,7 @@ namespace Statix
 
                         if (p <= 0.05)
                         {
-                            w.Rows[i + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                            w.Rows[i + 1][j + 1].SetFont(settings.FontStandart);
                             w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             if (p > 0.001)
                                 w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
@@ -1490,7 +1523,7 @@ namespace Statix
                         }
                         else
                         {
-                            w.Rows[i + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                            w.Rows[i + 1][j + 1].SetFont(settings.FontStandart);
                             w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                         }
@@ -1529,7 +1562,7 @@ namespace Statix
 
                             if (p <= 0.05)
                             {
-                                wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                                wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
                                 wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                                 if (p > 0.001)
                                     wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
@@ -1538,7 +1571,7 @@ namespace Statix
                             }
                             else
                             {
-                                wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                                wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
                                 wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             }
@@ -1572,7 +1605,7 @@ namespace Statix
 
                         if (p <= 0.05)
                         {
-                            wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                            wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
                             wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             if (p > 0.001)
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
@@ -1581,7 +1614,7 @@ namespace Statix
                         }
                         else
                         {
-                            wt.Rows[str + 1][j + 1].SetFont(new Font("Times New Roman", 12, FontStyle.Regular, GraphicsUnit.Pixel));
+                            wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
                             wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                         }
@@ -1804,7 +1837,7 @@ namespace Statix
         {
             WordDocument report = new WordDocument(WordDocumentFormat.A4);
 
-            report.SetFont(new Font("Times New Roman", 16, FontStyle.Regular, GraphicsUnit.Pixel));
+            report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Таблицы сопряженности ");
 
@@ -1826,9 +1859,9 @@ namespace Statix
             //Идем по спискам тиблиц
             foreach(ContingencyTableResult table in _resList)
             {
-                WordTable rt1 = _wordDocument.NewTable(new Font("Times New Roman", 12, FontStyle.Regular), Color.Black, table.table.Variable1List.Count + 2, table.table.Variable2List.Count + 2, 2);
-                //_wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.SetFont(new Font("Times New Roman", 12, FontStyle.Bold, GraphicsUnit.Pixel));
+                WordTable rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, table.table.Variable1List.Count + 2, table.table.Variable2List.Count + 2, 2);
+                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                _wordDocument.SetFont(settings.FontStandart);
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
                 if (table.table.RowCount == 2 && table.table.ColumnCount == 2)
                     _wordDocument.WriteLine("Критерий Вулфа");
@@ -1889,7 +1922,6 @@ namespace Statix
             //GroupBox'ы
             //Группирующие факторы
             Size size = groupBox1.Size;
-            //size.Width += rWidth / 2;
             size.Width = (metroTabPage2.Size.Width - 10) / 2;
             groupBox1.Size = size;
             //Бинарные переменные
