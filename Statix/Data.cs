@@ -15,22 +15,34 @@ namespace Statix
 
         #region Поля
 
-        //Уникальные значения
+        /// <summary>
+        /// Уникальные значения
+        /// </summary>
         private List<string> uniqueValues;
 
-        //Тип шкалы
+        /// <summary>
+        /// Тип шкалы
+        /// </summary>
         private List<string> scaleType;
 
-        //Название переменной
+        /// <summary>
+        /// Название переменной
+        /// </summary>
         private List<string> variableName;
 
-        //Все пациенты
+        /// <summary>
+        /// Все пациенты
+        /// </summary>
         private List<List<string>> patientsList;
 
-        //Количство переменных
+        /// <summary>
+        /// Количство переменных
+        /// </summary>
         private int records;
 
-        //Список ошибок
+        /// <summary>
+        /// Список ошибок
+        /// </summary>
         private Errors errors; 
 
         #endregion
@@ -202,7 +214,7 @@ namespace Statix
 
             //Проверка входных данных на корректность в соответствии с типом шкалы
             //Начинаем со второго значения, так как первое - порядковый номер
-            for (int i = 1; i < numbOfVar - 1; i++)
+            for (int i = 1; i < numbOfVar /*- 1*/; i++)
             {
                 typeScale = TakeScaleTypeAtIndex(i - 1);
                 if (typeScale == "бин")
@@ -370,7 +382,7 @@ namespace Statix
         /// </summary>
         public int Records
         {
-            get { return this.records; }
+            get { return records; }
         }
 
         /// <summary>
@@ -378,7 +390,7 @@ namespace Statix
         /// </summary>
         public int PatientsCount
         {
-            get { return this.patientsList.Count; }
+            get { return patientsList.Count; }
         }
 
         /// <summary>

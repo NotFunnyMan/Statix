@@ -192,7 +192,7 @@ namespace Statix
         {
             //Считывание данных из файла
             //Далее будет выбор файла
-            data = new Data("ExampleCSV.csv", Encoding.Default);
+            data = new Data("Exam.csv", Encoding.Default);
 
             //Вывод считанной информации для проверки
             OutRedingInformation();
@@ -225,16 +225,31 @@ namespace Statix
             int records = data.Records;
             metroGrid1.ColumnCount = records;
             metroGrid1.RowCount = data.PatientsCount + 3;
+
+            //Строка "Уникальные значения"
+            metroGrid1.Rows[0].DefaultCellStyle.BackColor = settings.ColorTableCaption;
             for (int i = 0; i < records; i++)
                 metroGrid1.Rows[0].Cells[i].Value = data.TakeUniqueValuesAtIndex(i);
+
+            //Строка "Тип шкалы"
+            metroGrid1.Rows[1].DefaultCellStyle.BackColor = settings.ColorTableCaption;
             for (int i = 0; i < records; i++)
                 metroGrid1.Rows[1].Cells[i].Value = data.TakeScaleTypeAtIndex(i);
+
+            //Строка "Название переменной"
+            metroGrid1.Rows[2].DefaultCellStyle.BackColor = settings.ColorTableCaption;
             for (int i = 0; i < records; i++)
                 metroGrid1.Rows[2].Cells[i].Value = data.TakeVariableNameAtIndex(i);
+
             for (int j = 0; j < data.PatientsCount; j++)
             {
-                List<string> person;
-                person = data.TakePatientAtIndex(j);
+                List<string> person = data.TakePatientAtIndex(j);
+                //Цвет строки в таблице
+                if (person.IndexOf("NA") != -1)
+                    metroGrid1.Rows[j + 3].DefaultCellStyle.BackColor = settings.ColorTableError;
+                else
+                    metroGrid1.Rows[j + 3].DefaultCellStyle.BackColor = settings.ColorTableOK;
+
                 for (int i = 0; i < records; i++)
                     metroGrid1.Rows[j + 3].Cells[i].Value = person[i];
             }

@@ -76,5 +76,32 @@ namespace Statix.Properties {
                 return ((global::System.Drawing.Font)(this["FontStandart"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("228, 36, 36")]
+        public global::System.Drawing.Color ColorTableError {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorTableError"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("112, 173, 71")]
+        public global::System.Drawing.Color ColorTableOK {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorTableOK"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("91, 155, 213")]
+        public global::System.Drawing.Color ColorTableCaption {
+            get {
+                return ((global::System.Drawing.Color)(this["ColorTableCaption"]));
+            }
+        }
     }
 }
