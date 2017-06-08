@@ -938,8 +938,8 @@ namespace Statix
                 var sD = engine.Evaluate("sd(X)").AsNumeric();
                 var quantile = engine.Evaluate("quantile(X)").AsNumeric();
                 var tmp = _t.SubSampleList[i];
-                tmp.LowerQuintile = quantile[0];
-                tmp.TopQuintile = quantile[4];
+                tmp.LowerQuintile = quantile[1]; //0
+                tmp.TopQuintile = quantile[3]; //4
                 tmp.Median = median[0];
                 tmp.StandartDeviation = sD[0];
                 _t.SubSampleList[i] = tmp;
@@ -1038,8 +1038,8 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton10_Click(object sender, EventArgs e)
         {
-            WordDocument report = new WordDocument(WordDocumentFormat.A4);
-
+            WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
+            //report.SetLineIndentation();
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 независимым выборкам ");
@@ -1089,10 +1089,13 @@ namespace Statix
                 rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 3, 2);
                 //Название таблицы
                 _wordDocument.SetFont(settings.FontStandart);
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                _wordDocument.SetTextAlign(WordTextAlign.Right);
                 string tableNumber = Environment.NewLine + "Таблица " + (i + 1).ToString();                
                 _wordDocument.WriteLine(tableNumber);
-                string tableCaption = "Название таблицы";
+                string tableCaption = "Сравнение средних уровней переменных в группах: ";
+                for (int j = 0; j < grpRes[i].Count - 1; j++)
+                    tableCaption += "\"" + grpRes[i][j].NameSign + "\"" + ", ";
+                tableCaption += "\"" + grpRes[i].Last().NameSign + "\"";
                 _wordDocument.SetTextAlign(WordTextAlign.Center);
                 _wordDocument.WriteLine(tableCaption);
 
@@ -1128,13 +1131,16 @@ namespace Statix
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 3; k++)
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
-                rt1.SaveToDocument(9600, 0);
+                rt1.SaveToDocument(10000, 0);
 
                 //Примечание к таблице
                 _wordDocument.SetTextAlign(WordTextAlign.Justified);
                 string grpFact = grpRes[i][0].GroupFact;
+                //_wordDocument.SetLineIndentation();
                 string note = "Примечание: данный анализ был проведен с использованием критерия " + _methodName + ". " + 
-                              "В качестве группирующего фактора используется " + grpFact + ".";
+                              "В качестве группирующего фактора используется " + grpFact + ". " + 
+                              "Формат представления информации в ячейке: среднее значение " + (char)177 + 
+                              " среднеквадратическое отклонение, медиана, (нижний; верхний) квартили.";
                 _wordDocument.WriteLine(note);
 
                 //Вставим график
@@ -1267,7 +1273,7 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton16_Click(object sender, EventArgs e)
         {
-            WordDocument report = new WordDocument(WordDocumentFormat.A4);
+            WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
 
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
@@ -1418,7 +1424,7 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton22_Click(object sender, EventArgs e)
         {
-            WordDocument report = new WordDocument(WordDocumentFormat.A4);
+            WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
 
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
@@ -1850,7 +1856,7 @@ namespace Statix
         /// <param name="e"></param>
         private void metroButton303_Click(object sender, EventArgs e)
         {
-            WordDocument report = new WordDocument(WordDocumentFormat.A4);
+            WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
 
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
