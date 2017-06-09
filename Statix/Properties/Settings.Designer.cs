@@ -103,5 +103,14 @@ namespace Statix.Properties {
                 return ((global::System.Drawing.Color)(this["ColorTableCaption"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Times New Roman, 14.25pt, style=Bold")]
+        public global::System.Drawing.Font FontBold {
+            get {
+                return ((global::System.Drawing.Font)(this["FontBold"]));
+            }
+        }
     }
 }

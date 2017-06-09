@@ -1039,7 +1039,7 @@ namespace Statix
         private void metroButton10_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
-            //report.SetLineIndentation();
+            report.WriteControlWord(@"sl360\slmult1");
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 независимым выборкам ");
@@ -1068,6 +1068,7 @@ namespace Statix
             //Получим пути созданных графиков для текущего метода
             string[] dirs;
             string methodName = "";
+            bool pval = false;
             if (_methodName.Contains("Манна"))
             {
                 dirs = Directory.GetFiles(pathC, "MW*"); //Результаты для Манна-Уитни
@@ -1085,63 +1086,145 @@ namespace Statix
             {
                 WordTable rt1;
                 Sample s;
-                //Создаем табилицу и заполняем шапку
-                rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 3, 2);
+
+                //Текст перед таблицей
+                string grpFact = grpRes[i][0].GroupFact;
+                string text = "В теблице " + (i + 1).ToString() + " приведен результат статистического анализа данных, проведенного с использованием " 
+                              + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная " + "\"" + grpFact + "\"" + ".";
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.WriteLine(text);
+
                 //Название таблицы
-                _wordDocument.SetFont(settings.FontStandart);
-                _wordDocument.SetTextAlign(WordTextAlign.Right);
-                string tableNumber = Environment.NewLine + "Таблица " + (i + 1).ToString();                
-                _wordDocument.WriteLine(tableNumber);
+                string tableNumber = Environment.NewLine + "Таблица " + (i + 1).ToString() + " - ";  
                 string tableCaption = "Сравнение средних уровней переменных в группах: ";
                 for (int j = 0; j < grpRes[i].Count - 1; j++)
                     tableCaption += "\"" + grpRes[i][j].NameSign + "\"" + ", ";
                 tableCaption += "\"" + grpRes[i].Last().NameSign + "\"";
-                _wordDocument.SetTextAlign(WordTextAlign.Center);
-                _wordDocument.WriteLine(tableCaption);
+                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                _wordDocument.SetParagraph(0, 0);
+                _wordDocument.WriteLine(tableNumber + tableCaption);
 
+                //Создаем табилицу и заполняем шапку
+                _wordDocument.SetParagraph(0, 0);
+                rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 2, 2);
                 //Заполнение таблицы
-                rt1.Rows[0][0].Write("N");
-                rt1.Rows[0][1].Write("Показатель");
+                rt1.Rows[0][0].Write("Показатель");
                 for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
-                    rt1.Rows[0][2 + k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].SampleList.Count.ToString());
-                rt1.Rows[0][grpRes[i][0].SubSampleList.Count + 2].Write("p-значение");
+                    rt1.Rows[0][1 + k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + "\n(n = " + grpRes[i][0].SubSampleList[k].SampleList.Count.ToString() + ")");
+                rt1.Rows[0][grpRes[i][0].SubSampleList.Count + 1].Write("p-значение");
 
                 //Отрисуем рамки у ячеек
                 for (int j = 0; j < grpRes[i][0].SubSampleList.Count + 3; j++)
                     rt1.Rows[0][j].SetBorders(Color.Black, 1, true, true, true, true);
 
                 //Выводим данные в таблицу
+                List<string> statSignif = new List<string>();
                 for (int j = 0; j < grpRes[i].Count; j++)
                 {
                     s = grpRes[i][j];
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
-                    rt1.Rows[j + 1][0].Write((j + 1).ToString());
-                    rt1.Rows[j + 1][1].Write(s.NameSign);
+                    rt1.Rows[j + 1][0].Write(s.NameSign);
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
                     {
-                        rt1.Rows[j + 1][2 + k].WriteLine(s.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(s.SubSampleList[k].StandartDeviation, 3).ToString());
-                        rt1.Rows[j + 1][2 + k].WriteLine(Math.Round(s.SubSampleList[k].Median, 3).ToString());
-                        rt1.Rows[j + 1][2 + k].Write("(" + Math.Round(s.SubSampleList[k].LowerQuintile, 3).ToString() + "; " + Math.Round(s.SubSampleList[k].TopQuintile, 3).ToString() + ")");
+                        rt1.Rows[j + 1][1 + k].WriteLine(s.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(s.SubSampleList[k].StandartDeviation, 3).ToString());
+                        rt1.Rows[j + 1][1 + k].WriteLine(Math.Round(s.SubSampleList[k].Median, 3).ToString());
+                        rt1.Rows[j + 1][1 + k].Write("(" + Math.Round(s.SubSampleList[k].LowerQuintile, 3).ToString() + "; " + Math.Round(s.SubSampleList[k].TopQuintile, 3).ToString() + ")");
                     }
 
-                    double p = grpRes[i][j].PValue;
-                    rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 2].Write((Math.Round(p, 3).ToString()));
+                    double p = Math.Round(grpRes[i][j].PValue, 3);
+                    if (j == 0) p = 0.03;
+                    if (j == 1) p = 0.0003;
+                    if (p <= 0.05)
+                    {
+                        if (p > 0.001)
+                        {
+                            rt1.SetFont(settings.FontBold);
+                            rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 1].Write(p.ToString() + "*");
+                            pval = true;
+                            statSignif.Add(grpRes[i][j].NameSign);
+                        }
+                        else
+                        {
+                            rt1.SetFont(settings.FontStandart);
+                            rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 1].Write("p < 0.001");
+                            statSignif.Add(grpRes[i][j].NameSign);
+                        }
+                    }
+                    else
+                    {
+                        rt1.SetFont(settings.FontStandart);
+                        rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 1].Write(p.ToString());
+                    }
+                    rt1.SetFont(settings.FontStandart);
 
                     //Отрисуем рамки у ячеек
-                    for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 3; k++)
+                    for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 2; k++)
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
                 rt1.SaveToDocument(10000, 0);
 
                 //Примечание к таблице
+                _wordDocument.WriteControlWord(@"sl360\slmult1");
                 _wordDocument.SetTextAlign(WordTextAlign.Justified);
-                string grpFact = grpRes[i][0].GroupFact;
-                //_wordDocument.SetLineIndentation();
-                string note = "Примечание: данный анализ был проведен с использованием критерия " + _methodName + ". " + 
-                              "В качестве группирующего фактора используется " + grpFact + ". " + 
-                              "Формат представления информации в ячейке: среднее значение " + (char)177 + 
+                string note = "Примечание: формат представления информации в ячейке: среднее значение " + (char)177 + 
                               " среднеквадратическое отклонение, медиана, (нижний; верхний) квартили.";
-                _wordDocument.WriteLine(note);
+
+                //Добавление информации о "*" в таблице, при условии, что в ней есть p-value < 0.05
+                string star = "";
+                if (pval)
+                {
+                    star = " * - статистически значимое различие между ";
+                    if (grpRes[i][0].SubSampleList.Count == 2)
+                    {
+                        star += "\"" + grpRes[i][0].SubSampleList[0].UniqueVal + "\"" + " и " + "\"" + grpRes[i][0].SubSampleList[1].UniqueVal + "\"";
+                    }
+                    else
+                    {
+                        for (int k = 0; k < grpRes[i][0].SubSampleList.Count - 1; k++)
+                            star += "\"" + grpRes[i][0].SubSampleList[k].UniqueVal + "\"";
+                        star += " и " + "\"" + grpRes[i][0].SubSampleList.Last().UniqueVal + "\"";
+                    }
+                    star += " p < 0.05.";
+                }
+                _wordDocument.WriteLine(note + star);
+
+                //Вывод из таблицы
+                _wordDocument.SetParagraph(0, 567);
+                string conclusion = "Из таблицы " + (i + 1).ToString() + " видно, что ";
+                if (pval)
+                {
+                    conclusion += "статистически значимое различие есть у ";
+                    if (statSignif.Count == 1)
+                    {
+                        conclusion += "признака " + "\"" + statSignif.First() + "\", ";
+                    }
+                    else
+                    {
+                        conclusion += "признаков ";
+                        for (int j = 0; j < statSignif.Count; j++)
+                            conclusion += "\"" + statSignif[j] + "\"" + ", ";
+                    }
+                    conclusion += " с учетом уровня значимости равного 0.05.";
+                }
+                else
+                {
+                    conclusion += " статистически значимых различий не обнаружено. С уровнем значимости равным 0.05.";
+                }
+                _wordDocument.WriteLine(conclusion);
+
+                //Предисловие к графикам
+                string preface = "";
+                if (grpRes[i].Count == 1)
+                {
+                    preface += "На рисунке 1 изображена диаграмма размахов признака, приведенного в таблице " + (i + 1).ToString() + ".";
+                }
+                else
+                {
+                    preface += "На рисунках 1 - " + grpRes[i].Count.ToString() + " изображены диаграммы размахов признаков, приведенных в таблице " 
+                        + (i + 1).ToString() + ".";
+                }
+                _wordDocument.WriteLine(preface);
 
                 //Вставим график
                 _wordDocument.SetTextAlign(WordTextAlign.Center);
@@ -1160,8 +1243,9 @@ namespace Statix
                     _wordDocument.WriteLine();
 
                     //Подпись к графику
+                    _wordDocument.WriteControlWord(@"sl360\slmult1");
                     note = "Рисунок " + (j + 1).ToString() + " - " +
-                            "Название рисунка.";
+                            "Диаграмма размаха переменной " + "\"" + grpRes[i][j].NameSign + "\"";
                     _wordDocument.WriteLine(note);
                 }
             }
@@ -2023,7 +2107,7 @@ namespace Statix
                     names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"";
             }
             engine.Evaluate("jpeg(\"" + pathR + _Methodname + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
-            engine.Evaluate("boxplot(" + data + ", main=\"" + _sample.GroupFact.ToString() + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\")");
+            engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\", xlab=\"" + _sample.GroupFact.ToString() + "\")");
             engine.Evaluate("dev.off()");
         }
 
