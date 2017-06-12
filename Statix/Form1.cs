@@ -192,7 +192,7 @@ namespace Statix
         {
             //Считывание данных из файла
             //Далее будет выбор файла
-            data = new Data("Exam.csv", Encoding.Default);
+            data = new Data("ExampleCSV.csv", Encoding.Default);
 
             //Вывод считанной информации для проверки
             OutRedingInformation();
@@ -207,7 +207,7 @@ namespace Statix
             //    string message = "Желаете посмотреть список ошибок?\n" + "\"Yes\" - Да, \"No\" - Нет.\n";
             //    if (MetroMessageBox.Show(this, message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.Yes)
             //    {
-            //        //Вывод списка ошибок в новом окне
+            //        Вывод списка ошибок в новом окне
             //        FormForErrors Form2 = new FormForErrors(data.ErrorsList().ErrorsList);
             //        Form2.Show();
             //    }
@@ -1039,6 +1039,7 @@ namespace Statix
         private void metroButton10_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
+            //1.5 отступ в документе
             report.WriteControlWord(@"sl360\slmult1");
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
@@ -1133,8 +1134,8 @@ namespace Statix
                     }
 
                     double p = Math.Round(grpRes[i][j].PValue, 3);
-                    if (j == 0) p = 0.03;
-                    if (j == 1) p = 0.0003;
+                    //if (j == 0) p = 0.03;
+                    //if (j == 1) p = 0.0003;
                     if (p <= 0.05)
                     {
                         if (p > 0.001)
@@ -1419,7 +1420,7 @@ namespace Statix
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 1; k++)
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
-                rt1.SaveToDocument(9600, 0);
+                rt1.SaveToDocument(10000, 0);
             }
             return _wordDocument;
         }
@@ -1592,7 +1593,7 @@ namespace Statix
                     _wordDocument.WriteLine(Environment.NewLine + "Таблица " + (tables.Count + 1).ToString() + " - Корреляционный анализ. " + _methodName);
 
                     tables.Add(wt);
-                    wt.SaveToDocument(9600, 0);
+                    wt.SaveToDocument(10000, 0);
 
                     //Добавим примечание
                     _wordDocument.SetTextAlign(WordTextAlign.Justified);
@@ -1948,8 +1949,8 @@ namespace Statix
 
             report = OutResultInContingencyTable(report, resContingencyTables);
 
-            report.SaveToFile("..\\..\\Table.doc");
-            System.Diagnostics.Process.Start("..\\..\\Table.doc");
+            report.SaveToFile("..\\..\\ResultTable.doc");
+            System.Diagnostics.Process.Start("..\\..\\ResultTable.doc");
         }
 
         /// <summary>
@@ -2005,7 +2006,7 @@ namespace Statix
                     for (int k = 0; k < table.table.Variable2List.Count + 2; k++)
                         rt1.Rows[j][k].SetBorders(Color.Black, 1, true, true, true, true);
 
-                rt1.SaveToDocument(9600, 0);
+                rt1.SaveToDocument(10000, 0);
                 _wordDocument.WriteLine();
                 _wordDocument.WriteLine("Stat = " + table.stat.ToString());
                 _wordDocument.WriteLine("Pval = " + table.pvalue.ToString());

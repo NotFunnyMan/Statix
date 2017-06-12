@@ -134,7 +134,7 @@
             // metroButton700
             // 
             this.metroButton700.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.metroButton700.Location = new System.Drawing.Point(422, 431);
+            this.metroButton700.Location = new System.Drawing.Point(422, 428);
             this.metroButton700.Name = "metroButton700";
             this.metroButton700.Size = new System.Drawing.Size(144, 23);
             this.metroButton700.TabIndex = 3;
@@ -144,11 +144,13 @@
             // 
             // metroGrid1
             // 
-            this.metroGrid1.AllowUserToResizeRows = false;
+            this.metroGrid1.AllowUserToAddRows = false;
+            this.metroGrid1.AllowUserToDeleteRows = false;
             this.metroGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.metroGrid1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.metroGrid1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.metroGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Sunken;
             this.metroGrid1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -187,7 +189,7 @@
             this.metroGrid1.RowHeadersVisible = false;
             this.metroGrid1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.metroGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.metroGrid1.Size = new System.Drawing.Size(964, 396);
+            this.metroGrid1.Size = new System.Drawing.Size(964, 393);
             this.metroGrid1.TabIndex = 2;
             // 
             // metroTabPage2
