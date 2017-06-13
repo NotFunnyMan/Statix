@@ -25,12 +25,6 @@ namespace Statix
     public partial class Form1 : MetroForm
     {
         #region Поля
-        
-        /// <summary>
-        /// Дирректории для C# и R
-        /// </summary>
-        private string pathC = "..\\..\\graphics";
-        private string pathR = "../../graphics/";
 
         /// <summary>
         /// Пространство языка R
@@ -158,6 +152,18 @@ namespace Statix
             /// </summary>
             public ContingencyTable table;
         }
+
+        /// <summary>
+        /// Дирректории для C# и R
+        /// </summary>
+        private string pathC = "..\\..\\graphics";
+        private string pathR = "../../graphics/";
+
+        /// <summary>
+        /// Сквозная нумерация для отчетов
+        /// </summary>
+        private int endToEndTable;
+        private int endToEndPicture;
 
         #endregion
 
@@ -988,8 +994,10 @@ namespace Statix
                         testRes = FillingResults(samples[i].SubSampleList, testRes);
                         resIndMannaWhitney.Add(testRes);
 
-                        //Нарисовать график для выборки
-                        CreateGraphic(samples[i], "MW");
+                        //Если получилась статистически значимая связь, то нарисуем график
+                        if (p <= settings.Statistical_significance)
+                            //Нарисовать график для выборки
+                            CreateGraphic(samples[i], "MW");
                     }
                     //else
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
@@ -1018,8 +1026,10 @@ namespace Statix
                         testRes = FillingResults(samples[i].SubSampleList, testRes);
                         resIndKruskalWallis.Add(testRes);
 
-                        //Нарисовать график для выборки
-                        CreateGraphic(samples[i], "KW");
+                        //Если получилась статистически значимая связь, то нарисуем график
+                        if (p <= settings.Statistical_significance)
+                            //Нарисовать график для выборки
+                            CreateGraphic(samples[i], "KW");
                     }
                     catch(Exception)
                     {
@@ -1045,6 +1055,8 @@ namespace Statix
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Сравнение средних по 2 независимым выборкам ");
 
+            endToEndTable = 1;
+            endToEndPicture = 1;
             report = OutResultInTableIndependent(report, "Манна-Уитни", resIndMannaWhitney);
             report = OutResultInTableIndependent(report, "Краскела-Уоллиса", resIndKruskalWallis);
 
@@ -1080,6 +1092,15 @@ namespace Statix
                 dirs = Directory.GetFiles(pathC, "KW*"); //Результаты для Краскела-Уоллиса
                 methodName = "KW";
             }
+
+            //Получим список названий графиков
+            List<string> graphNames = new List<string>();
+            for (int j = 0; j < dirs.Length; j++)
+            {
+                string name = Path.GetFileNameWithoutExtension(dirs[j]);
+                graphNames.Add(name);
+            }
+
             var grpRes = Grouping(_resList);
 
             //Вывод результата
@@ -1090,14 +1111,14 @@ namespace Statix
 
                 //Текст перед таблицей
                 string grpFact = grpRes[i][0].GroupFact;
-                string text = "В теблице " + (i + 1).ToString() + " приведен результат статистического анализа данных, проведенного с использованием " 
+                string text = "В таблице " + endToEndTable.ToString() + " приведен результат статистического анализа данных, проведенного с использованием " 
                               + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная " + "\"" + grpFact + "\"" + ".";
                 _wordDocument.SetTextAlign(WordTextAlign.Justified);
                 _wordDocument.SetParagraph(0, 567);
                 _wordDocument.WriteLine(text);
 
                 //Название таблицы
-                string tableNumber = Environment.NewLine + "Таблица " + (i + 1).ToString() + " - ";  
+                string tableNumber = Environment.NewLine + "Таблица " + endToEndTable.ToString() + " - ";  
                 string tableCaption = "Сравнение средних уровней переменных в группах: ";
                 for (int j = 0; j < grpRes[i].Count - 1; j++)
                     tableCaption += "\"" + grpRes[i][j].NameSign + "\"" + ", ";
@@ -1134,8 +1155,6 @@ namespace Statix
                     }
 
                     double p = Math.Round(grpRes[i][j].PValue, 3);
-                    //if (j == 0) p = 0.03;
-                    //if (j == 1) p = 0.0003;
                     if (p <= 0.05)
                     {
                         if (p > 0.001)
@@ -1173,6 +1192,7 @@ namespace Statix
 
                 //Добавление информации о "*" в таблице, при условии, что в ней есть p-value < 0.05
                 string star = "";
+                string conclusion = "Из таблицы " + endToEndTable.ToString() + " видно, что ";
                 if (pval)
                 {
                     star = " * - статистически значимое различие между ";
@@ -1183,18 +1203,13 @@ namespace Statix
                     else
                     {
                         for (int k = 0; k < grpRes[i][0].SubSampleList.Count - 1; k++)
-                            star += "\"" + grpRes[i][0].SubSampleList[k].UniqueVal + "\"";
+                            star += "\"" + grpRes[i][0].SubSampleList[k].UniqueVal + "\"" + ", ";
                         star += " и " + "\"" + grpRes[i][0].SubSampleList.Last().UniqueVal + "\"";
                     }
                     star += " p < 0.05.";
-                }
-                _wordDocument.WriteLine(note + star);
-
-                //Вывод из таблицы
-                _wordDocument.SetParagraph(0, 567);
-                string conclusion = "Из таблицы " + (i + 1).ToString() + " видно, что ";
-                if (pval)
-                {
+                    _wordDocument.WriteLine(note + star);
+                    
+                    //Вывод из таблицы
                     conclusion += "статистически значимое различие есть у ";
                     if (statSignif.Count == 1)
                     {
@@ -1206,49 +1221,56 @@ namespace Statix
                         for (int j = 0; j < statSignif.Count; j++)
                             conclusion += "\"" + statSignif[j] + "\"" + ", ";
                     }
-                    conclusion += " с учетом уровня значимости равного 0.05.";
+                    conclusion += " с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
+                    _wordDocument.SetParagraph(0, 567);
+                    _wordDocument.WriteLine(conclusion);
                 }
                 else
                 {
-                    conclusion += " статистически значимых различий не обнаружено. С уровнем значимости равным 0.05.";
+                    _wordDocument.WriteLine(note + star);
+                    conclusion += "статистически значимых различий не обнаружено. Заданный уровень значимости равен " + settings.Statistical_significance.ToString() + ".";
+                    _wordDocument.SetParagraph(0, 567);
+                    _wordDocument.WriteLine(conclusion);
                 }
-                _wordDocument.WriteLine(conclusion);
+                pval = false;
 
-                //Предисловие к графикам
-                string preface = "";
-                if (grpRes[i].Count == 1)
+                //Есть ли графики к результату статистического анализа
+                if (statSignif.Count != 0)
                 {
-                    preface += "На рисунке 1 изображена диаграмма размахов признака, приведенного в таблице " + (i + 1).ToString() + ".";
-                }
-                else
-                {
-                    preface += "На рисунках 1 - " + grpRes[i].Count.ToString() + " изображены диаграммы размахов признаков, приведенных в таблице " 
-                        + (i + 1).ToString() + ".";
-                }
-                _wordDocument.WriteLine(preface);
+                    //Добавляем графики
+                    for (int j = 0; j < statSignif.Count; j++)
+                    {
+                        int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + statSignif[j]);
+                        if (curGraph != -1)
+                        {
+                            //Предисловие к графикам
+                            string preface = "";
+                            if (dirs.Length == 1)
+                            {
+                                preface += "На рисунке " + endToEndPicture.ToString() + " изображена диаграмма размахов признака, приведенного в таблице "
+                                           + endToEndTable.ToString() + ".";
+                            }
+                            else
+                            {
+                                preface += "На рисунках " + endToEndPicture.ToString() + " - " + (endToEndPicture + dirs.Length).ToString() +
+                                           " изображены диаграммы размахов признаков, приведенных в таблице " + endToEndTable.ToString() + ".";
+                            }
+                            _wordDocument.WriteLine(preface);
 
-                //Вставим график
-                _wordDocument.SetTextAlign(WordTextAlign.Center);
-                List<string> graphNames = new List<string>();
-                //Получим список названий графиков
-                for (int j = 0; j < dirs.Length; j++)
-                {
-                    string name = Path.GetFileNameWithoutExtension(dirs[j]);
-                    graphNames.Add(name);
+                            //Вставим график
+                            _wordDocument.SetTextAlign(WordTextAlign.Center);
+                            _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
+                            _wordDocument.WriteLine();
+                            //Подпись к графику
+                            _wordDocument.WriteControlWord(@"sl360\slmult1");
+                            note = "Рисунок " + endToEndPicture.ToString() + " - " +
+                                    "Диаграмма размаха переменной " + "\"" + statSignif[j] + "\"";
+                            _wordDocument.WriteLine(note);
+                        }
+                    }
                 }
-                //Добавляем графики
-                for (int j = 0; j < grpRes[i].Count; j++)
-                {
-                    int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + grpRes[i][j].NameSign);
-                    _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
-                    _wordDocument.WriteLine();
-
-                    //Подпись к графику
-                    _wordDocument.WriteControlWord(@"sl360\slmult1");
-                    note = "Рисунок " + (j + 1).ToString() + " - " +
-                            "Диаграмма размаха переменной " + "\"" + grpRes[i][j].NameSign + "\"";
-                    _wordDocument.WriteLine(note);
-                }
+                endToEndTable++;
+                endToEndPicture += statSignif.Count;
             }
             
             return _wordDocument;
@@ -2082,7 +2104,7 @@ namespace Statix
         /// Отрисовка графиков по полученным выборкам
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateGraphic(Sample _sample, string _Methodname)
+        private void CreateGraphic(Sample _sample, string _MethodName)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
@@ -2107,7 +2129,7 @@ namespace Statix
                 else
                     names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"";
             }
-            engine.Evaluate("jpeg(\"" + pathR + _Methodname + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
+            engine.Evaluate("jpeg(\"" + pathR + _MethodName + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\", xlab=\"" + _sample.GroupFact.ToString() + "\")");
             engine.Evaluate("dev.off()");
         }

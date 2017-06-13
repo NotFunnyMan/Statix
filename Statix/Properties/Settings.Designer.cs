@@ -112,5 +112,14 @@ namespace Statix.Properties {
                 return ((global::System.Drawing.Font)(this["FontBold"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.05")]
+        public double Statistical_significance {
+            get {
+                return ((double)(this["Statistical_significance"]));
+            }
+        }
     }
 }
