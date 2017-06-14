@@ -84,12 +84,12 @@ namespace Statix
         /// <summary>
         /// Сравнение зависимых групп. Тест Вилкоксона
         /// </summary>
-        private List<Sample> resDepWilcoxon = new List<Sample>();
+        private Sample resDepWilcoxon;
 
         /// <summary>
         /// Сравнение зависимых групп. Тест Фридмана
         /// </summary>
-        private List<Sample> resDepFridman = new List<Sample>();
+        private Sample resDepFridman;
 
         /// <summary>
         /// Структура для хранения результата корреляционного анализа
@@ -1311,11 +1311,7 @@ namespace Statix
             GenericVector tmp;
             Sample sample = new Sample();
             sample = Sample.GetSample(data, signsList);
-
-            //Очистим списки результатов
-            resDepWilcoxon.Clear();
-            resDepFridman.Clear();
-
+            
             if (signsList.Count == 2)
             {
                 //Вилкоксон
@@ -1329,12 +1325,12 @@ namespace Statix
 
                 //Посчитаем медиану и стандартное отклонение
                 sample = FillingResults(sample.SubSampleList, sample);
-                resDepWilcoxon.Add(sample);
+                resDepWilcoxon = sample;
 
                 //Если получилась статистически значимая связь, то нарисуем график
                 if (p <= settings.Statistical_significance)
                     //Нарисовать график для выборки
-                    CreateGraphic(sample, "WI");
+                    CreateGraphic(sample.SubSampleList, "WI");
             }
             else
             {
@@ -1353,7 +1349,7 @@ namespace Statix
 
                 //Посчитаем медиану и стандартное отклонение
                 sample = FillingResults(sample.SubSampleList, sample);
-                resDepFridman.Add(sample);
+                resDepFridman = sample;
 
                 //Если получилась статистически значимая связь, то нарисуем график
                 if (p <= settings.Statistical_significance)
@@ -1380,8 +1376,8 @@ namespace Statix
             //Сквозная нумерация
             endToEndTable = 1;
             endToEndPicture = 1;
-            report = OutResultInTableDependent(report, "Критерий Вилкоксона", resDepWilcoxon);
-            report = OutResultInTableDependent(report, "Критерий Фридмана", resDepFridman);
+            report = OutResultInTableDependent(report, "Вилкоксона", resDepWilcoxon);
+            report = OutResultInTableDependent(report, "Фридмана", resDepFridman);
 
             report.SaveToFile("..\\..\\ResultDep.doc");
             System.Diagnostics.Process.Start("..\\..\\ResultDep.doc");
@@ -1399,49 +1395,153 @@ namespace Statix
         /// <param name="_methodName">Название метода</param>
         /// <param name="_resList">Список с результатами проверки</param>
         /// <returns></returns>
-        private WordDocument OutResultInTableDependent(WordDocument _wordDocument, string _methodName, List<Sample> _resList)
+        private WordDocument OutResultInTableDependent(WordDocument _wordDocument, string _methodName, Sample _res)
         {
-            WordTable rt1;
-
-            var grpRes = Grouping(_resList);
-            for (int i = 0; i < grpRes.Count; i++)
+            if (_res != null)
             {
-                Sample s;
+                //Получим пути созданных графиков для текущего метода
+                string[] dirs;
+                //string methodName = "";
+                bool pval = false;
+                if (_methodName.Contains("Вилкоксона"))
+                {
+                    dirs = Directory.GetFiles(pathC, "WI*"); //Результаты для Манна-Уитни
+                    //methodName = "WI";
+                }
+                else
+                {
+                    dirs = Directory.GetFiles(pathC, "FR*"); //Результаты для Краскела-Уоллиса
+                    //methodName = "FR";
+                }
+
+                //Получим список названий графиков
+                List<string> graphNames = new List<string>();
+                for (int j = 0; j < dirs.Length; j++)
+                {
+                    string name = Path.GetFileNameWithoutExtension(dirs[j]);
+                    graphNames.Add(name);
+                }
+
+                //Текст перед таблицей
+                string text = "В таблице " + endToEndTable.ToString() + " приведен результат статистического анализа данных, проведенного с использованием "
+                                + "критерия " + _methodName + ".";
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.WriteLine(text);
+
+                //Название таблицы
+                string tableNumber = Environment.NewLine + "Таблица " + endToEndTable.ToString() + " - ";
+                string tableCaption = "Сравнение средних уровней переменных: ";
+                for (int j = 0; j < _res.SubSampleList.Count - 1; j++)
+                    tableCaption += "\"" + _res.SubSampleList[j].UniqueVal + "\"" + ", ";
+                tableCaption += "\"" + _res.SubSampleList.Last().UniqueVal + "\"";
+                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                _wordDocument.SetParagraph(0, 0);
+                _wordDocument.WriteLine(tableNumber + tableCaption);
+
                 //Создаем табилицу и заполняем шапку
-                rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, grpRes[i].Count + 1, grpRes[i][0].SubSampleList.Count + 1, 2);
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.SetFont(settings.FontStandart);
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
-                _wordDocument.WriteLine();
-                _wordDocument.WriteLine(_methodName);
-                for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
-                    rt1.Rows[0][k].Write(grpRes[i][0].SubSampleList[k].UniqueVal + ", n = " + grpRes[i][0].SubSampleList[k].SampleList.Count.ToString());
-                rt1.Rows[0][grpRes[i][0].SubSampleList.Count].Write("p-значение");
+                _wordDocument.SetParagraph(0, 0);
+                WordTable rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, 2, _res.SubSampleList.Count + 1, 2);
+                //Заполнение таблицы
+                for (int k = 0; k < _res.SubSampleList.Count; k++)
+                    rt1.Rows[0][k].Write(_res.SubSampleList[k].UniqueVal + ", n = " + _res.SubSampleList[k].SampleList.Count.ToString());
+                rt1.Rows[0][_res.SubSampleList.Count].Write("p-значение");
 
                 //Отрисуем рамки у ячеек
-                for (int j = 0; j < grpRes[i][0].SubSampleList.Count + 1; j++)
+                for (int j = 0; j < _res.SubSampleList.Count + 1; j++)
                     rt1.Rows[0][j].SetBorders(Color.Black, 1, true, true, true, true);
 
                 //Выводим данные в таблицу
-                for (int j = 0; j < grpRes[i].Count; j++)
+                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                for (int k = 0; k < _res.SubSampleList.Count; k++)
                 {
-                    s = grpRes[i][j];
-                    _wordDocument.SetTextAlign(WordTextAlign.Left);
-                    for (int k = 0; k < grpRes[i][0].SubSampleList.Count; k++)
-                    {
-                        rt1.Rows[j + 1][k].WriteLine(s.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(s.SubSampleList[k].StandartDeviation, 3).ToString());
-                        rt1.Rows[j + 1][k].WriteLine(Math.Round(s.SubSampleList[k].Median, 3).ToString());
-                        rt1.Rows[j + 1][k].Write("(" + Math.Round(s.SubSampleList[k].LowerQuintile, 3).ToString() + "; " + Math.Round(s.SubSampleList[k].TopQuintile, 3).ToString() + ")");
-                    }
-
-                    double p = grpRes[i][j].PValue;
-                    rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count].Write((Math.Round(p, 3).ToString()));
-
-                    //Отрисуем рамки у ячеек
-                    for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 1; k++)
-                        rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
+                    rt1.Rows[1][k].WriteLine(_res.SubSampleList[k].AverageValue.ToString() + " " + (char)177 + " " + Math.Round(_res.SubSampleList[k].StandartDeviation, 3).ToString());
+                    rt1.Rows[1][k].WriteLine(Math.Round(_res.SubSampleList[k].Median, 3).ToString());
+                    rt1.Rows[1][k].Write("(" + Math.Round(_res.SubSampleList[k].LowerQuintile, 3).ToString() + "; " + Math.Round(_res.SubSampleList[k].TopQuintile, 3).ToString() + ")");
                 }
+
+                double p = Math.Round(_res.PValue, 3);
+                if (p <= 0.05)
+                {
+                    if (p > 0.001)
+                    {
+                        rt1.SetFont(settings.FontBold);
+                        rt1.Rows[1][_res.SubSampleList.Count].Write(p.ToString() + "*");
+                    }
+                    else
+                    {
+                        rt1.SetFont(settings.FontStandart);
+                        rt1.Rows[1][_res.SubSampleList.Count].Write("p < 0.001");
+                    }
+                    pval = true;
+                }
+                else
+                {
+                    rt1.SetFont(settings.FontStandart);
+                    rt1.Rows[1][_res.SubSampleList.Count + 1].Write(p.ToString());
+                }
+                rt1.SetFont(settings.FontStandart);
+                
+                //Отрисуем рамки у ячеек
+                for (int k = 0; k < _res.SubSampleList.Count + 1; k++)
+                    rt1.Rows[1][k].SetBorders(Color.Black, 1, true, true, true, true);
+                
                 rt1.SaveToDocument(10000, 0);
+
+                //Примечание к таблице
+                _wordDocument.WriteControlWord(@"sl360\slmult1");
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                string note = "Примечание: формат представления информации в ячейке: среднее значение " + (char)177 +
+                              " среднеквадратическое отклонение, медиана, (нижний; верхний) квартили.";
+
+                //Добавление информации о "*" в таблице, при условии, что в ней есть p-value < 0.05
+                string star = "";
+                string conclusion = "Из таблицы " + endToEndTable.ToString() + " видно, что ";
+                if (pval)
+                {
+                    star = " * - статистически значимое различие при p-value < " + settings.Statistical_significance.ToString();
+                    _wordDocument.WriteLine(note + star);
+
+                    //Вывод из таблицы
+                    conclusion += "статистически значимое различие есть у ";
+                    if (_res.SubSampleList.Count == 2)
+                    {
+                        conclusion += "признаков " + "\"" + _res.SubSampleList[0].UniqueVal + "\"и " + _res.SubSampleList[1].UniqueVal;
+                    }
+                    else
+                    {
+                        conclusion += "признаков ";
+                        for (int j = 0; j < _res.SubSampleList.Count; j++)
+                            conclusion += "\"" + _res.SubSampleList[j].UniqueVal + "\"" + ", ";
+                    }
+                    conclusion += " с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
+                    _wordDocument.SetParagraph(0, 567);
+                    _wordDocument.WriteLine(conclusion);
+
+                    //Добавим график к результату статистического анализа
+                    //Предисловие к графикам
+                    string preface = "На рисунке 1 изображена диаграмма размахов признака, приведенного в таблице " + endToEndTable.ToString() + ".";
+                    _wordDocument.WriteLine(preface);
+
+                    //Вставим график
+                    _wordDocument.SetTextAlign(WordTextAlign.Center);
+                    _wordDocument.PutImage(dirs[0], 96); //96 - истинный dpi
+                    _wordDocument.WriteLine();
+                    //Подпись к графику
+                    _wordDocument.WriteControlWord(@"sl360\slmult1");
+                    note = "Рисунок 1 - Диаграмма размаха переменных ";
+                    for (int j = 0; j < _res.SubSampleList.Count - 1; j++)
+                        note += "\"" + _res.SubSampleList[j].UniqueVal + "\", ";
+                    note += "\"" + _res.SubSampleList.Last().UniqueVal + "\"";
+                    _wordDocument.WriteLine(note);
+                }
+                else
+                {
+                    _wordDocument.WriteLine(note + star);
+                    conclusion += "статистически значимых различий не обнаружено. Заданный уровень значимости равен " + settings.Statistical_significance.ToString() + ".";
+                    _wordDocument.SetParagraph(0, 567);
+                    _wordDocument.WriteLine(conclusion);
+                }
             }
             return _wordDocument;
         }
