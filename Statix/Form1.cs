@@ -973,7 +973,7 @@ namespace Statix
                         //Если получилась статистически значимая связь, то нарисуем график
                         if (p <= settings.Statistical_significance)
                             //Нарисовать график для выборки
-                            CreateGraphic(samples[i], "MW");
+                            CreateBoxplot(samples[i], "MW");
                     }
                     //else
                         //TODO: сохранить информацию о срабатывании ограничения на выборку и вывести ее в отчет 
@@ -1012,7 +1012,7 @@ namespace Statix
                         //Если получилась статистически значимая связь, то нарисуем график
                         if (p <= settings.Statistical_significance)
                             //Нарисовать график для выборки
-                            CreateGraphic(samples[i], "KW");
+                            CreateBoxplot(samples[i], "KW");
                     }
                     catch(Exception)
                     {
@@ -1330,7 +1330,7 @@ namespace Statix
                 //Если получилась статистически значимая связь, то нарисуем график
                 if (p <= settings.Statistical_significance)
                     //Нарисовать график для выборки
-                    CreateGraphic(sample.SubSampleList, "WI");
+                    CreateBoxplot(sample.SubSampleList, "WI");
             }
             else
             {
@@ -1354,7 +1354,7 @@ namespace Statix
                 //Если получилась статистически значимая связь, то нарисуем график
                 if (p <= settings.Statistical_significance)
                     //Нарисовать график для выборки
-                    CreateGraphic(sample.SubSampleList, "FR");
+                    CreateBoxplot(sample.SubSampleList, "FR");
             }
             //Отобразим кнопку для вывода в Word
             btnDepReport.Visible = true;
@@ -1574,34 +1574,18 @@ namespace Statix
                 int sampleSize = sample.SubSampleList[0].SampleList.Count;
                 NumericVector x = new NumericVector(engine, sample.SubSampleList[i].SampleList);
                 engine.SetSymbol("x", x);
-
-                //StreamWriter sw = new StreamWriter("outX.txt");
-                //string buf = "";
-                //for (int a = 0; a < x.Length; a++)
-                //    buf += x[a].ToString() + Environment.NewLine;
-                //sw.WriteLine(buf);
-                //sw.Close();
-
+                
                 for (int j = 0; j < i; j++)
                 {
                     string ToCompare = data.TakeVariableNameAtIndex(signsList[j]);
                     //Создаем второй вектор (с чем сравниваем)
                     NumericVector y = new NumericVector(engine, sample.SubSampleList[j].SampleList);
                     engine.SetSymbol("y", y);
-
-                    //sw = new StreamWriter("outY.txt");
-                    //buf = "";
-                    //for (int a = 0; a < x.Length; a++)
-                    //    buf += y[a].ToString() + Environment.NewLine;
-                    //sw.WriteLine(buf);
-                    //sw.Close();
-
-                    GenericVector tmpRes;
-
+                                        
                     //Пирсон
-                    tmpRes = engine.Evaluate("cor.test(x, y, method=\"pearson\")").AsList();
+                    GenericVector tmpRes = engine.Evaluate("cor.test(x, y, method=\"pearson\")").AsList();
                     cor.p = tmpRes["p.value"].AsNumeric().First();
-                    cor.r = tmpRes["statistic"].AsNumeric().First();
+                    cor.r = tmpRes["estimate"].AsNumeric().First();
                     cor.thatCompare = signsList[i];
                     string tC = data.TakeVariableNameAtIndex(cor.thatCompare);
                     cor.toCompare = signsList[j];
@@ -1612,7 +1596,7 @@ namespace Statix
                     //Спирмен
                     tmpRes = engine.Evaluate("cor.test(x, y, method=\"spearman\")").AsList();
                     cor.p = tmpRes["p.value"].AsNumeric().First();
-                    cor.r = tmpRes["statistic"].AsNumeric().First();
+                    cor.r = tmpRes["estimate"].AsNumeric().First();
                     cor.thatCompare = signsList[i];
                     cor.toCompare = signsList[j];
                     resCorSpearman.Add(cor);
@@ -1631,16 +1615,23 @@ namespace Statix
         private void btnCorrelReport_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
-
+            //1.5 отступ в документе
+            report.WriteControlWord(@"sl360\slmult1");
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Корреляционный анализ");
-
-            report = OutResultInTableCorrelation(report, "Метод Пирсона", resCorPearson);
-            report = OutResultInTableCorrelation(report, "Метод Спирмена", resCorSpearman);
+            endToEndTable = 1;
+            endToEndPicture = 1;
+            report = OutResultInTableCorrelation(report, "Пирсона", resCorPearson);
+            report = OutResultInTableCorrelation(report, "Спирмена", resCorSpearman);
 
             report.SaveToFile("..\\..\\ResultCor.doc");
             System.Diagnostics.Process.Start("..\\..\\ResultCor.doc");
+
+            //Удалим все созданные графики
+            var files = Directory.GetFiles(pathC);
+            foreach (string file in files)
+                File.Delete(file);
         }
 
         /// <summary>
@@ -1652,6 +1643,14 @@ namespace Statix
         /// <returns></returns>
         private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<СorrelationResult> _result)
         {
+
+            //Текст перед таблицей
+            string text = "В таблице " + endToEndTable.ToString() + " приведен результат статистического анализа данных, проведенного с использованием "
+                          + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная ";
+            _wordDocument.SetTextAlign(WordTextAlign.Justified);
+            _wordDocument.SetParagraph(0, 567);
+            _wordDocument.WriteLine(text);
+
             //максимальное размер таблицы
             int MaxSize = 5;
             //Размер общей таблицы
@@ -1691,6 +1690,7 @@ namespace Statix
                     WordTable wt = _wordDocument.NewTable(settings.FontStandart, Color.Black, widthTable + 1, heightTable + 1, 2);
                     //Заполняем первую строку таблицы
                     string strRow = "";
+                    _wordDocument.SetParagraph(0, 0);
                     for (int k = 0; k < widthTable; k++)
                     {
                         strRow = data.TakeVariableNameAtIndex(signsList[i * MaxSize + k]);
@@ -1707,20 +1707,23 @@ namespace Statix
                     for (int k = 0; k < widthTable + 1; k++)
                         for (int l = 0; l < heightTable + 1; l++)
                             wt.Rows[k][l].SetBorders(Color.Black, 1, true, true, true, true);
-
-                    _wordDocument.SetTextAlign(WordTextAlign.Left);
+                    
                     _wordDocument.SetFont(settings.FontStandart);
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
-                    _wordDocument.WriteLine(Environment.NewLine + "Таблица " + (tables.Count + 1).ToString() + " - Корреляционный анализ. " + _methodName);
-
+                    _wordDocument.SetParagraph(0, 0);
+                    if (tables.Count == 0)
+                        _wordDocument.WriteLine("Таблица " + endToEndTable.ToString() + " - Корреляционный анализ");
+                    else
+                        _wordDocument.WriteLine("Продолжение таблицы " + endToEndTable.ToString());
                     tables.Add(wt);
                     wt.SaveToDocument(10000, 0);
 
                     //Добавим примечание
                     _wordDocument.SetTextAlign(WordTextAlign.Justified);
                     _wordDocument.SetFont(settings.FontStandart);
+                    _wordDocument.WriteControlWord(@"sl360\slmult1");
                     _wordDocument.WriteLine("Примечание: r - коэффициент корреляции; p - уровень статистической значимости; жирным шрифтом " +
-                                            "выделена статистически значимая связь.");
+                                            "выделена статистически значимая связь, при p < " + settings.Statistical_significance.ToString());
                 }
             }
 
@@ -1741,16 +1744,18 @@ namespace Statix
 
                         if (p <= 0.05)
                         {
-                            w.Rows[i + 1][j + 1].SetFont(settings.FontStandart);
+                            w.Rows[i + 1][j + 1].SetFont(settings.FontBold);
+                            _wordDocument.SetParagraph(0, 0);
                             w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             if (p > 0.001)
                                 w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
-                                w.Rows[i + 1][j + 1].Write("p < 0.001");
+                                w.Rows[i + 1][j + 1].Write("p < 0,001");
                         }
                         else
                         {
                             w.Rows[i + 1][j + 1].SetFont(settings.FontStandart);
+                            _wordDocument.SetParagraph(0, 0);
                             w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                         }
@@ -1789,16 +1794,18 @@ namespace Statix
 
                             if (p <= 0.05)
                             {
-                                wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
+                                wt.Rows[str + 1][j + 1].SetFont(settings.FontBold);
+                                _wordDocument.SetParagraph(0, 0);
                                 wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                                 if (p > 0.001)
                                     wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                                 else
-                                    wt.Rows[str + 1][j + 1].Write("p < 0.001");
+                                    wt.Rows[str + 1][j + 1].Write("p < 0,001");
                             }
                             else
                             {
                                 wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
+                                _wordDocument.SetParagraph(0, 0);
                                 wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             }
@@ -1832,16 +1839,18 @@ namespace Statix
 
                         if (p <= 0.05)
                         {
-                            wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
+                            wt.Rows[str + 1][j + 1].SetFont(settings.FontBold);
+                            _wordDocument.SetParagraph(0, 0);
                             wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             if (p > 0.001)
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
-                                wt.Rows[str + 1][j + 1].Write("p < 0.001");
+                                wt.Rows[str + 1][j + 1].Write("p < 0,001");
                         }
                         else
                         {
                             wt.Rows[str + 1][j + 1].SetFont(settings.FontStandart);
+                            _wordDocument.SetParagraph(0, 0);
                             wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
                             wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                         }
@@ -1871,6 +1880,7 @@ namespace Statix
 
             //Добавим отчет к таблицам
             _wordDocument = ReportByCorrelationAnalysis(_wordDocument, _result);
+            endToEndTable++;
             return _wordDocument;
         }
 
@@ -1882,7 +1892,6 @@ namespace Statix
         /// <returns></returns>
         private WordDocument ReportByCorrelationAnalysis(WordDocument _wordDocument, List<СorrelationResult> _result)
         {
-            _wordDocument.WriteLine();
             _wordDocument.SetTextAlign(WordTextAlign.Justified);
             List<СorrelationResult> significiant = SignificiantAssociation(_result);
             List<СorrelationResult> insignificant = InsignificiantAssociation(_result);
@@ -1891,60 +1900,68 @@ namespace Statix
             //Наиболее значимая связь
             if (significiant.Count != 0)
             {
-                _wordDocument.Write("С помощью корреляционного анализа было выявлено, что в исследуемых признаках наиболее значимая" +
+                string signif = "Из таблицы " + endToEndTable.ToString() + " видно, что наиболее значимая" +
                   " связь – связь между признаками " + (char)171 + data.TakeVariableNameAtIndex(significiant[0].thatCompare) + (char)187 +
                   " и " + (char)171 + data.TakeVariableNameAtIndex(significiant[0].toCompare) + (char)187 + " (r = " +
-                  Math.Round(significiant[0].r, 3).ToString() + "). ");
-                _wordDocument.Write("Корреляция имеет положительный знак, то есть при увеличение одного признака второй тоже увеличивается.");
+                  Math.Round(significiant[0].r, 3).ToString() + ").";
+                string clarification = " Корреляция имеет положительный знак, то есть при увеличении одного признака второй тоже увеличивается.";
+
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.Write(signif + clarification);
             }
             else
             {
-                _wordDocument.WriteLine("Значимых связей не обнаружено. ");
+                _wordDocument.Write("Значимых связей не обнаружено.");
             }
             //Остальные значимые связи
             if (significiant.Count > 1)
             {
-                _wordDocument.Write(" Так же, положительная корреляция была замечена у следующих признаков: ");
+                string yet = " Так же, положительная корреляция была замечена у следующих признаков: ";
                 for (int i = 1; i < significiant.Count; i++)
                 {
-                    _wordDocument.Write((char)171 + data.TakeVariableNameAtIndex(significiant[i].thatCompare) + (char)187 +
+                    yet += (char)171 + data.TakeVariableNameAtIndex(significiant[i].thatCompare) + (char)187 +
                         " и " + (char)171 + data.TakeVariableNameAtIndex(significiant[i].toCompare) + (char)187 +
-                        " (r = " + Math.Round(significiant[i].r, 3).ToString() + ")");
+                        " (r = " + Math.Round(significiant[i].r, 3).ToString() + ")";
                     if (i + 1 == significiant.Count)
-                        _wordDocument.WriteLine(".");
+                        yet += ".";
                     else
-                        _wordDocument.Write(", ");
+                        yet += ", ";
                 }
+                _wordDocument.Write(yet);
             }
 
             //Вывод информации о незначимых связях
             //Наименее значимая связь
             if (insignificant.Count != 0)
             {
-                _wordDocument.Write("С помощью корреляционного анализа было выявлено, что в исследуемых признаках наименее значимая" +
+                string insignif = " С помощью корреляционного анализа было выявлено, что в исследуемых признаках наименее значимая" +
                 " связь – связь между признаками " + (char)171 + data.TakeVariableNameAtIndex(insignificant[0].thatCompare) + (char)187 +
                 " и " + (char)171 + data.TakeVariableNameAtIndex(insignificant[0].toCompare) + (char)187 + " (r = " +
-                Math.Round(insignificant[0].r, 3).ToString() + ").");
-                _wordDocument.Write("Корреляция имеет отрицательный знак, то есть при увеличение одного признака второй уменьшается.");
+                Math.Round(insignificant[0].r, 3).ToString() + ").";
+                string clarification = " Корреляция имеет отрицательный знак, то есть при увеличении одного признака второй уменьшается.";
+
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.Write(insignif + clarification);
             }
             else
             {
-                _wordDocument.WriteLine("Незначимых связей не обнаружено. ");
+                _wordDocument.WriteLine("Незначимых связей не обнаружено.");
             }
             //Остальные незначимые связи
             if (insignificant.Count > 1)
             {
-                _wordDocument.Write(" Так же, отрицательная корреляция была замечена у следующих признаков: ");
+                string yet = " Так же, отрицательная корреляция была замечена у следующих признаков: ";
                 for (int i = 1; i < insignificant.Count; i++)
                 {
-                    _wordDocument.Write((char)171 + data.TakeVariableNameAtIndex(insignificant[i].thatCompare) + (char)187 +
+                    yet += (char)171 + data.TakeVariableNameAtIndex(insignificant[i].thatCompare) + (char)187 +
                         " и " + (char)171 + data.TakeVariableNameAtIndex(insignificant[i].toCompare) + (char)187 +
-                        " (r = " + Math.Round(insignificant[i].r, 3).ToString() + ")");
+                        " (r = " + Math.Round(insignificant[i].r, 3).ToString() + ")";
                     if (i + 1 == insignificant.Count)
-                        _wordDocument.WriteLine(".");
+                        yet += ".";
                     else
-                        _wordDocument.Write(", ");
+                        yet += ", ";
                 }
+                _wordDocument.WriteLine(yet);
             }
 
             return _wordDocument;
@@ -2203,7 +2220,7 @@ namespace Statix
         /// Отрисовка графиков по полученным выборкам
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateGraphic(Sample _sample, string _MethodName)
+        private void CreateBoxplot(Sample _sample, string _MethodName)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
@@ -2237,7 +2254,7 @@ namespace Statix
         /// Отрисовка графиков по полученным выборкам
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateGraphic(List<Sample.SubSample> _subSample, string _MethodName)
+        private void CreateBoxplot(List<Sample.SubSample> _subSample, string _MethodName)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
