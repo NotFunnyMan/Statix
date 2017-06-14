@@ -991,6 +991,13 @@ namespace Statix
                             nV = new NumericVector(engine, samples[i].SubSampleList[j].SampleList);
                             if (nV.Length < 3) throw new Exception();
                             gV[j] = nV;
+
+                            //StreamWriter sw = new StreamWriter("out" + j.ToString() + ".txt");
+                            //string buf = "";
+                            //for (int a = 0; a < nV.Length; a++)
+                            //    buf += nV[a].ToString() + Environment.NewLine;
+                            //sw.WriteLine(buf);
+                            //sw.Close();
                         }
 
                         engine.SetSymbol("sample", gV);
@@ -1333,16 +1340,14 @@ namespace Statix
             {
                 //Фридман
                 //Создадим список выборок для отправки в тест Фридмана
-                GenericVector gV = new GenericVector(engine, sample.SubSampleList.Count);
-                NumericVector nV;
+                double[] list = new double[sample.SubSampleList.Count * sample.SubSampleList[0].SampleList.Count];
                 for (int j = 0; j < sample.SubSampleList.Count; j++)
-                {
-                    nV = new NumericVector(engine, sample.SubSampleList[j].SampleList);
-                    gV[j] = nV;
-                }
+                    Array.Copy(sample.SubSampleList[j].SampleList.ToArray(), 0, list, j * sample.SubSampleList[j].SampleList.Count, sample.SubSampleList[j].SampleList.Count);
+                NumericVector nV = new NumericVector(engine, list);
 
-                engine.SetSymbol("sample", gV); 
-                tmp = engine.Evaluate("friedman.test(sample)").AsList(); //CTP 234
+                engine.SetSymbol("lst", nV);
+                engine.Evaluate("matr <- matrix(lst, ncol=" + sample.SubSampleList.Count.ToString() + ", byrow=FALSE)");
+                tmp = engine.Evaluate("friedman.test(matr)").AsList();
                 double p = tmp["p.value"].AsNumeric().First();
                 sample.PValue = p;
 
@@ -1353,7 +1358,7 @@ namespace Statix
                 //Если получилась статистически значимая связь, то нарисуем график
                 if (p <= settings.Statistical_significance)
                     //Нарисовать график для выборки
-                    CreateGraphic(sample, "FR");
+                    CreateGraphic(sample.SubSampleList, "FR");
             }
             //Отобразим кнопку для вывода в Word
             btnDepReport.Visible = true;
@@ -2125,6 +2130,40 @@ namespace Statix
             }
             engine.Evaluate("jpeg(\"" + pathR + _MethodName + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\", xlab=\"" + _sample.GroupFact.ToString() + "\")");
+            engine.Evaluate("dev.off()");
+        }
+
+        /// <summary>
+        /// Отрисовка графиков по полученным выборкам
+        /// </summary>
+        /// <param name="_samples">Список сгруппированных выборок</param>
+        private void CreateGraphic(List<Sample.SubSample> _subSample, string _MethodName)
+        {
+            //Создадим дирректорию для хранения графиков
+            if (!Directory.Exists(pathC))
+                Directory.CreateDirectory(pathC);
+
+            string data = "";
+            string names = "";
+            for (int i = 0; i < _subSample.Count; i++)
+            {
+                //Создать вектор
+                string name = "group" + i.ToString();
+                NumericVector group = engine.CreateNumericVector(_subSample[i].SampleList);
+                //Перевести его в R
+                engine.SetSymbol(name, group);
+                if (i != _subSample.Count - 1)
+                    data += name + ",";
+                else
+                    data += name;
+
+                if (i != _subSample.Count - 1)
+                    names += "\"" + _subSample[i].UniqueVal + "\"" + ",";
+                else
+                    names += "\"" + _subSample[i].UniqueVal + "\"";
+            }
+            engine.Evaluate("jpeg(\"" + pathR + _MethodName + "_" + names.Replace("\"","") + ".jpg\")");
+            engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "))");
             engine.Evaluate("dev.off()");
         }
 
