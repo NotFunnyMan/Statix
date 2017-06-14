@@ -115,6 +115,16 @@ namespace Statix
             /// Индекс с чем сравниваем
             /// </summary>
             public int toCompare;
+
+            /// <summary>
+            /// Что сравниваем. Строка
+            /// </summary>
+            public string thatCompareString;
+
+            /// <summary>
+            /// С чем сравниваем. Строка
+            /// </summary>
+            public string toCompareString;
         }
 
         /// <summary>
@@ -1241,9 +1251,9 @@ namespace Statix
                         int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + statSignif[j]);
                         if (curGraph != -1)
                         {
-
                             //Вставим график
                             _wordDocument.SetTextAlign(WordTextAlign.Center);
+                            _wordDocument.SetParagraph(0, 0);
                             _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
                             _wordDocument.WriteLine();
                             //Подпись к графику
@@ -1407,12 +1417,12 @@ namespace Statix
                 bool pval = false;
                 if (_methodName.Contains("Вилкоксона"))
                 {
-                    dirs = Directory.GetFiles(pathC, "WI*"); //Результаты для Манна-Уитни
+                    dirs = Directory.GetFiles(pathC, "WI*"); //Результаты для Уилкоксона
                     //methodName = "WI";
                 }
                 else
                 {
-                    dirs = Directory.GetFiles(pathC, "FR*"); //Результаты для Краскела-Уоллиса
+                    dirs = Directory.GetFiles(pathC, "FR*"); //Результаты для Фридмана
                     //methodName = "FR";
                 }
 
@@ -1527,6 +1537,7 @@ namespace Statix
 
                     //Вставим график
                     _wordDocument.SetTextAlign(WordTextAlign.Center);
+                    _wordDocument.SetParagraph(0, 0);
                     _wordDocument.PutImage(dirs[0], 96); //96 - истинный dpi
                     _wordDocument.WriteLine();
                     //Подпись к графику
@@ -1589,19 +1600,34 @@ namespace Statix
                     cor.p = tmpRes["p.value"].AsNumeric().First();
                     cor.r = tmpRes["estimate"].AsNumeric().First();
                     cor.thatCompare = signsList[i];
-                    string tC = data.TakeVariableNameAtIndex(cor.thatCompare);
+                    cor.thatCompareString = ThatCompare;
                     cor.toCompare = signsList[j];
-                    string toC = data.TakeVariableNameAtIndex(cor.toCompare);
+                    cor.toCompareString = ToCompare;
                     resCorPearson.Add(cor);
+
+                    //Если получилась статистически значимая связь, то нарисуем график
+                    if (cor.p <= settings.Statistical_significance)
+                        //Нарисовать график для выборки
+                        CreatePlot(cor, "PR");
+
                     cor = new СorrelationResult();
+
 
                     //Спирмен
                     tmpRes = engine.Evaluate("cor.test(x, y, method=\"spearman\")").AsList();
                     cor.p = tmpRes["p.value"].AsNumeric().First();
                     cor.r = tmpRes["estimate"].AsNumeric().First();
                     cor.thatCompare = signsList[i];
+                    cor.thatCompareString = ThatCompare;
                     cor.toCompare = signsList[j];
+                    cor.toCompareString = ToCompare;
                     resCorSpearman.Add(cor);
+
+                    //Если получилась статистически значимая связь, то нарисуем график
+                    if (cor.p <= settings.Statistical_significance)
+                        //Нарисовать график для выборки
+                        CreatePlot(cor, "SP");
+
                     cor = new СorrelationResult();
                 }
             }
@@ -1646,7 +1672,7 @@ namespace Statix
         private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<СorrelationResult> _result)
         {
             //Текст перед таблицей
-            string text = "В таблице " + endToEndTable.ToString() + " приведен результат корреляционного анализа, проведенного с использованием критерия " 
+            string text = "В таблице " + endToEndTable.ToString() + " приведен результат корреляционного анализа, проведенного с использованием критерия "
                             + _methodName + ". Проверяется гипотеза о том, что коэффициент корреляции в генеральной совокупности не равен нулю.";
             _wordDocument.SetTextAlign(WordTextAlign.Justified);
             _wordDocument.SetParagraph(0, 567);
@@ -1663,6 +1689,8 @@ namespace Statix
 
             //Список таблиц
             List<WordTable> tables = new List<WordTable>();
+            //Список значимых связей
+            List<СorrelationResult> statSignif = new List<СorrelationResult>();
 
             //Заполним список таблицами с начальными данными: заголовками и размерами
             int widthTable, heightTable;
@@ -1708,7 +1736,7 @@ namespace Statix
                     for (int k = 0; k < widthTable + 1; k++)
                         for (int l = 0; l < heightTable + 1; l++)
                             wt.Rows[k][l].SetBorders(Color.Black, 1, true, true, true, true);
-                    
+
                     _wordDocument.SetFont(settings.FontStandart);
                     _wordDocument.SetTextAlign(WordTextAlign.Left);
                     _wordDocument.SetParagraph(0, 0);
@@ -1724,7 +1752,7 @@ namespace Statix
                     _wordDocument.SetFont(settings.FontStandart);
                     _wordDocument.WriteControlWord(@"sl360\slmult1");
                     _wordDocument.WriteLine("Примечание: r - коэффициент корреляции; p - уровень статистической значимости; жирным шрифтом " +
-                                            "выделена статистически значимая связь, при p < " + settings.Statistical_significance.ToString());
+                                            "выделена статистически значимая связь, при p<" + settings.Statistical_significance.ToString());
                 }
             }
 
@@ -1743,11 +1771,12 @@ namespace Statix
                         double p = _result[tmp].p;
                         double r = Math.Round(_result[tmp].r, 3);
 
-                        if (p <= 0.05)
+                        if (p <= settings.Statistical_significance)
                         {
                             w.Rows[i + 1][j + 1].SetFont(settings.FontBold);
                             _wordDocument.SetParagraph(0, 0);
                             w.Rows[i + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            statSignif.Add(_result[tmp]);
                             if (p > 0.001)
                                 w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
@@ -1793,11 +1822,12 @@ namespace Statix
                             double p = _result[i].p;
                             double r = Math.Round(_result[i].r, 3);
 
-                            if (p <= 0.05)
+                            if (p <= settings.Statistical_significance)
                             {
                                 wt.Rows[str + 1][j + 1].SetFont(settings.FontBold);
                                 _wordDocument.SetParagraph(0, 0);
                                 wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                                statSignif.Add(_result[i]);
                                 if (p > 0.001)
                                     wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                                 else
@@ -1838,11 +1868,12 @@ namespace Statix
                         double p = _result[i].p;
                         double r = Math.Round(_result[i].r, 3);
 
-                        if (p <= 0.05)
+                        if (p <= settings.Statistical_significance)
                         {
                             wt.Rows[str + 1][j + 1].SetFont(settings.FontBold);
                             _wordDocument.SetParagraph(0, 0);
                             wt.Rows[str + 1][j + 1].WriteLine("r = " + Math.Round(r, 3).ToString());
+                            statSignif.Add(_result[i]);
                             if (p > 0.001)
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
@@ -1881,6 +1912,69 @@ namespace Statix
 
             //Добавим отчет к таблицам
             _wordDocument = ReportByCorrelationAnalysis(_wordDocument, _result);
+
+            //Добавим графики
+            string[] dirs;
+            string methodName = "";
+            if (_methodName.Contains("Пирсона"))
+            {
+                dirs = Directory.GetFiles(pathC, "PR*"); //Результаты для Пирсона
+                methodName = "PR";
+            }
+            else
+            {
+                dirs = Directory.GetFiles(pathC, "SP*"); //Результаты для Спирмена
+                methodName = "SP";
+            }
+            //Получим список названий графиков
+            List<string> graphNames = new List<string>();
+            for (int j = 0; j < dirs.Length; j++)
+            {
+                string name = Path.GetFileNameWithoutExtension(dirs[j]);
+                graphNames.Add(name);
+            }
+
+            //Смотрим все результаты
+            string note = "";
+            if (statSignif.Count != 0)
+            {
+                //Предисловие к графикам
+                string preface = "";
+                if (statSignif.Count == 1)
+                {
+                    preface += "На рисунке " + endToEndPicture.ToString() + " изображена диаграмма рассеяния с линиями наилучшей аппроксимации для"
+                                + " статистически значимых связей между признаками, приведенными в таблице " + endToEndTable.ToString() + ".";
+                }
+                else
+                {
+                    preface += "На рисунках " + endToEndPicture.ToString() + " - " + (endToEndPicture + statSignif.Count - 1).ToString()
+                                + " изображены диаграммы рассеяний с линиями наилучшей аппроксимации для статистически значимых связей между признаками,"
+                                + " приведенными в таблице " + endToEndTable.ToString() + ".";
+                }
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.WriteLine(preface);
+
+                for (int i = 0; i < statSignif.Count; i++)
+                {
+                    //Вставка графика
+                    int curGraph = graphNames.IndexOf(methodName + "_" + statSignif[i].thatCompareString + "_" + statSignif[i].toCompareString);
+                    if (curGraph != -1)
+                    {
+                        //Вставим график
+                        _wordDocument.SetTextAlign(WordTextAlign.Center);
+                        _wordDocument.SetParagraph(0, 0);
+                        _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
+                        _wordDocument.WriteLine();
+                        //Подпись к графику
+                        _wordDocument.WriteControlWord(@"sl360\slmult1");
+                        note = "Рисунок " + endToEndPicture.ToString() + " - " + "Диаграмма рассеяния для зависимости между "
+                            + (char)171 + statSignif[i].thatCompareString + (char)187 + " и " + (char)171 + statSignif[i].toCompareString + (char)187 +
+                            " с наложенными аппроксимирующей и сглаженной линиями";
+                        _wordDocument.WriteLine(note);
+                        endToEndPicture++;
+                    }
+                }
+            }
             endToEndTable++;
             return _wordDocument;
         }
@@ -1912,7 +2006,7 @@ namespace Statix
             }
             else
             {
-                _wordDocument.Write("Значимых связей не обнаружено.");
+                _wordDocument.Write("Как видно из таблицы " + endToEndTable.ToString() + " значимых связей не обнаружено.");
             }
             //Остальные значимые связи
             if (significiant.Count > 1)
@@ -1946,7 +2040,7 @@ namespace Statix
             }
             else
             {
-                _wordDocument.WriteLine("Незначимых связей не обнаружено.");
+                _wordDocument.WriteLine(" Незначимых связей не обнаружено.");
             }
             //Остальные незначимые связи
             if (insignificant.Count > 1)
@@ -2218,10 +2312,11 @@ namespace Statix
         }
 
         /// <summary>
-        /// Отрисовка графиков по полученным выборкам
+        /// Создание ящика с усами. Независимые выборки
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateBoxplot(Sample _sample, string _MethodName)
+        /// <param name="_methodName">Идентификатор метода</param>
+        private void CreateBoxplot(Sample _sample, string _methodName)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
@@ -2246,16 +2341,17 @@ namespace Statix
                 else
                     names += "\"" + _sample.SubSampleList[i].UniqueVal.ToString() + "\"";
             }
-            engine.Evaluate("jpeg(\"" + pathR + _MethodName + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
+            engine.Evaluate("jpeg(\"" + pathR + _methodName + "_" +_sample.GroupFact + "_" + _sample.NameSign + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "), ylab=\"" + _sample.NameSign.ToString()+"\", xlab=\"" + _sample.GroupFact.ToString() + "\")");
             engine.Evaluate("dev.off()");
         }
 
         /// <summary>
-        /// Отрисовка графиков по полученным выборкам
+        /// Создание ящика с усами. Зависимые выборки
         /// </summary>
         /// <param name="_samples">Список сгруппированных выборок</param>
-        private void CreateBoxplot(List<Sample.SubSample> _subSample, string _MethodName)
+        /// /// <param name="_methodName">Идентификатор метода</param>
+        private void CreateBoxplot(List<Sample.SubSample> _subSample, string _methodName)
         {
             //Создадим дирректорию для хранения графиков
             if (!Directory.Exists(pathC))
@@ -2280,8 +2376,26 @@ namespace Statix
                 else
                     names += "\"" + _subSample[i].UniqueVal + "\"";
             }
-            engine.Evaluate("jpeg(\"" + pathR + _MethodName + "_" + names.Replace("\"","") + ".jpg\")");
+            engine.Evaluate("jpeg(\"" + pathR + _methodName + "_" + names.Replace("\"","") + ".jpg\")");
             engine.Evaluate("boxplot(" + data + ", main=\"" + "Диаграмма размаха" + "\", names=c(" + names + "))");
+            engine.Evaluate("dev.off()");
+        }
+
+        /// <summary>
+        /// Создание диаграмм рассеяния. Коррелляционный анализ
+        /// </summary>
+        /// <param name="_res">Данные</param>
+        /// <param name="_methodName">Идентификатор метода</param>
+        private void CreatePlot(СorrelationResult _res, string _methodName)
+        {
+            string main = "Диаграмма рассеяния для зависимости\n " + (char)171 + _res.thatCompareString + (char)187 + " и " 
+                        + (char)171 + _res.toCompareString + (char)187;
+            string xlab = _res.thatCompareString;
+            string ylab = _res.toCompareString;
+            engine.Evaluate("jpeg(\"" + pathR + _methodName + "_" + _res.thatCompareString + "_" + _res.toCompareString + ".jpg\")");
+            engine.Evaluate("plot(x, y, main=\"" + main + "\", xlab=\"" + xlab + "\", ylab=\"" + ylab + "\")");
+            engine.Evaluate("abline(lm(y~x), col=\"red\", lwd=2, lty=1)");
+            engine.Evaluate("lines(lowess(x,y), col=\"blue\", lwd=2, lty=2)");
             engine.Evaluate("dev.off()");
         }
 
