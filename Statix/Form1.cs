@@ -1095,7 +1095,7 @@ namespace Statix
                 //Текст перед таблицей
                 string grpFact = grpRes[i][0].GroupFact;
                 string text = "В таблице " + endToEndTable.ToString() + " приведен результат статистического анализа данных, проведенного с использованием " 
-                              + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная " + "\"" + grpFact + "\"" + ".";
+                              + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная " + (char)171 + grpFact + (char)187 + ".";
                 _wordDocument.SetTextAlign(WordTextAlign.Justified);
                 _wordDocument.SetParagraph(0, 567);
                 _wordDocument.WriteLine(text);
@@ -1104,8 +1104,8 @@ namespace Statix
                 string tableNumber = Environment.NewLine + "Таблица " + endToEndTable.ToString() + " - ";  
                 string tableCaption = "Сравнение средних уровней переменных в группах: ";
                 for (int j = 0; j < grpRes[i].Count - 1; j++)
-                    tableCaption += "\"" + grpRes[i][j].NameSign + "\"" + ", ";
-                tableCaption += "\"" + grpRes[i].Last().NameSign + "\"";
+                    tableCaption += (char)171 + grpRes[i][j].NameSign + (char)187 + ", ";
+                tableCaption += (char)171 + grpRes[i].Last().NameSign + (char)187;
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
                 _wordDocument.SetParagraph(0, 0);
                 _wordDocument.WriteLine(tableNumber + tableCaption);
@@ -1150,7 +1150,7 @@ namespace Statix
                         else
                         {
                             rt1.SetFont(settings.FontStandart);
-                            rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 1].Write("p < 0.001");
+                            rt1.Rows[j + 1][grpRes[i][0].SubSampleList.Count + 1].Write("p<0,001");
                             statSignif.Add(grpRes[i][j].NameSign);
                         }
                     }
@@ -1181,30 +1181,31 @@ namespace Statix
                     star = " * - статистически значимое различие между ";
                     if (grpRes[i][0].SubSampleList.Count == 2)
                     {
-                        star += "\"" + grpRes[i][0].SubSampleList[0].UniqueVal + "\"" + " и " + "\"" + grpRes[i][0].SubSampleList[1].UniqueVal + "\"";
+                        star += (char)171 + grpRes[i][0].SubSampleList[0].UniqueVal + (char)187 + " и " 
+                                + (char)171 + grpRes[i][0].SubSampleList[1].UniqueVal + (char)187;
                     }
                     else
                     {
                         for (int k = 0; k < grpRes[i][0].SubSampleList.Count - 1; k++)
-                            star += "\"" + grpRes[i][0].SubSampleList[k].UniqueVal + "\"" + ", ";
-                        star += " и " + "\"" + grpRes[i][0].SubSampleList.Last().UniqueVal + "\"";
+                            star += (char)171 + grpRes[i][0].SubSampleList[k].UniqueVal + (char)187 + ", ";
+                        star += "и " + (char)171 + grpRes[i][0].SubSampleList.Last().UniqueVal + (char)187;
                     }
-                    star += " p < 0.05.";
+                    star += " p<0,05.";
                     _wordDocument.WriteLine(note + star);
                     
                     //Вывод из таблицы
                     conclusion += "статистически значимое различие есть у ";
                     if (statSignif.Count == 1)
                     {
-                        conclusion += "признака " + "\"" + statSignif.First() + "\", ";
+                        conclusion += "признака " + (char)171 + statSignif.First() + (char)187 + ", ";
                     }
                     else
                     {
                         conclusion += "признаков ";
                         for (int j = 0; j < statSignif.Count; j++)
-                            conclusion += "\"" + statSignif[j] + "\"" + ", ";
+                            conclusion += (char)171 + statSignif[j] + (char)187 + ", ";
                     }
-                    conclusion += " с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
+                    conclusion += "с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
                     _wordDocument.SetParagraph(0, 567);
                     _wordDocument.WriteLine(conclusion);
                 }
@@ -1220,25 +1221,26 @@ namespace Statix
                 //Есть ли графики к результату статистического анализа
                 if (statSignif.Count != 0)
                 {
+                    //Предисловие к графикам
+                    string preface = "";
+                    if (statSignif.Count == 1)
+                    {
+                        preface += "На рисунке " + endToEndPicture.ToString() + " изображена диаграмма размахов признака, приведенного в таблице "
+                                   + endToEndTable.ToString() + ".";
+                    }
+                    else
+                    {
+                        preface += "На рисунках " + endToEndPicture.ToString() + " - " + (endToEndPicture + statSignif.Count - 1).ToString() +
+                                   " изображены диаграммы размахов признаков, приведенных в таблице " + endToEndTable.ToString() + ".";
+                    }
+                    _wordDocument.WriteLine(preface);
+
                     //Добавляем графики
                     for (int j = 0; j < statSignif.Count; j++)
                     {
                         int curGraph = graphNames.IndexOf(methodName + "_" + grpRes[i][j].GroupFact + "_" + statSignif[j]);
                         if (curGraph != -1)
                         {
-                            //Предисловие к графикам
-                            string preface = "";
-                            if (dirs.Length == 1)
-                            {
-                                preface += "На рисунке " + endToEndPicture.ToString() + " изображена диаграмма размахов признака, приведенного в таблице "
-                                           + endToEndTable.ToString() + ".";
-                            }
-                            else
-                            {
-                                preface += "На рисунках " + endToEndPicture.ToString() + " - " + (endToEndPicture + dirs.Length).ToString() +
-                                           " изображены диаграммы размахов признаков, приведенных в таблице " + endToEndTable.ToString() + ".";
-                            }
-                            _wordDocument.WriteLine(preface);
 
                             //Вставим график
                             _wordDocument.SetTextAlign(WordTextAlign.Center);
@@ -1247,13 +1249,13 @@ namespace Statix
                             //Подпись к графику
                             _wordDocument.WriteControlWord(@"sl360\slmult1");
                             note = "Рисунок " + endToEndPicture.ToString() + " - " +
-                                    "Диаграмма размаха переменной " + "\"" + statSignif[j] + "\"";
+                                    "Диаграмма размаха переменной " + (char)171 + statSignif[j] + (char)187;
                             _wordDocument.WriteLine(note);
+                            endToEndPicture++;
                         }
                     }
                 }
-                endToEndTable++;
-                endToEndPicture += statSignif.Count;
+                endToEndTable++;                
             }
             
             return _wordDocument;
@@ -1433,8 +1435,8 @@ namespace Statix
                 string tableNumber = Environment.NewLine + "Таблица " + endToEndTable.ToString() + " - ";
                 string tableCaption = "Сравнение средних уровней переменных: ";
                 for (int j = 0; j < _res.SubSampleList.Count - 1; j++)
-                    tableCaption += "\"" + _res.SubSampleList[j].UniqueVal + "\"" + ", ";
-                tableCaption += "\"" + _res.SubSampleList.Last().UniqueVal + "\"";
+                    tableCaption += (char)171 + _res.SubSampleList[j].UniqueVal + (char)187 + ", ";
+                tableCaption += (char)171 + _res.SubSampleList.Last().UniqueVal + (char)187;
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
                 _wordDocument.SetParagraph(0, 0);
                 _wordDocument.WriteLine(tableNumber + tableCaption);
@@ -1444,7 +1446,7 @@ namespace Statix
                 WordTable rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, 2, _res.SubSampleList.Count + 1, 2);
                 //Заполнение таблицы
                 for (int k = 0; k < _res.SubSampleList.Count; k++)
-                    rt1.Rows[0][k].Write(_res.SubSampleList[k].UniqueVal + ", n = " + _res.SubSampleList[k].SampleList.Count.ToString());
+                    rt1.Rows[0][k].Write(_res.SubSampleList[k].UniqueVal + "\n(n = " + _res.SubSampleList[k].SampleList.Count.ToString() + ")");
                 rt1.Rows[0][_res.SubSampleList.Count].Write("p-значение");
 
                 //Отрисуем рамки у ячеек
@@ -1471,7 +1473,7 @@ namespace Statix
                     else
                     {
                         rt1.SetFont(settings.FontStandart);
-                        rt1.Rows[1][_res.SubSampleList.Count].Write("p < 0.001");
+                        rt1.Rows[1][_res.SubSampleList.Count].Write("p<0,001");
                     }
                     pval = true;
                 }
@@ -1499,22 +1501,22 @@ namespace Statix
                 string conclusion = "Из таблицы " + endToEndTable.ToString() + " видно, что ";
                 if (pval)
                 {
-                    star = " * - статистически значимое различие при p-value < " + settings.Statistical_significance.ToString();
+                    star = " * - статистически значимое различие при p<" + settings.Statistical_significance.ToString();
                     _wordDocument.WriteLine(note + star);
 
                     //Вывод из таблицы
                     conclusion += "статистически значимое различие есть у ";
                     if (_res.SubSampleList.Count == 2)
                     {
-                        conclusion += "признаков " + "\"" + _res.SubSampleList[0].UniqueVal + "\"и " + _res.SubSampleList[1].UniqueVal;
+                        conclusion += "признаков " + (char)171 + _res.SubSampleList[0].UniqueVal + (char)187 + " и " + _res.SubSampleList[1].UniqueVal;
                     }
                     else
                     {
                         conclusion += "признаков ";
                         for (int j = 0; j < _res.SubSampleList.Count; j++)
-                            conclusion += "\"" + _res.SubSampleList[j].UniqueVal + "\"" + ", ";
+                            conclusion += (char)171 + _res.SubSampleList[j].UniqueVal + (char)187 + ", ";
                     }
-                    conclusion += " с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
+                    conclusion += "с учетом уровня значимости равного " + settings.Statistical_significance.ToString() + ".";
                     _wordDocument.SetParagraph(0, 567);
                     _wordDocument.WriteLine(conclusion);
 
@@ -1529,10 +1531,10 @@ namespace Statix
                     _wordDocument.WriteLine();
                     //Подпись к графику
                     _wordDocument.WriteControlWord(@"sl360\slmult1");
-                    note = "Рисунок 1 - Диаграмма размаха переменных ";
+                    note = "Рисунок 1 - Диаграмма размахов переменных ";
                     for (int j = 0; j < _res.SubSampleList.Count - 1; j++)
-                        note += "\"" + _res.SubSampleList[j].UniqueVal + "\", ";
-                    note += "\"" + _res.SubSampleList.Last().UniqueVal + "\"";
+                        note += (char)171 + _res.SubSampleList[j].UniqueVal + (char)187 + ", ";
+                    note += (char)171 + _res.SubSampleList.Last().UniqueVal + (char)187;
                     _wordDocument.WriteLine(note);
                 }
                 else
@@ -1643,10 +1645,9 @@ namespace Statix
         /// <returns></returns>
         private WordDocument OutResultInTableCorrelation(WordDocument _wordDocument, string _methodName, List<СorrelationResult> _result)
         {
-
             //Текст перед таблицей
-            string text = "В таблице " + endToEndTable.ToString() + " приведен результат статистического анализа данных, проведенного с использованием "
-                          + "критерия " + _methodName + "." + " В качестве группирующего фактора используется переменная ";
+            string text = "В таблице " + endToEndTable.ToString() + " приведен результат корреляционного анализа, проведенного с использованием критерия " 
+                            + _methodName + ". Проверяется гипотеза о том, что коэффициент корреляции в генеральной совокупности не равен нулю.";
             _wordDocument.SetTextAlign(WordTextAlign.Justified);
             _wordDocument.SetParagraph(0, 567);
             _wordDocument.WriteLine(text);
@@ -1750,7 +1751,7 @@ namespace Statix
                             if (p > 0.001)
                                 w.Rows[i + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
-                                w.Rows[i + 1][j + 1].Write("p < 0,001");
+                                w.Rows[i + 1][j + 1].Write("p<0,001");
                         }
                         else
                         {
@@ -1800,7 +1801,7 @@ namespace Statix
                                 if (p > 0.001)
                                     wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                                 else
-                                    wt.Rows[str + 1][j + 1].Write("p < 0,001");
+                                    wt.Rows[str + 1][j + 1].Write("p<0,001");
                             }
                             else
                             {
@@ -1845,7 +1846,7 @@ namespace Statix
                             if (p > 0.001)
                                 wt.Rows[str + 1][j + 1].Write("p = " + Math.Round(p, 3).ToString());
                             else
-                                wt.Rows[str + 1][j + 1].Write("p < 0,001");
+                                wt.Rows[str + 1][j + 1].Write("p<0,001");
                         }
                         else
                         {
