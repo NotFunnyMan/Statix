@@ -1175,7 +1175,7 @@ namespace Statix
                     for (int k = 0; k < grpRes[i][0].SubSampleList.Count + 2; k++)
                         rt1.Rows[j + 1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 }
-                rt1.SaveToDocument(10000, 0);
+                rt1.SaveToDocument(9850, 0);
 
                 //Примечание к таблице
                 _wordDocument.WriteControlWord(@"sl360\slmult1");
@@ -1498,7 +1498,7 @@ namespace Statix
                 for (int k = 0; k < _res.SubSampleList.Count + 1; k++)
                     rt1.Rows[1][k].SetBorders(Color.Black, 1, true, true, true, true);
                 
-                rt1.SaveToDocument(10000, 0);
+                rt1.SaveToDocument(9850, 0);
 
                 //Примечание к таблице
                 _wordDocument.WriteControlWord(@"sl360\slmult1");
@@ -1673,7 +1673,7 @@ namespace Statix
         {
             //Текст перед таблицей
             string text = "В таблице " + endToEndTable.ToString() + " приведен результат корреляционного анализа, проведенного с использованием критерия "
-                            + _methodName + ". Проверяется гипотеза о том, что коэффициент корреляции в генеральной совокупности не равен нулю.";
+                            + _methodName + ". Проверяется гипотеза о том, что коэффициент корреляции в генеральной совокупности равен нулю.";
             _wordDocument.SetTextAlign(WordTextAlign.Justified);
             _wordDocument.SetParagraph(0, 567);
             _wordDocument.WriteLine(text);
@@ -1745,7 +1745,7 @@ namespace Statix
                     else
                         _wordDocument.WriteLine("Продолжение таблицы " + endToEndTable.ToString());
                     tables.Add(wt);
-                    wt.SaveToDocument(10000, 0);
+                    wt.SaveToDocument(9850, 0);
 
                     //Добавим примечание
                     _wordDocument.SetTextAlign(WordTextAlign.Justified);
@@ -2156,14 +2156,13 @@ namespace Statix
                 res.pvalue = pval[0];
                 res.table = table;
                 resContingencyTables.Add(res);
+
+                //Если получилась статистически значимая связь, то нарисуем график
+                if (pval[0] <= settings.Statistical_significance)
+                    //Нарисовать график для выборки
+                    CreateBarplot(table);
+
             }
-            //NumericVector group1 = engine.CreateNumericVector(rescontingencyTables[0].Data.Count);
-            //for (int i = 0; i < rescontingencyTables[0].Data.Count; i++)
-            //    group1[i] = rescontingencyTables[0].Data[i];
-            //engine.SetSymbol("Rgroup1", group1);
-            //var tmp = engine.Evaluate("mice <- matrix(Rgroup1, nrow = " + rescontingencyTables[0].RowCount + ", ncol = " + rescontingencyTables[0].ColumnCount + ", byrow = TRUE)");
-            //engine.Evaluate("mice");
-            //var asd = engine.Evaluate("chisq.test(mice)");
             btnTableReport.Visible = true;
         }
 
@@ -2175,11 +2174,14 @@ namespace Statix
         private void btnTableReport_Click(object sender, EventArgs e)
         {
             WordDocument report = new WordDocument(WordDocumentFormat.InCentimeters(21, 29.7, 2.5, 1, 2, 2));
-
+            //1.5 отступ в документе
+            report.WriteControlWord(@"sl360\slmult1");
             report.SetFont(settings.FontStandart);
             report.SetTextAlign(WordTextAlign.Center);
             report.WriteLine("Таблицы сопряженности ");
 
+            endToEndTable = 1;
+            endToEndPicture = 1;
             report = OutResultInContingencyTable(report, resContingencyTables);
 
             report.SaveToFile("..\\..\\ResultTable.doc");
@@ -2195,24 +2197,45 @@ namespace Statix
         /// <returns></returns>
         private WordDocument OutResultInContingencyTable(WordDocument _wordDocument, List<ContingencyTableResult> _resList)
         {
-            //Идем по спискам тиблиц
-            foreach(ContingencyTableResult table in _resList)
+            //Получим пути созданных графиков для текущего метода
+            string[] dirs = Directory.GetFiles(pathC);
+            //Получим список названий графиков
+            List<string> graphNames = new List<string>();
+            for (int j = 0; j < dirs.Length; j++)
             {
-                WordTable rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, table.table.Variable1List.Count + 2, table.table.Variable2List.Count + 2, 2);
+                string name = Path.GetFileNameWithoutExtension(dirs[j]);
+                graphNames.Add(name);
+            }
+
+            //Идем по спискам тиблиц
+            foreach (ContingencyTableResult table in _resList)
+            {
+                //Текст перед таблицей
+                string text = "В таблице " + endToEndTable.ToString() + " приведен результат построения таблицы сопряженности для исследования "
+                              + "связи между переменными " + (char)171 + table.table.Variable1 + (char)187  + " и " 
+                              + (char)171 + table.table.Variable2 + (char)187 + ".";
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.WriteLine(text);
+
+                //Название таблицы
+                string tableNumber = "Таблица " + endToEndTable.ToString() + " - ";
+                string tableCaption = "Таблица сопряженности для переменных " + (char)171 + table.table.Variable1 + (char)187 + " и "
+                                      + (char)171 + table.table.Variable2 + (char)187; 
+                _wordDocument.SetTextAlign(WordTextAlign.Left);
+                _wordDocument.SetParagraph(0, 0);
+                _wordDocument.WriteLine(tableNumber + tableCaption);
+
+                WordTable rt1 = _wordDocument.NewTable(settings.FontStandart, Color.Black, table.table.Variable1UniqueValuesList.Count + 2, table.table.Variable2UniqueValuesList.Count + 2, 2);
                 _wordDocument.SetTextAlign(WordTextAlign.Left);
                 _wordDocument.SetFont(settings.FontStandart);
-                _wordDocument.SetTextAlign(WordTextAlign.Left);
-                if (table.table.RowCount == 2 && table.table.ColumnCount == 2)
-                    _wordDocument.WriteLine("Критерий Вулфа");
-                else
-                    _wordDocument.WriteLine("Критерий Хи-квадрат Пирсона");
                 
                 //Выведем список уникальных значений первой переменной. Вывод по строке
-                for (int j = 0; j < table.table.Variable1List.Count; j++)
-                    rt1.Rows[j + 2][1].Write(table.table.Variable1List[j]);
+                for (int j = 0; j < table.table.Variable1UniqueValuesList.Count; j++)
+                    rt1.Rows[j + 2][1].Write(table.table.Variable1UniqueValuesList[j]);
                 //Выведем список уникальных значений второй переменной. Вывод по столбцу
-                for (int j = 0; j < table.table.Variable2List.Count; j++)
-                    rt1.Rows[1][j + 2].Write(table.table.Variable2List[j]);
+                for (int j = 0; j < table.table.Variable2UniqueValuesList.Count; j++)
+                    rt1.Rows[1][j + 2].Write(table.table.Variable2UniqueValuesList[j]);
 
                 //Объединение ячеек и заполнение их данными
                 rt1.Rows[0][0].ColSpan = 2;
@@ -2220,30 +2243,74 @@ namespace Statix
                 rt1.Rows[0][0].RowSpan = 2;
                 rt1.Rows[0][0].SetBorders(Color.Black, 1, true, true, true, true);
 
-                rt1.Rows[2][0].RowSpan = table.table.Variable1List.Count;
+                rt1.Rows[2][0].RowSpan = table.table.Variable1UniqueValuesList.Count;
                 rt1.Rows[2][0].Write(table.table.Variable1);
                 rt1.Rows[2][0].SetBorders(Color.Black, 1, true, true, true, true);
 
-                rt1.Rows[0][2].ColSpan = table.table.Variable2List.Count;
+                rt1.Rows[0][2].ColSpan = table.table.Variable2UniqueValuesList.Count;
                 rt1.Rows[0][2].Write(table.table.Variable2);
                 rt1.Rows[0][2].SetBorders(Color.Black, 1, true, true, true, true);
 
                 //Выведем данные в таблицу
-                for (int j = 0; j < table.table.Variable1List.Count; j++)
+                for (int j = 0; j < table.table.Variable1UniqueValuesList.Count; j++)
                     //Идем по столбцам
-                    for (int k = 0; k < table.table.Variable2List.Count; k++)
-                        rt1.Rows[j + 2][k + 2].Write(table.table.Data[k + j * table.table.Variable2List.Count].ToString());
+                    for (int k = 0; k < table.table.Variable2UniqueValuesList.Count; k++)
+                        rt1.Rows[j + 2][k + 2].Write(table.table.Data[k + j * table.table.Variable2UniqueValuesList.Count].ToString());
 
                 //Нарисуем рамки у ячеек
-                for (int j = 0; j < table.table.Variable1List.Count + 2; j++)
-                    for (int k = 0; k < table.table.Variable2List.Count + 2; k++)
+                for (int j = 0; j < table.table.Variable1UniqueValuesList.Count + 2; j++)
+                    for (int k = 0; k < table.table.Variable2UniqueValuesList.Count + 2; k++)
                         rt1.Rows[j][k].SetBorders(Color.Black, 1, true, true, true, true);
 
-                rt1.SaveToDocument(10000, 0);
-                _wordDocument.WriteLine();
-                _wordDocument.WriteLine("Stat = " + table.stat.ToString());
-                _wordDocument.WriteLine("Pval = " + table.pvalue.ToString());
-                _wordDocument.WriteLine();
+                rt1.SaveToDocument(9900, 0);
+
+                //Вывод из таблицы
+                string p = (Math.Round(table.pvalue, 3) < 0.001) ? "p<0,001" : "p = " + Math.Round(table.pvalue, 3).ToString();
+                double stat = Math.Round(table.stat, 3);
+                string conclusion = "В результате проведенного анализа данных, представленных в таблице " + endToEndTable.ToString()
+                                    + ", получены следующие результаты: " + p + ", значение статистики = " + stat.ToString()
+                                    + ". При заданном уровне значимости p = " + settings.Statistical_significance.ToString()
+                                    + ", можно сделать вывод, что между переменными " + (char)171 + table.table.Variable1 + (char)187 
+                                    + " и " + (char)171 + table.table.Variable2 + (char)187;
+                if (table.pvalue > settings.Statistical_significance)
+                    conclusion += " не существует статистически значимой связи.";
+                else
+                    conclusion += " существует статистически значимая связь.";
+                conclusion += " Анализ проводился с использованием критерия ";
+                conclusion += (table.table.RowCount == 2 && table.table.ColumnCount == 2) ? "Вулфа." : "хи-квадрат Пирсона.";
+
+                _wordDocument.WriteControlWord(@"sl360\slmult1");
+                _wordDocument.SetParagraph(0, 567);
+                _wordDocument.SetTextAlign(WordTextAlign.Justified);
+                _wordDocument.WriteLine(conclusion);
+
+                //Есть ли графики к результату статистического анализа
+                if (table.pvalue <= settings.Statistical_significance)
+                {
+                    string methodName = (table.table.RowCount == 2 && table.table.ColumnCount == 2) ? "WL" : "PRS";
+                    int curGraph = graphNames.IndexOf(methodName + "_" + table.table.Variable1 + "_" + table.table.Variable2);
+                    if (curGraph != -1)
+                    {
+                        //Предисловие к графикам
+                        string preface = "На рисунке " + endToEndPicture.ToString() + " изображена диаграмма, показывающая содержание таблицы сопряженности "
+                            + "в графическом виде для переменных, которые имеют статистически значимую связь.";
+                        _wordDocument.WriteLine(preface);
+
+                        //Вставим график
+                        _wordDocument.SetTextAlign(WordTextAlign.Center);
+                        _wordDocument.SetParagraph(0, 0);
+                        _wordDocument.PutImage(dirs[curGraph], 96); //96 - истинный dpi
+                        _wordDocument.WriteLine();
+                        //Подпись к графику
+                        _wordDocument.WriteControlWord(@"sl360\slmult1");
+                        string note = "Рисунок " + endToEndPicture.ToString() + " - " + " Диаграмма для переменных "
+                                      + (char)171 + table.table.Variable1 + (char)187 + " и " + (char)171 + table.table.Variable2 + (char)187;
+                        _wordDocument.WriteLine(note);
+
+                        endToEndPicture++;
+                    }
+                }
+                endToEndTable++;
             }
             return _wordDocument;
         }
@@ -2397,6 +2464,47 @@ namespace Statix
             engine.Evaluate("abline(lm(y~x), col=\"red\", lwd=2, lty=1)");
             engine.Evaluate("lines(lowess(x,y), col=\"blue\", lwd=2, lty=2)");
             engine.Evaluate("dev.off()");
+        }
+
+        /// <summary>
+        /// Создание гистограммы. Таблицы сопряженности
+        /// </summary>
+        /// <param name="_table">Таблица сопряженности</param>
+        private void CreateBarplot(ContingencyTable _table)
+        {
+            //Сформируем матрицу для того, чтобы можно было сгруппировать данные в гистограмме
+            NumericVector vec = new NumericVector(engine, _table.Data.ToArray());
+            engine.SetSymbol("vec", vec);
+
+            //Заполним подписи
+            string rnames = "rnames <- c(";
+            foreach (string name in _table.Variable1UniqueValuesList)
+                rnames += "\"" + name + "\"" + ", ";
+            rnames = rnames.Remove(rnames.Length - 2) + ")";
+            string cnames = "cnames <- c(";
+            foreach (string name in _table.Variable2UniqueValuesList)
+                cnames += "\"" + name + "\"" + ", ";
+            cnames = cnames.Remove(cnames.Length - 2) + ")";
+            string matr = "matr <- matrix(vec, nrow=" + _table.RowCount + ", byrow=TRUE, dimnames=list(rnames,cnames))";
+
+            //Параметры гистограммы
+            string color = "col = rainbow(" + _table.RowCount + ")";
+            string xlab = "xlab=" + "\"" + _table.Variable2 + "\"";
+            string ylab = "ylab=\"Количество\"";
+            string main = "main=\"Диаграмма для переменных\n " + _table.Variable1 + " и " + _table.Variable2 + "\"";
+
+            engine.Evaluate(rnames);
+            engine.Evaluate(cnames);
+            engine.Evaluate(matr);
+            var m = engine.GetSymbol("matr").AsNumericMatrix();
+
+            //Сохранение графика
+            string methodName = "";
+            methodName = (_table.RowCount == 2 && _table.ColumnCount == 2) ? "WL" : "PRS";
+
+            engine.Evaluate("jpeg(\"" + pathR + methodName + "_" + _table.Variable1 + "_" + _table.Variable2 + ".jpg\")");
+            engine.Evaluate("barplot(matr, beside=TRUE, " + color + ", " + xlab + ", " + ylab + ", legend=rownames(matr), " + main +", xpd=TRUE)");
+            engine.Evaluate("dev.off()");            
         }
 
         private void metroTabPage3_SizeChanged(object sender, EventArgs e)

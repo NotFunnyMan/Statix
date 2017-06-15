@@ -23,7 +23,7 @@ namespace Statix
         /// <summary>
         /// Уникальные значения первой переменной
         /// </summary>
-        List<string> variable1List;
+        List<string> variable1UniqueValuesList;
 
         /// <summary>
         /// Вторая переменная
@@ -33,12 +33,12 @@ namespace Statix
         /// <summary>
         /// Уникальные значения второй переменной
         /// </summary>
-        List<string> variable2List;
+        List<string> variable2UniqueValuesList;
 
         /// <summary>
         /// Количество совпадений. Пересечение переменных
         /// </summary>
-        List<int> data;
+        List<double> data;
 
         /// <summary>
         /// Количество строк в таблице
@@ -64,9 +64,9 @@ namespace Statix
         /// </summary>
         public ContingencyTable()
         {
-            variable1List = new List<string>();
-            variable2List = new List<string>();
-            data = new List<int>();
+            variable1UniqueValuesList = new List<string>();
+            variable2UniqueValuesList = new List<string>();
+            data = new List<double>();
             rowCount = 0;
             columnCount = 0;
             df = 0;
@@ -116,7 +116,7 @@ namespace Statix
             naList = Sample.MissingList(_data, new List<int> { _index1, _index2 });
 
             //Список данных
-            List<int> data = new List<int>();
+            List<double> data = new List<double>();
             List<string> patient = new List<string>();
             int count = 0;
 
@@ -146,9 +146,9 @@ namespace Statix
 
             //Сформируем выходные данные
             table.variable1 = _data.TakeVariableNameAtIndex(_index1);
-            table.variable1List = uniq1;
+            table.variable1UniqueValuesList = uniq1;
             table.variable2 = _data.TakeVariableNameAtIndex(_index2);
-            table.variable2List = uniq2;
+            table.variable2UniqueValuesList = uniq2;
             table.data = data;
             table.rowCount = uniq1.Count;
             table.columnCount = uniq2.Count;
@@ -191,9 +191,9 @@ namespace Statix
         {
             //Составим списко ожидаемых частот
             List<double> waitFreq = new List<double>();
-            List<int> sumInRow = new List<int>();
-            List<int> sumInColumn = new List<int>();
-            int sum = 0;
+            List<double> sumInRow = new List<double>();
+            List<double> sumInColumn = new List<double>();
+            double sum = 0;
             
             //Сумма по строке
             for (int i = 0; i < _table.rowCount; i++)
@@ -218,7 +218,7 @@ namespace Statix
                     waitFreq.Add(Convert.ToDouble((sumInRow[i] * sumInColumn[j]) / sumAll));
 
             double stat = 0;
-            List<int> observerFreq = _table.Data;
+            List<double> observerFreq = _table.Data;
             for (int i = 0; i < _table.rowCount; i++)
                 for (int j = 0; j < _table.columnCount; j++)
                     stat += Math.Pow(observerFreq[i * _table.columnCount + j] - waitFreq[i * _table.columnCount + j], 2) / waitFreq[i * _table.columnCount + j];
@@ -240,9 +240,9 @@ namespace Statix
         /// <summary>
         /// Уникальные значения первой переменной
         /// </summary>
-        public List<string> Variable1List
+        public List<string> Variable1UniqueValuesList
         {
-            get { return variable1List; }
+            get { return variable1UniqueValuesList; }
         }
 
         /// <summary>
@@ -256,15 +256,15 @@ namespace Statix
         /// <summary>
         /// Уникальные значения второй переменной
         /// </summary>
-        public List<string> Variable2List
+        public List<string> Variable2UniqueValuesList
         {
-            get { return variable2List; }
+            get { return variable2UniqueValuesList; }
         }
 
         /// <summary>
         /// Данные таблицы сопряженности
         /// </summary>
-        public List<int> Data
+        public List<double> Data
         {
             get { return data; }
         }
